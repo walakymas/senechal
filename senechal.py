@@ -19,6 +19,18 @@ async def d20(ctx):
     await ctx.send(randint(1,20))
 
 @bot.command()
+async def d6(ctx, num = 1 ):
+    sum = 0;
+    s = '';
+    for x in range(num):
+        r = randint(1,6)
+        sum += r
+        if (x>0):
+            s += '+';
+        s += str(r)
+    await ctx.send(s+'= '+str(sum))
+
+@bot.command()
 async def sum(ctx, numOne: int, numTwo: int):
     await ctx.send(numOne + numTwo)
 
@@ -34,49 +46,76 @@ async def perin(ctx, task="base", param=""):
 async def pc(ctx, name="", task="base", param=""):
     await pcInfo(ctx, name, task, param)
 
-
-async def pcInfoOld(ctx, name="", task="base", param=""):
-    if (name == 'perin'):
-        embed = discord.Embed(title=f"Sir Perin", description="Ide jöhet egy laza leírás", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-        embed.add_field(name="Homeland", value=f"Salisbury")
-        embed.add_field(name="Lord", value=f"Sir Roderick")
-        embed.add_field(name="Home", value=f"Steeple Langford")
-        embed.add_field(name="Distinctive Features", value=f"Strong speech")
-        embed.add_field(name="Culture", value=f"Cymric (Pagan)")
-        embed.add_field(name="Glory", value=f"1651")
-        embed.add_field(name="Born", value=f"458")
-        embed.add_field(name="Squired", value=f"472")
-        embed.add_field(name="Knighted", value=f"479")
-        embed.add_field(name="Family Characteristic", value=f"Clever at Games (+10 Gaming)")
-        embed.set_thumbnail(url="https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg")
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
-
 @bot.command()
 async def npc(ctx, name="", task="base", param=""):
     await npcInfo(ctx, name, task, param)
 
+async def embedNpc(ctx, pc, task, param):
+    embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if ('url' in pc):
+        embed.set_thumbnail(url=pc['url'])
+    await ctx.send(embed=embed)
 
 async def npcInfo(ctx, name="", task="base", param=""):
-    pc = npcs[name]
-    if (pc != null):
-        embed.add_field(name="description", value=pc['description'])
-        embed.set_thumbnail(url=pc['url'])
-        await ctx.send(embed=embed)
+    if (name in npcs):
+        pc = npcs[name]
+        await embedNpc(ctx, pc, task, param)
+    elif "all" == name:
+        for pc in npcs.values():
+            await embedNpc(ctx, pc, task, param)
     else:
         await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
-async def pcInfo(ctx, name="", task="base", param=""):
-    pc = pcs[name]
-    if (pc):
+
+def tr(a):
+    return str(a)+'/'+str(20-a)
+
+async def embedPc(ctx, pc, task, param):
+    if ("traits".strtswith(task.lower)):
+        embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        embed.add_field(name="Chaste / Lustful", value=tr(pc['traits']['cha']))
+        embed.add_field(name="Energetic / Lazy", value=tr(pc['traits']['ene']))
+        embed.add_field(name="Forgiving / Vengeful", value=tr(pc['traits']['for']))
+        embed.add_field(name="Generous / Selfish", value=tr(pc['traits']['gen']))
+        embed.add_field(name="Honest / Deceitful", value=tr(pc['traits']['hon']))
+        embed.add_field(name="Just / Arbitrary", value=tr(pc['traits']['jus']))
+        embed.add_field(name="Merciful / Cruel", value=tr(pc['traits']['mer']))
+        embed.add_field(name="Modest / Proud", value=tr(pc['traits']['mod']))
+        embed.add_field(name="Prudent / Reckless", value=tr(pc['traits']['pru']))
+        embed.add_field(name="Spiritual / Worldly", value=tr(pc['traits']['spi']))
+        embed.add_field(name="Temperate / Indulgent", value=tr(pc['traits']['tem']))
+        embed.add_field(name="Trusting / Suspicious", value=tr(pc['traits']['tru']))
+        embed.add_field(name="Valorous / Cowardly", value=tr(pc['traits']['val']))
+    elif (task=="stats".strtswith(task.lower)):
+        embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        for name, value in pc['statistics'].items():
+            embed.add_field(name=name, value=value)
+        embed.add_field(name="Damage", value=str(round((pc['statistics']['str']+pc['statistics']['siz'])/6))+'d6');
+        embed.add_field(name="Healing Rate", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/10)));
+        embed.add_field(name="Move Rate", value=str(round((pc['statistics']['dex']+pc['statistics']['siz'])/10)));
+        embed.add_field(name="HP", value=str(round((pc['statistics']['con']+pc['statistics']['siz']))));
+        embed.add_field(name="Unconscious", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/4)));
+    elif "all" == name:
+        for pc in pcs.values():
+            await embedNpc(ctx, pc, task, param)
+    else:        
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['main'].items():
-            print(name, ":", value)
             embed.add_field(name=name, value=value)
-        embed.set_thumbnail(url=pc['url'])
-        await ctx.send(embed=embed)
+    embed.set_thumbnail(url=pc['url'])
+    await ctx.send(embed=embed)
+
+
+async def pcInfo(ctx, name="", task="base", param=""):
+    print(name+","+task)
+    if (name in pcs):
+        pc = pcs[name]
+        await embedPc(ctx, pc, task, param)
+    elif "all" == name:
+        for pc in pcs.values():
+            await embedPc(ctx, pc, task, param)
     else:
+        embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
 @bot.command()
@@ -114,6 +153,8 @@ async def on_message(message):
         # in this case don't respond with the word "Tutorial" or you will call the on_message event recursively
         await message.channel.send('Szólított uram?')
         await bot.process_commands(message)
+    elif "!20" == message.content:
+        await d20(message.channel)
 
 # with open(r'npc.yml') as file:
 #    npc = yaml.load(file, Loader=yaml.FullLoader)

@@ -1,0 +1,39 @@
+perin: 
+  name: Sir Perin
+  main:
+      "Homeland": Salisbury
+      "Lord": "Sir Roderick"
+      "Home": "Steeple Langford"
+      "Distinctive Features": "Strong speech"
+      "Culture": "Cymric (Pagan)"
+      "Glory": "1651"
+      "Born": "458"
+      "Squired": "472"
+      "Knighted": "479"
+      "Family Characteristic": "Clever at Games (+10 Gaming)"
+  url: "https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg"
+
+  description: >
+    Leírás de rögtön ám
+
+  statistics:
+    siz: 15
+    dex: 12
+    str: 11
+    con: 16
+    app: 10
+
+  traits:
+    cha: 7
+    ene: 13
+    for: 10
+    gen: 13
+    hon: 13
+    jus: 10
+    mer: 10
+    mod: 7
+    pru: 10
+    spi: 10
+    tem: 10
+    tru: 10
+    val: 15
