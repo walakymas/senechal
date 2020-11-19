@@ -71,7 +71,7 @@ def tr(a):
     return str(a)+'/'+str(20-a)
 
 async def embedPc(ctx, pc, task, param):
-    if ("traits".strtswith(task.lower)):
+    if ("traits".startswith(task.lower())):
         embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         embed.add_field(name="Chaste / Lustful", value=tr(pc['traits']['cha']))
         embed.add_field(name="Energetic / Lazy", value=tr(pc['traits']['ene']))
@@ -86,7 +86,7 @@ async def embedPc(ctx, pc, task, param):
         embed.add_field(name="Temperate / Indulgent", value=tr(pc['traits']['tem']))
         embed.add_field(name="Trusting / Suspicious", value=tr(pc['traits']['tru']))
         embed.add_field(name="Valorous / Cowardly", value=tr(pc['traits']['val']))
-    elif (task=="stats".strtswith(task.lower)):
+    elif ("stats".startswith(task.lower())):
         embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['statistics'].items():
             embed.add_field(name=name, value=value)
@@ -95,9 +95,6 @@ async def embedPc(ctx, pc, task, param):
         embed.add_field(name="Move Rate", value=str(round((pc['statistics']['dex']+pc['statistics']['siz'])/10)));
         embed.add_field(name="HP", value=str(round((pc['statistics']['con']+pc['statistics']['siz']))));
         embed.add_field(name="Unconscious", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/4)));
-    elif "all" == name:
-        for pc in pcs.values():
-            await embedNpc(ctx, pc, task, param)
     else:        
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['main'].items():
