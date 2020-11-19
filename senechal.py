@@ -5,12 +5,18 @@ import datetime
 from urllib import parse, request
 import re
 import yaml
+from  random import randint
+
 
 bot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
 
 @bot.command()
 async def ping(ctx):
     await ctx.send('Igen uram?')
+
+@bot.command()
+async def d20(ctx):
+    await ctx.send(randint(1,20))
 
 @bot.command()
 async def sum(ctx, numOne: int, numTwo: int):
@@ -29,7 +35,7 @@ async def pc(ctx, name="", task="base", param=""):
     await pcInfo(ctx, name, task, param)
 
 
-async def pcInfo(ctx, name="", task="base", param=""):
+async def pcInfoOld(ctx, name="", task="base", param=""):
     if (name == 'perin'):
         embed = discord.Embed(title=f"Sir Perin", description="Ide jöhet egy laza leírás", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         embed.add_field(name="Homeland", value=f"Salisbury")
@@ -43,6 +49,32 @@ async def pcInfo(ctx, name="", task="base", param=""):
         embed.add_field(name="Knighted", value=f"479")
         embed.add_field(name="Family Characteristic", value=f"Clever at Games (+10 Gaming)")
         embed.set_thumbnail(url="https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg")
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
+
+@bot.command()
+async def npc(ctx, name="", task="base", param=""):
+    await npcInfo(ctx, name, task, param)
+
+
+async def npcInfo(ctx, name="", task="base", param=""):
+    pc = npcs[name]
+    if (pc != null):
+        embed.add_field(name="description", value=pc['description'])
+        embed.set_thumbnail(url=pc['url'])
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
+
+async def pcInfo(ctx, name="", task="base", param=""):
+    pc = pcs[name]
+    if (pc):
+        embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        for name, value in pc['main'].items():
+            print(name, ":", value)
+            embed.add_field(name=name, value=value)
+        embed.set_thumbnail(url=pc['url'])
         await ctx.send(embed=embed)
     else:
         await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
@@ -78,11 +110,22 @@ async def on_ready():
 
 @bot.listen()
 async def on_message(message):
-    if "tutorial" in message.content.lower():
+    if "senechal" in message.content.lower():
         # in this case don't respond with the word "Tutorial" or you will call the on_message event recursively
-        await message.channel.send('This is that you want http://youtube.com/fazttech')
+        await message.channel.send('Szólított uram?')
         await bot.process_commands(message)
 
+# with open(r'npc.yml') as file:
+#    npc = yaml.load(file, Loader=yaml.FullLoader)
+
+with open(r'npc.yml') as file:
+    npcs = yaml.load(file, Loader=yaml.FullLoader)
+    print(npcs)
+ 
+with open(r'pc.yml') as file:
+    pcs = yaml.load(file, Loader=yaml.FullLoader)
+    print(pcs)
+ 
 with open(r'config.yml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
     print(config['token'])
