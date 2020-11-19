@@ -4,6 +4,7 @@ import datetime
 
 from urllib import parse, request
 import re
+import yaml
 
 bot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
 
@@ -82,5 +83,8 @@ async def on_message(message):
         await message.channel.send('This is that you want http://youtube.com/fazttech')
         await bot.process_commands(message)
 
-bot.run('Nzc4NzI2OTc3OTkzMzEwMjM4.X7WMAw.nVMK9okNBVCs_1WLnVQPChc7AaI')
+with open(r'config.yml') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config['token'])
+    bot.run(config['token'])
 
