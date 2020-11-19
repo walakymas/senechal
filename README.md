@@ -1,0 +1,2 @@
+# senechal
+Pendragon discord bot
