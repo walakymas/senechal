@@ -1,7 +1,7 @@
 roderick:
   name: Sir Roderick
   description: >
-    Earl of Salisbury
+    Jóurunk Earl of Salisbury
 
 elad:
   name: Sir Elad
@@ -45,6 +45,7 @@ adwen:
 
 gwiona:
   name: Lady Gwiona
+  url: https://media.discordapp.net/attachments/779023614057512991/779244087140286494/medieval-times-hair-brunette-with-messy-curly-dark-hair-wearing-a-minimalist-metal-crown-a-begie-dre.png?width=363&height=543
   description: >
     Utolsó négy kérője mind meghaltak a háborúban
 
@@ -73,7 +74,7 @@ blaina:
     Lord Ulfius embere
 
 ambrosius:
-  name: Aurelius ambrosius
+  name: Aurelius Ambrosius
   description: >
     Meghalt a szászok elleni harcokban (480)
 

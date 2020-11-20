@@ -16,24 +16,23 @@ perin:
   description: >
     Leírás de rögtön ám
 
-  statistics:
-    siz: 15
-    dex: 12
-    str: 11
-    con: 16
-    app: 10
+  statistics: [siz: 15, dex: 12, str: 11, con: 16, app: 10]
 
-  traits:
-    cha: 7
-    ene: 13
-    for: 10
-    gen: 13
-    hon: 13
-    jus: 10
-    mer: 10
-    mod: 7
-    pru: 10
-    spi: 10
-    tem: 10
-    tru: 10
-    val: 15
+  traits: [cha: 7, ene: 13, for: 10, gen: 13, hon: 13, jus: 10, mer: 10, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15]
+
+  events:
+    - year: 479
+      glory: 1
+      description: Apai örökség
+    - year: 479
+      glory: 1
+      description: >
+        Több fontosabb kaland:
+    - year: 479
+      glory: 100
+      description: Lovaggáütés
+    - year: 479 
+      glory: 540
+      description: >
+        479 tele
+    
