@@ -22,17 +22,23 @@ perin:
 
   events:
     - year: 479
-      glory: 1
+      glory: 213
       description: Apai örökség
     - year: 479
-      glory: 1
-      description: >
+      glory: 44
+      description: |
         Több fontosabb kaland:
+        Bika, csahos fenevad, szász utonállók, medve
     - year: 479
-      glory: 100
+      glory: 1000
       description: Lovaggáütés
     - year: 479 
+      glory: 344
+      description: 479 tele
+    - year: 480 
+      glory: 50
+      description: Murdock Lovaggáütése
+    - year: 480 
       glory: 540
-      description: >
-        479 tele
+      description: Salisbury csata
     

@@ -8,13 +8,13 @@ import yaml
 import subprocess
 from  random import randint
 
-bot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
+senechalBot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
 
-@bot.command()
+@senechalBot.command()
 async def d20(ctx):
     await ctx.send(randint(1,20))
 
-@bot.command()
+@senechalBot.command()
 async def d6(ctx, num = 1 ):
     sum = 0;
     s = '';
@@ -26,15 +26,18 @@ async def d6(ctx, num = 1 ):
         s += str(r)
     await ctx.send(s+'= '+str(sum))
 
-@bot.command()
+@senechalBot.command()
 async def sum(ctx, numOne: int, numTwo: int):
+    """ Egyremegy 
+
+    vagy mégsem"""
     await ctx.send(numOne + numTwo)
 
-@bot.command()
+@senechalBot.command()
 async def pc(ctx, name="", task="base", param=""):
     await pcInfo(ctx, name, task, param)
 
-@bot.command()
+@senechalBot.command()
 async def npc(ctx, name="", task="base", param=""):
     await npcInfo(ctx, name, task, param)
 
@@ -90,8 +93,12 @@ async def embedPc(ctx, pc, task, param):
         embed.add_field(name="Unconscious", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/4)));
     elif ("events".startswith(task.lower())):
         embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-        for name, value in pc['statistics'].items():
-            embed.add_field(name=name, value=value)
+        glory = 0;
+        for h in pc['events']:
+            glory += h['glory']
+            embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
+        embed.add_field(name="Összes Glory: "+str(glory), value=h['description'], inline=False)
+
     else:        
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['main'].items():
@@ -115,34 +122,12 @@ async def pcInfo(ctx, name="", task="base", param=""):
             embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
             await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
-@bot.command()
-async def info(ctx):
-    embed = discord.Embed(title=f"{ctx.guild.name}", description="Lorem Ipsum asdasd", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    embed.add_field(name="Server created at", value=f"{ctx.guild.created_at}")
-    embed.add_field(name="Server Owner", value=f"{ctx.guild.owner}")
-    embed.add_field(name="Server Region", value=f"{ctx.guild.region}")
-    embed.add_field(name="Server ID", value=f"{ctx.guild.id}")
-    # embed.set_thumbnail(url=f"{ctx.guild.icon}")
-    embed.set_thumbnail(url="https://pluralsight.imgix.net/paths/python-7be70baaac.png")
-
-    await ctx.send(embed=embed)
-
-@bot.command()
-async def youtube(ctx, *, search):
-    query_string = parse.urlencode({'search_query': search})
-    html_content = request.urlopen('http://www.youtube.com/results?' + query_string)
-    # print(html_content.read().decode())
-    search_results = re.findall('href=\"\\/watch\\?v=(.{11})', html_content.read().decode())
-    print(search_results)
-    # I will put just the first result, you can loop the response to show more results
-    await ctx.send('https://www.youtube.com/watch?v=' + search_results[0])
-
-@bot.event
+@senechalBot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.idle)
+    await senechalBot.change_presence(status=discord.Status.idle)
     print('My Ready is Body')
 
-@bot.command()
+@senechalBot.command(hidden=True)
 async def frissito(ctx):
     if ("pull" in config):
         process = subprocess.Popen(["git","pull"], stdout=subprocess.PIPE)
@@ -151,40 +136,26 @@ async def frissito(ctx):
     database()
     await ctx.send("Egykupa bort jóuram?"); 
 
-
-@bot.listen()
+@senechalBot.listen()
 async def on_message(message):
     if ("senechal" in message.content.lower() or "seneschal" in message.content.lower()):
         # in this case don't respond with the word "Tutorial" or you will call the on_message event recursively
-        await message.channel.send("""Szólított uram?
-
-Egyelőre a következő kérdésekre tudok érdemben válaszolni:
-
-!pc """ +str(list(pcs)).replace("'","")+ """ [base|stats|traits] 
-!pc all [base|stats|traits] 
-!npc { névrészlet } 
-!npc all
-!d20
-!d6 [{num}]""")
-        await bot.process_commands(message)
+        await message.channel.send(getHelp())
+        await senechalBot.process_commands(message)
     elif "!20" == message.content:
         await d20(message.channel)
 
-npcs = {}
-pcs = {}
 def database():
-    global npcs, pcs
+    global npcs, pcs, senechalConfig
     with open(r'npc.yml') as file:
         npcs = yaml.load(file, Loader=yaml.FullLoader)
-        print(npcs)
  
     with open(r'pc.yml') as file:
         pcs = yaml.load(file, Loader=yaml.FullLoader)
-        print(pcs)
 
 database()
 with open(r'config.yml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
     print(config['token'])
-    bot.run(config['token'])
+    senechalBot.run(config['token'])
 
