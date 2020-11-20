@@ -33,33 +33,23 @@ async def sum(ctx, numOne: int, numTwo: int):
     vagy mégsem"""
     await ctx.send(numOne + numTwo)
 
-@senechalBot.command()
-async def pc(ctx, name="", task="base", param=""):
-    await pcInfo(ctx, name, task, param)
-
-@senechalBot.command()
-async def npc(ctx, name="", task="base", param=""):
-    await npcInfo(ctx, name, task, param)
-
-async def embedNpc(ctx, pc, task, param):
+async def embedNpc(ctx, pc):
     embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
     if ('url' in pc):
         embed.set_thumbnail(url=pc['url'])
     await ctx.send(embed=embed)
 
-async def npcInfo(ctx, name="", task="base", param=""):
-    print(name+","+task)
+@senechalBot.command()
+async def npc(ctx, *,name=""):
     if "all" == name:
         for pc in pcs.values():
-            await embedPc(ctx, pc, task, param)
+            await embedPc(ctx, pc)
     else:
         count = 0
-        print(npcs)
         for pc in npcs.values():
-            print(pc['name'])
             if name.lower() in pc['name'].lower():
                 count += 1
-                await embedNpc(ctx, pc, task, param)
+                await embedNpc(ctx, pc)
         if count == 0:
             await ctx.send(name +'? Ez a név iesmeretlen számomra. Utána érdeklődjem Jóuram?')
 
@@ -69,19 +59,15 @@ def tr(a):
 async def embedPc(ctx, pc, task, param):
     if ("traits".startswith(task.lower())):
         embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-        embed.add_field(name="Chaste / Lustful", value=tr(pc['traits']['cha']))
-        embed.add_field(name="Energetic / Lazy", value=tr(pc['traits']['ene']))
-        embed.add_field(name="Forgiving / Vengeful", value=tr(pc['traits']['for']))
-        embed.add_field(name="Generous / Selfish", value=tr(pc['traits']['gen']))
-        embed.add_field(name="Honest / Deceitful", value=tr(pc['traits']['hon']))
-        embed.add_field(name="Just / Arbitrary", value=tr(pc['traits']['jus']))
-        embed.add_field(name="Merciful / Cruel", value=tr(pc['traits']['mer']))
-        embed.add_field(name="Modest / Proud", value=tr(pc['traits']['mod']))
-        embed.add_field(name="Prudent / Reckless", value=tr(pc['traits']['pru']))
-        embed.add_field(name="Spiritual / Worldly", value=tr(pc['traits']['spi']))
-        embed.add_field(name="Temperate / Indulgent", value=tr(pc['traits']['tem']))
-        embed.add_field(name="Trusting / Suspicious", value=tr(pc['traits']['tru']))
-        embed.add_field(name="Valorous / Cowardly", value=tr(pc['traits']['val']))
+        traits = pc['traits'];
+        result = "";
+        for row in senechalConfig['traits']:
+            print(row)
+            result += row[0] +": "+str(traits[row[0].lower()[:3]])
+            result += " / "
+            result += row[1] +": "+str(20-traits[row[0].lower()[:3]])
+            result += "\n"
+        embed.add_field(name="Traits", value=result, inline=False)
     elif ("stats".startswith(task.lower())):
         embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['statistics'].items():
@@ -107,8 +93,11 @@ async def embedPc(ctx, pc, task, param):
     await ctx.send(embed=embed)
 
 
-async def pcInfo(ctx, name="", task="base", param=""):
-    print(name+","+task)
+@senechalBot.command()
+async def pc(ctx, name="", task="base", param=""):
+    """PC ifnok a pc.yml alapján
+    A task jelenleg alapértelmezésben base, de lehet statistics, traits vagy events is. Task nevénél elegendő 
+    """
     if "all" == name:
         for pc in pcs.values():
             await embedPc(ctx, pc, task, param)
@@ -122,10 +111,41 @@ async def pcInfo(ctx, name="", task="base", param=""):
             embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
             await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
-@senechalBot.event
-async def on_ready():
-    await senechalBot.change_presence(status=discord.Status.idle)
-    print('My Ready is Body')
+def check(lord, name, base, modifier):
+    embed = discord.Embed(title=lord['name'], description= "Check", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    embed.add_field(name=name, value=str(base));
+    if (modifier!=0):
+        embed.add_field(name="Módosító", value=str(modifier));
+    r = randint(1,20)
+    embed.add_field(name="Dobás", value=str(r));
+    c = base + modifier;
+    if (c>20):
+        r = c-20
+        c=20
+    success = '---'
+    if r>c:
+        success = "Fail"
+    elif r==c:
+        success = "Critical"
+    elif r==20:
+        success = "Fumble"
+    else
+        success = "Success"
+
+    embed.add_field(name="", value=success);
+
+    await ctx.send(embed=embed)
+
+@senechalBot.command()
+async def trait(ctx, lord="", trait="", modifier=0):
+    for pc in pcs.values():
+        if lord.lower() in pc['name'].lower():
+        for t in senechalConfig['traits']
+            if trait.lower() in t[0]:
+                await check(pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+            if trait.lower() in t[1]:
+                await check(pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+
 
 @senechalBot.command(hidden=True)
 async def frissito(ctx):
@@ -136,17 +156,21 @@ async def frissito(ctx):
     database()
     await ctx.send("Egykupa bort jóuram?"); 
 
+@senechalBot.event
+async def on_ready():
+    await senechalBot.change_presence(status=discord.Status.idle)
+    print('Készenállok a szolgálatra!')
+
 @senechalBot.listen()
 async def on_message(message):
-    if ("senechal" in message.content.lower() or "seneschal" in message.content.lower()):
-        # in this case don't respond with the word "Tutorial" or you will call the on_message event recursively
-        await message.channel.send(getHelp())
-        await senechalBot.process_commands(message)
-    elif "!20" == message.content:
+    if "!20" == message.content:
         await d20(message.channel)
 
 def database():
     global npcs, pcs, senechalConfig
+    with open(r'senechal.yml') as file:
+        senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
+
     with open(r'npc.yml') as file:
         npcs = yaml.load(file, Loader=yaml.FullLoader)
  
