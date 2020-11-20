@@ -41,6 +41,8 @@ async def embedNpc(ctx, pc):
 
 @senechalBot.command()
 async def npc(ctx, *,name=""):
+    """PC ifnok a npc.yml alapján
+    """
     if "all" == name:
         for pc in pcs.values():
             await embedPc(ctx, pc)
