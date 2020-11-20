@@ -25,9 +25,91 @@ indeg :
   name: Lady Indeg   
   url: https://media.discordapp.net/attachments/779023614057512991/779058485840969748/a57a90be504fa6a0b1012893f58463c7.png
   description: >
+    A 40 éves nő a környék leggazdagabb örökösnője
   
 merygold:
   name: Lady Merygold
   url: https://media.discordapp.net/attachments/779023614057512991/779064621016809527/2415406-bigthumbnail.png
   description: >
-  
+    Sir Elister lánya
+
+elaine:
+  name: Lady Elaine
+  description: >
+    Első férjét néhány éve megőlte a szeretője, a szeretőt később felakasztották a lovagok
+
+adwen:
+  name: Lady Adwen
+  description: >
+    Házas, Sir Boes lánya akit csatában öltek meg
+
+gwiona:
+  name: Lady Gwiona
+  description: >
+    Utolsó négy kérője mind meghaltak a háborúban
+
+gwylon:
+  name: Lord Gwylon
+  description: >
+    Wynbach bárója
+
+ellen:
+  name: Lady Ellen
+  description: >
+    Sir Gwylon lánya
+
+    Sir Childebert-nek nagyon megtetszett
+
+ulfis:
+  name: Sir Ulfis
+  description: >
+    Baron of the Vale, mert Uther királlyal lártyázik (a pletyka szerint)
+
+blaina:
+  name: Sir Blaina
+  description: >
+    Levcomagnus majordomusa
+
+    Lord Ulfius embere
+
+ambrosius:
+  name: Aurelius ambrosius
+  description: >
+    Meghalt a szászok elleni harcokban (480)
+
+uther:
+  name: Sir Uther
+  description: >
+    Ambrosius testvére
+
+madoc:
+    name: Sir Madoc
+    description: >
+      Uther fattyú fia
+
+wynfaith:
+  name: Lady Wynfaith       
+  description: >
+    Childbert tetszik neki
+
+felix:
+  name: Sir Felix
+  description: >
+    Legjobb ivócimborája mindenkinek
+
+elister:
+  name: Sir Elister
+  description: >
+    A nagykirály lovainak a tenyésztésével foglalkozik 
+
+gorlois:
+  name: Sir Gorlois
+  description: >
+    Duke of Cornwall
+
+brastias:
+  name: Sir Brastias
+  description: >
+    Sir Gorlois testőre
+
+    Legjobb kardvívó
