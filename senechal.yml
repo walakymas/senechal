@@ -1,0 +1,20 @@
+traits:
+  - [Chaste, Lustful]
+  - [Energetic, Lazy]
+  - [Forgiving, Vengeful]
+  - [Generous, Selfish]
+  - [Honest, Deceitful]
+  - [Just, Arbitrary]
+  - [Merciful, Cruel]
+  - [Modest, Proud]
+  - [Prudent, Reckless]
+  - [Spiritual, Worldly]
+  - [Temperate, Indulgent]
+  - [Trusting, Suspicious]
+  - [Valorous, Cowardly]
+stats:
+  - Size
+  - Dexterity
+  - Strength
+  - Constitution
+  - Appearance

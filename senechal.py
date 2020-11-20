@@ -111,7 +111,7 @@ async def pc(ctx, name="", task="base", param=""):
             embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
             await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
-def check(lord, name, base, modifier):
+async def check(ctx, lord, name, base, modifier):
     embed = discord.Embed(title=lord['name'], description= "Check", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
     embed.add_field(name=name, value=str(base));
     if (modifier!=0):
@@ -123,16 +123,16 @@ def check(lord, name, base, modifier):
         r = c-20
         c=20
     success = '---'
-    if r>c:
-        success = "Fail"
-    elif r==c:
+    if r==c:
         success = "Critical"
     elif r==20:
         success = "Fumble"
-    else
+    elif r>c:
+        success = "Fail"
+    else:
         success = "Success"
 
-    embed.add_field(name="", value=success);
+    embed.add_field(name="Eredmény", value=success);
 
     await ctx.send(embed=embed)
 
@@ -140,11 +140,19 @@ def check(lord, name, base, modifier):
 async def trait(ctx, lord="", trait="", modifier=0):
     for pc in pcs.values():
         if lord.lower() in pc['name'].lower():
-        for t in senechalConfig['traits']
-            if trait.lower() in t[0]:
-                await check(pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
-            if trait.lower() in t[1]:
-                await check(pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+            for t in senechalConfig['traits']:
+                if t[0].lower().startswith(trait.lower()):
+                    await check(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                if t[1].lower().startswith(trait.lower()):
+                    await check(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+
+@senechalBot.command()
+async def stat(ctx, lord="", stat="", modifier=0):
+    for pc in pcs.values():
+        if lord.lower() in pc['name'].lower():
+            for t in senechalConfig['stats']:
+                if t.lower().startswith(stat.lower()):
+                    await check(ctx, pc, t, pc['statistics'][t.lower()[:3]], modifier)
 
 
 @senechalBot.command(hidden=True)
