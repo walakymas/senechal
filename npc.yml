@@ -3,12 +3,14 @@ roderick:
   description: >
     Jóurunk Earl of Salisbury
 
+    A nyugati csapatok vezére Salisburynál
+
 elad:
   name: Sir Elad
   description: >
     The Marshal of the country. Elad is the castellan of Vagon as well
 
-    A szászok elleni háborúban elveszítette a fél karját
+    A szászok elleni háborúban elveszítette a fél karját a keleti csapatokat vezetve Salisbury alatt
 
 muriel:
   name: Lady Muriel

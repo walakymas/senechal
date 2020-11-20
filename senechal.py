@@ -5,8 +5,8 @@ import datetime
 from urllib import parse, request
 import re
 import yaml
+import subprocess
 from  random import randint
-
 
 bot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
 
@@ -144,6 +144,10 @@ async def on_ready():
 
 @bot.command()
 async def frissito(ctx):
+    if ("pull" in config):
+        process = subprocess.Popen(["git","pull"], stdout=subprocess.PIPE)
+        print(process.communicate()[0])
+
     database()
     await ctx.send("Egykupa bort jóuram?"); 
 
