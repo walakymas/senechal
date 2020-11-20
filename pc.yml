@@ -43,3 +43,43 @@ perin:
       glory: 540
       description: Salisbury csata
     
+childebert: 
+  name: Sir Childebert
+  url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gontran_devant_Childebert_II.jpg/800px-Gontran_devant_Childebert_II.jpg"
+
+  description: >
+    Childebert description
+
+  main:
+      "Homeland": Salisbury
+      "Lord": "Sir Roderick"
+      "Home": "Mount St Michel"
+      "Culture": "Saxon (Germanic Pagan)"
+      "Glory": "???"
+      "Born": "458"
+      "Squired": "472"
+      "Knighted": "479"
+
+  statistics: {siz: 11, dex: 14, str: 13, con: 12, app: 14}
+
+  traits: {cha: 10, ene: 11, for: 10, gen: 13, hon: 12, jus: 8, mer: 9, mod: 7, pru: 7, spi: 7, tem: 7, tru: 10, val: 16}
+
+  events:
+    - year: 479
+      glory: 213
+      description: Apai örökség
+    - year: 479
+      glory: 44
+      description: |
+        Több fontosabb kaland:
+        Bika, csahos fenevad, szász utonállók, medve
+    - year: 479
+      glory: 1000
+      description: Lovaggáütés
+    - year: 480 
+      glory: 50
+      description: Murdock Lovaggáütése
+    - year: 480 
+      glory: 720
+      description: Salisbury csata
+    

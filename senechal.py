@@ -112,46 +112,61 @@ async def pc(ctx, name="", task="base", param=""):
             await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
 async def check(ctx, lord, name, base, modifier):
-    embed = discord.Embed(title=lord['name'], description= "Check", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    embed.add_field(name=name, value=str(base));
-    if (modifier!=0):
-        embed.add_field(name="Módosító", value=str(modifier));
-    r = randint(1,20)
-    embed.add_field(name="Dobás", value=str(r));
+    color=discord.Color.blue()
+    ro = randint(1,20)
+##    ro = 16
+    r = ro;
     c = base + modifier;
     if (c>20):
-        r = c-20
+        r += c-20
         c=20
     success = '---'
     if r==c:
         success = "Critical"
-    elif r==20:
-        success = "Fumble"
+        color=discord.Color.gold()
     elif r>c:
         success = "Fail"
+        color=discord.Color.orange()
+    elif ro==20:
+        success = "Fumble"
+        color=discord.Color.red()
     else:
         success = "Success"
+        color=discord.Color.blue()
 
-    embed.add_field(name="Eredmény", value=success);
+    embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
+    embed.add_field(name="Dobás", value=str(ro));
+    embed.add_field(name=name, value=str(base));
+    if (modifier!=0):
+        embed.add_field(name="Módosító", value=str(modifier));
+    embed.add_field(name="Eredmény", value=success, inline=False);
 
     await ctx.send(embed=embed)
 
 @senechalBot.command()
 async def trait(ctx, lord="", trait="", modifier=0):
+    """ Trait check
+    Lovagnév részletét, egy trait nevének részletét és módosítót lehet megadni
+    A lord és trait paraméter helyett * is írható  
+    """
     for pc in pcs.values():
-        if lord.lower() in pc['name'].lower():
+        if "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['traits']:
-                if t[0].lower().startswith(trait.lower()):
+                if  "*" == trait or t[0].lower().startswith(trait.lower()):
                     await check(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
-                if t[1].lower().startswith(trait.lower()):
+                if  "*" == trait or t[1].lower().startswith(trait.lower()):
                     await check(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
 
 @senechalBot.command()
 async def stat(ctx, lord="", stat="", modifier=0):
+    """ Stat check
+    Lovagnév részletét, egy stat nevének részletét és módosítót lehet megadni
+    A lord és stat paraméter helyett * is írható  
+    """
     for pc in pcs.values():
-        if lord.lower() in pc['name'].lower():
+        if  "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['stats']:
-                if t.lower().startswith(stat.lower()):
+                if  "*" == stat or t.lower().startswith(stat.lower()):
                     await check(ctx, pc, t, pc['statistics'][t.lower()[:3]], modifier)
 
 
@@ -162,12 +177,12 @@ async def frissito(ctx):
         print(process.communicate()[0])
 
     database()
-    await ctx.send("Egykupa bort jóuram?"); 
+    await ctx.send("Egy kupa bort jóuram?"); 
 
 @senechalBot.event
 async def on_ready():
     await senechalBot.change_presence(status=discord.Status.idle)
-    print('Készenállok a szolgálatra!')
+    print('Készen állok a szolgálatra!')
 
 @senechalBot.listen()
 async def on_message(message):
