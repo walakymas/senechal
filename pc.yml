@@ -42,7 +42,38 @@ perin:
     - year: 480 
       glory: 540
       description: Salisbury csata
-    
+  passions:
+    "Fealthy (Lord)": 15
+    "Homage (Liege)": 15
+    "Love (Family)": 15  
+    "Hospitability": 15
+    "Honor": 15
+    "Hate Saxons (10)": 11
+    "Loyalty (Vasals)": 13
+        
+  skills:
+    Combat:
+      Battle: 15
+      Siege: 2
+      Horsemanship: 12
+    Weapons:
+      Sword: 16
+      "Spear Expertise": 15
+      Dagger: 6
+      Bow: 1
+    Other:
+      Awareness: 11
+      Courtesy: 5
+      Dancing: 2
+      Falconry: 5
+      "First Aid": 11
+      Gaming: 15
+      Heraldry: 3
+      Hunting: 12
+      Orate: 3
+      Swimming: 2
+      Tourney: 10
+        
 childebert: 
   name: Sir Childebert
   url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gontran_devant_Childebert_II.jpg/800px-Gontran_devant_Childebert_II.jpg"

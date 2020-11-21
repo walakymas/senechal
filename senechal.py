@@ -86,7 +86,13 @@ async def embedPc(ctx, pc, task, param):
             glory += h['glory']
             embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
         embed.add_field(name="Összes Glory: "+str(glory), value=h['description'], inline=False)
-
+    elif ("skills".startswith(task.lower())):
+        embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        for name, sg in pc['skills'].items():
+            s = ""
+            for name, value in sg.items():
+                s += name + ": " + str(value)+"\n"
+            embed.add_field(name="=o=o=o= "+name+" =o=o=o=" , value=s, inline=False)
     else:        
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         for name, value in pc['main'].items():
@@ -170,6 +176,20 @@ async def stat(ctx, lord="", stat="", modifier=0):
             for t in senechalConfig['stats']:
                 if  "*" == stat or t.lower().startswith(stat.lower()):
                     await check(ctx, pc, t, pc['statistics'][t.lower()[:3]], modifier)
+
+
+@senechalBot.command()
+async def skill(ctx, lord="", skill="", modifier=0):
+    """ Skill check
+    Lovagnév részletét, egy skill nevének részletét és módosítót lehet megadni
+    A lord és skill paraméter helyett * is írható  
+    """
+    for pc in pcs.values():
+        if  "*" == lord or lord.lower() in pc['name'].lower():
+            for n, sg in pc['skills'].items():
+                for sn, sv in sg.items():
+                    if  "*" == skill or skill.lower() in sn.lower():
+                        await check(ctx, pc, sn, sv, modifier)
 
 
 @senechalBot.command(hidden=True)
