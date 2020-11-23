@@ -1,5 +1,6 @@
 perin: 
   name: Sir Perin
+  player: Svo
   url: "https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg"
 
   description: >
@@ -17,7 +18,7 @@ perin:
       "Knighted": "479"
       "Family Characteristic": "Clever at Games (+10 Gaming)"
 
-  statistics: {siz: 15, dex: 12, str: 11, con: 16, app: 10}
+  stats: {siz: 15, dex: 12, str: 11, con: 16, app: 10}
 
   traits: {cha: 7, ene: 17, for: 10, gen: 13, hon: 13, jus: 10, mer: 10, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15}
 
@@ -48,7 +49,7 @@ perin:
     "Love (Family)": 15  
     "Hospitability": 15
     "Honor": 15
-    "Hate Saxons (10)": 11
+    "Hate Saxons": 11
     "Loyalty (Vasals)": 13
         
   skills:
@@ -74,8 +75,95 @@ perin:
       Swimming: 2
       Tourney: 10
         
+
+ulf: 
+  name: Ulf Teringer
+  player: Zoli
+  url: "https://johnknifton.files.wordpress.com/2044/02/red.jpg"
+
+  description: >
+    Leírás de rögtön ám
+
+  main:
+      "Homeland": Zealand
+      "Lord": "Warlord"
+      "Home": "Steeple Langford"
+      "Distinctive Features": "Red hair, large intact teeth"
+      "Culture": "Northern"
+      "Glory": "2039"
+      "Born": "458"
+      "Squired": "472"
+      "Knighted": "479"
+
+  stats: {siz: 15, dex: 14, str: 15, con: 11, app: 12}
+
+  traits: {cha: 10, ene: 11, for: 12, gen: 13, hon: 12, jus: 8, mer: 9, mod: 7, pru: 7, spi: 7, tem: 7, tru: 11, val: 16}
+
+  events:
+    - year: 479
+      glory: 1477
+      description: |
+        Apai örökség
+        Lovaggáütés
+        Több fontosabb kaland:
+        Bika, csahos fenevad, szász utonállók, medve
+    - year: 479
+      glory: 15
+      description: ??? 
+    - year: 480 
+      glory: 2
+      description: Salisbury
+    - year: 480 
+      glory: 50
+      description: Murdock Lovaggáütése
+    - year: 480 
+      glory: 540
+      description: Salisbury csata
+  passions:
+    "Fealthy (Lord)": 14
+    "Homage (Liege)": 15
+    "Love (Family)": 10  
+    "Hospitability": 9
+    "Honor": 13
+    "Hate Germans": 211
+    "Loyalty (Vasals)": 13
+        
+  skills:
+    Combat:
+      Battle: 7
+      Siege: 3
+      Horsemanship: 4
+    Weapons:
+      Sword: 15
+      Lance: 2
+      Spear: 2
+      Dagger: 5
+      "2h waepon": 10 
+    Other:
+      Awareness: 15
+      Boating: 10
+      Compose: 2
+      Courtesy: 3
+      Dancing: 1
+      Falconry: 2
+      "First Aid": 15
+      Flirting: 2
+      Folklore: 5
+      Gaming: 2
+      Heraldry: 1
+      Hunting: 12
+      Orate: 2
+      Swimming: 8
+      Tourney: 2
+        
+
+
+
+#Csepi
+
 childebert: 
   name: Sir Childebert
+  player: Csepi
   url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gontran_devant_Childebert_II.jpg/800px-Gontran_devant_Childebert_II.jpg"
 
   description: >
@@ -91,7 +179,7 @@ childebert:
       "Squired": "472"
       "Knighted": "479"
 
-  statistics: {siz: 11, dex: 14, str: 13, con: 12, app: 14}
+  stats: {siz: 11, dex: 14, str: 13, con: 12, app: 14}
 
   traits: {cha: 10, ene: 11, for: 10, gen: 13, hon: 12, jus: 8, mer: 9, mod: 7, pru: 7, spi: 7, tem: 7, tru: 10, val: 16}
 

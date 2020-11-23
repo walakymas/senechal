@@ -7,8 +7,14 @@ import re
 import yaml
 import subprocess
 from  random import randint
+import sqlite3
 
 senechalBot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
+conn = sqlite3.connect('status.db')
+c = conn.cursor()
+c.execute('CREATE TABLE IF NOT EXISTS status (last_modified text, key text, svalue text, ivalue int, rvalue real)')
+conn.commit()
+conn.close()
 
 @senechalBot.command()
 async def d20(ctx):
@@ -16,21 +22,49 @@ async def d20(ctx):
 
 @senechalBot.command()
 async def d6(ctx, num = 1 ):
-    sum = 0;
-    s = '';
-    for x in range(num):
-        r = randint(1,6)
-        sum += r
-        if (x>0):
-            s += '+';
-        s += str(r)
-    await ctx.send(s+'= '+str(sum))
+    if (num > 1):
+        sum = 0;
+        s = '';
+        for x in range(num):
+            r = randint(1,6)
+            sum += r
+            if (x>0):
+                s += '+';
+            s += str(r)
+        await ctx.send(s+'= '+str(sum))
+    elif num == 1:
+        await ctx.send(randint(1,6))
+
+@senechalBot.command()
+async def c(ctx, spec="", modifier=0):
+    if (spec==""):
+        await ctx.send(ctx.author.nick +"! Állok szolgálatára")
+    else:
+        for pc in pcs.values():
+            if ctx.author.nick == pc['name']:
+                for n, sg in pc['skills'].items():
+                    for sn, sv in sg.items():
+                        if  sn.lower().startswith(spec.lower()):
+                            await check(ctx, pc, sn, sv, modifier)
+                for t in senechalConfig['traits']:
+                    if  t[0].lower().startswith(spec.lower()):
+                        await check(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                    if  t[1].lower().startswith(spec.lower()):
+                        await check(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+                for t in senechalConfig['stats']:
+                    if  t.lower().startswith(spec.lower()):
+                        await check(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
+                for pn, pv in pc['passions'].items():
+                    if  pn.lower().startswith(spec.lower()):
+                        await check(ctx, pc, pn, pv, modifier)
+
+
 
 @senechalBot.command()
 async def sum(ctx, numOne: int, numTwo: int):
-    """ Egyremegy 
+    """ Két szám összeadása 
 
-    vagy mégsem"""
+    !sum num1 num2"""
     await ctx.send(numOne + numTwo)
 
 async def embedNpc(ctx, pc):
@@ -42,25 +76,24 @@ async def embedNpc(ctx, pc):
 @senechalBot.command()
 async def npc(ctx, *,name=""):
     """PC ifnok a npc.yml alapján
-    """
-    if "all" == name:
-        for pc in pcs.values():
-            await embedPc(ctx, pc)
-    else:
-        count = 0
-        for pc in npcs.values():
-            if name.lower() in pc['name'].lower():
-                count += 1
-                await embedNpc(ctx, pc)
-        if count == 0:
-            await ctx.send(name +'? Ez a név iesmeretlen számomra. Utána érdeklődjem Jóuram?')
+    Ahol a megadott névrészlet illeszkedi a játékosok """
+    for pc in npcs.values():
+        if "*" == name or name.lower() in pc['name'].lower():
+            count += 1
+            await embedNpc(ctx, pc)
+    if count == 0:
+        await ctx.send(name +'? Ez a név ismeretlen számomra. Utána érdeklődjem Jóuram?')
 
 def tr(a):
     return str(a)+'/'+str(20-a)
 
 async def embedPc(ctx, pc, task, param):
-    if ("traits".startswith(task.lower())):
-        embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if (task == "*" or task == "" or "base".startswith(task.lower())):
+        embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        for name, value in pc['main'].items():
+            embed.add_field(name=name, value=value)
+    if (task == "*" or "traits".startswith(task.lower())):
         traits = pc['traits'];
         result = "";
         for row in senechalConfig['traits']:
@@ -70,54 +103,49 @@ async def embedPc(ctx, pc, task, param):
             result += row[1] +": "+str(20-traits[row[0].lower()[:3]])
             result += "\n"
         embed.add_field(name="Traits", value=result, inline=False)
-    elif ("stats".startswith(task.lower())):
-        embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-        for name, value in pc['statistics'].items():
-            embed.add_field(name=name, value=value)
-        embed.add_field(name="Damage", value=str(round((pc['statistics']['str']+pc['statistics']['siz'])/6))+'d6');
-        embed.add_field(name="Healing Rate", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/10)));
-        embed.add_field(name="Move Rate", value=str(round((pc['statistics']['dex']+pc['statistics']['siz'])/10)));
-        embed.add_field(name="HP", value=str(round((pc['statistics']['con']+pc['statistics']['siz']))));
-        embed.add_field(name="Unconscious", value=str(round((pc['statistics']['con']+pc['statistics']['siz'])/4)));
-    elif ("events".startswith(task.lower())):
-        embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if (task == "*" or "stats".startswith(task.lower())):
+        for s in senechalConfig['stats']:
+            embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
+        embed.add_field(name="Damage", value=str(round((pc['stats']['str']+pc['stats']['siz'])/6))+'d6');
+        embed.add_field(name="Healing Rate", value=str(round((pc['stats']['con']+pc['stats']['siz'])/10)));
+        embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex']+pc['stats']['siz'])/10)));
+        embed.add_field(name="HP", value=str(round((pc['stats']['con']+pc['stats']['siz']))));
+        embed.add_field(name="Unconscious", value=str(round((pc['stats']['con']+pc['stats']['siz'])/4)));
+    if (task == "*" or "events".startswith(task.lower())):
         glory = 0;
         for h in pc['events']:
             glory += h['glory']
             embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
         embed.add_field(name="Összes Glory: "+str(glory), value=h['description'], inline=False)
-    elif ("skills".startswith(task.lower())):
-        embed = discord.Embed(title=pc['name'],timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if (task == "*" or "skills".startswith(task.lower())):
         for name, sg in pc['skills'].items():
             s = ""
             for name, value in sg.items():
                 s += name + ": " + str(value)+"\n"
             embed.add_field(name="=o=o=o= "+name+" =o=o=o=" , value=s, inline=False)
-    else:        
-        embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-        for name, value in pc['main'].items():
-            embed.add_field(name=name, value=value)
     embed.set_thumbnail(url=pc['url'])
     await ctx.send(embed=embed)
 
+
+@senechalBot.command()
+async def me(ctx, task="base", param=""):
+    for pc in pcs.values():
+        if ctx.author.nick == pc['name']:
+            await embedPc(ctx, pc, task, param)
 
 @senechalBot.command()
 async def pc(ctx, name="", task="base", param=""):
     """PC ifnok a pc.yml alapján
     A task jelenleg alapértelmezésben base, de lehet statistics, traits vagy events is. Task nevénél elegendő 
     """
-    if "all" == name:
-        for pc in pcs.values():
+    count = 0
+    for pc in pcs.values():
+        if "*" == name or name.lower() in pc['name'].lower():
+            count+=1
             await embedPc(ctx, pc, task, param)
-    else:
-        count = 0
-        for pc in pcs.values():
-            if name.lower() in pc['name'].lower():
-                count+=1
-                await embedPc(ctx, pc, task, param)
-        if count == 0:
-            embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-            await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
+    if count == 0:
+        embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
 async def check(ctx, lord, name, base, modifier):
     color=discord.Color.blue()
@@ -175,7 +203,7 @@ async def stat(ctx, lord="", stat="", modifier=0):
         if  "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['stats']:
                 if  "*" == stat or t.lower().startswith(stat.lower()):
-                    await check(ctx, pc, t, pc['statistics'][t.lower()[:3]], modifier)
+                    await check(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
 
 
 @senechalBot.command()
