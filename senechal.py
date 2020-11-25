@@ -217,11 +217,11 @@ async def embedPc(ctx, pc, task, param):
             embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
         embed.add_field(name="Összes Glory: "+str(glory), value=h['description'], inline=False)
     if (task == "*" or "skills".startswith(task.lower())):
-        for name, sg in pc['skills'].items():
+        for sn, sg in pc['skills'].items():
             s = ""
             for name, value in sg.items():
                 s += name + ": " + str(value)+"\n"
-            embed.add_field(name="=o=o=o= "+name+" =o=o=o=" , value=s, inline=False)
+            embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
     embed.set_thumbnail(url=pc['url'])
     await ctx.send(embed=embed)
 
@@ -236,7 +236,6 @@ async def emberCheck(ctx, lord, name, base, modifier):
         r += c-20
         c=20
     success = '---'
-    url = ''
     if r==c:
         success = ":crown: Critical"
         color=discord.Color.gold()
