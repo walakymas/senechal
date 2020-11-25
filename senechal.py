@@ -178,9 +178,9 @@ async def on_message(message):
         await d20(message.channel)
 
 async def embedNpc(ctx, pc):
-    embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    if ('url' in pc):
-        embed.set_thumbnail(url=pc['url'])
+    embed = discord.Embed(title=npc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if ('url' in nqpc):
+        embed.set_thumbnail(url=npc['url'])
     await ctx.send(embed=embed)
 
 def tr(a):
@@ -222,7 +222,8 @@ async def embedPc(ctx, pc, task, param):
             for name, value in sg.items():
                 s += name + ": " + str(value)+"\n"
             embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
-    embed.set_thumbnail(url=pc['url'])
+    if ('url' in pc):
+        embed.set_thumbnail(url=pc['url'])
     await ctx.send(embed=embed)
 
 
