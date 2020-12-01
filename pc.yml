@@ -198,4 +198,86 @@ childebert:
     - year: 480 
       glory: 720
       description: Salisbury csata
-    
+
+#Robcsa
+
+ronan: 
+  name: Sir Ronan
+  player: Robcsa
+  url: "https://i.ytimg.com/vi/vDl8EGo7Mbc/maxresdefault.jpg"
+
+  description: >
+    Leírás de rögtön ám
+
+  main:
+      "Homeland": "East Munster -> Salisbury"
+      "Lord": "Sir Roderick"
+      "Home": "Averstack - Breaverspoint"
+      "Distinctive Features": "-"
+      "Culture": "Irish (Pagan)"
+      "Glory": "2399"
+      "Born": "464"
+      "Squired": "472"
+      "Knighted": "479"      
+
+  stats: {siz: 12, dex: 11, str: 15, con: 18, app: 11}
+
+  traits: {cha: 6, ene: 14, for: 8, gen: 14, hon: 16, jus: 10, mer: 14, mod: 7, pru: 9, spi: 10, tem: 6, tru: 10, val: 15}
+
+  events:
+    - year: 479
+      glory: 94
+      description: Winter phase
+    - year: 480 
+      glory: 50
+      description: Murdock Lovaggáütése
+    - year: 480 
+      glory: 50
+      description: Aurelius Ambrosius temetése
+    - year: 480 
+      glory: 50
+      description: Koronázás
+    - year: 480 
+      glory: 84
+      description: Winter phase
+    - year: 480 
+      glory: 720
+      description: Salisbury csata
+  passions:
+    "Fealthy (Lord)": 11
+    "Homage (Liege)": 15
+    "Love (Family)": 18  
+    "Hospitability": 15
+    "Honor": 13
+        
+  skills:
+    Combat:
+      Battle: 14
+      Siege: 2
+      Horsemanship: 7
+    Weapons:
+      Sword: 18
+      "Spear Expertise": 10
+      Dagger: 8
+      Bow: 3
+    Other:
+      Awareness: 14
+      Boating: 5
+      Courtesy: 4
+      Dancing: 3
+      Faerie Lore: 10
+      Falconry: 1
+      "First Aid": 10
+      Flirting: 3
+      Folklore: 5      
+      Gaming: 10
+      Heraldry: 11
+      Hunting: 10
+      Intrigue: 2
+      Orate: 5
+      Recognize: 10
+      Romance: 4
+      Stewardship: 2
+      Swimming: 2
+      Tourney: 11
+      Music*: 10
