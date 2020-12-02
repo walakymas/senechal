@@ -92,10 +92,11 @@ async def sum(ctx, numOne: int, numTwo: int):
 async def npc(ctx, *,name=""):
     """PC ifnok a npc.yml alapján
     Ahol a megadott névrészlet illeszkedi a játékosok """
-    for pc in npcs.values():
-        if "*" == name or name.lower() in pc['name'].lower():
+    count = 0
+    for npc in npcs.values():
+        if "*" == name or name.lower() in npc['name'].lower():
             count += 1
-            await embedNpc(ctx, pc)
+            await embedNpc(ctx, npc)
     if count == 0:
         await ctx.send(name +'? Ez a név ismeretlen számomra. Utána érdeklődjem Jóuram?')
 
@@ -116,7 +117,6 @@ async def pc(ctx, name="", task="base", param=""):
             count+=1
             await embedPc(ctx, pc, task, param)
     if count == 0:
-        embed = discord.Embed(title=name, timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
         await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
 @senechalBot.command()
@@ -177,9 +177,9 @@ async def on_message(message):
     if "!20" == message.content:
         await d20(message.channel)
 
-async def embedNpc(ctx, pc):
-    embed = discord.Embed(title=npc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    if ('url' in nqpc):
+async def embedNpc(ctx, npc):
+    embed = discord.Embed(title=npc['name'], description=npc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if ('url' in npc):
         embed.set_thumbnail(url=npc['url'])
     await ctx.send(embed=embed)
 
