@@ -186,21 +186,24 @@ childebert:
   url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gontran_devant_Childebert_II.jpg/800px-Gontran_devant_Childebert_II.jpg"
 
   description: >
-    Childebert description
+    Általában csendes szavú, mosolygós, jóképű lovag. Ha az udvarban beszélni kell, felkészül és egyszerű nyelvezettel, 
+    enyhe akcentussal, kifinomultan beszél. Derűs szemléletét az első komolyabb csata sérülései, feleségének, egyik i
+    kergyermekének elvesztése kissé megtépázta, attól tart tengerentúli családja miatt megátkozhatta vérét egy boszorkány, 
+    de erről nemigen beszél. 
 
   main:
       "Homeland": Salisbury
       "Lord": "Sir Roderick"
       "Home": "Mount St Michel"
-      "Culture": "Saxon (Germanic Pagan)"
-      "Glory": "???"
+      "Culture": "Saxon (Germanic Pagan / Roman Christian)"
+      "Glory": "1929"
       "Born": "458"
       "Squired": "472"
       "Knighted": "479"
 
-  stats: {siz: 11, dex: 14, str: 13, con: 12, app: 14}
+  stats: {siz: 10, dex: 15, str: 12, con: 11, app: 14}
 
-  traits: {cha: 10, ene: 11, for: 10, gen: 13, hon: 12, jus: 8, mer: 9, mod: 7, pru: 7, spi: 7, tem: 7, tru: 10, val: 16}
+  traits: {cha: 12, ene: 11, for: 13, gen: 16, hon: 12, jus: 9, mer: 12, mod: 12, spi: 7, pru: 6, tem: 13, tru: 6, val: 16}
 
   events:
     - year: 479
@@ -216,94 +219,63 @@ childebert:
       description: Lovaggáütés
     - year: 480 
       glory: 50
-      description: Murdock Lovaggáütése
+      description: Maddoc Lovaggáütése
     - year: 480 
       glory: 720
       description: Salisbury csata
-
-#Robcsa
-
-ronan: 
-  name: Sir Ronan
-  player: Robcsa
-  url: "https://i.ytimg.com/vi/vDl8EGo7Mbc/maxresdefault.jpg"
-
-  description: >
-    Leírás de rögtön ám
-
-  main:
-      "Homeland": "East Munster -> Salisbury"
-      "Lord": "Sir Roderick"
-      "Home": "Averstack - Breaverspoint"
-      "Distinctive Features": "-"
-      "Culture": "Irish (Pagan)"
-      "Glory": "2399"
-      "Born": "464"
-      "Squired": "472"
-      "Knighted": "479"      
-
-  stats: {siz: 12, dex: 11, str: 15, con: 18, app: 11}
-
-  traits: {cha: 6, ene: 14, for: 8, gen: 14, hon: 16, jus: 10, mer: 14, mod: 7, pru: 9, spi: 10, tem: 6, tru: 10, val: 15}
-
-  events:
-    - year: 479
-      glory: 94
-      description: Winter phase
+    - year: 479 
+      glory: 0
+      description: |
+        Winter
+        Normal
+        Horse (Healthy)
+        Twins (one gone with changelings...)
     - year: 480 
-      glory: 50
-      description: Murdock Lovaggáütése
-    - year: 480 
-      glory: 50
-      description: Aurelius Ambrosius temetése
-    - year: 480 
-      glory: 50
-      description: Koronázás
-    - year: 480 
-      glory: 84
-      description: Winter phase
-    - year: 480 
-      glory: 720
-      description: Salisbury csata
+      glory: 0
+      description: |
+        Winter 480 
+        Poor (6 gold)
+        Horse (healthy)
+        Wife died
+        Overseas family feud
+
   passions:
-    "Fealthy (Lord)": 11
-    "Homage (Liege)": 15
-    "Love (Family)": 18  
-    "Hospitability": 15
-    "Honor": 13
+    "Fealthy (Lord)": 13
+    "Love (Family)": 14  
+    "Hospitability": 8
+    "Honor": 17
         
   skills:
     Combat:
-      Battle: 14
+      Battle: 10
       Siege: 2
-      Horsemanship: 7
+      Horsemanship: 10
     Weapons:
-      Sword: 18
-      "Spear Expertise": 10
-      Dagger: 8
-      Bow: 3
+      Sword: 16
+      Spear: 1
+      Lance: 9
+      Dagger: 5
     Other:
-      Awareness: 14
-      Boating: 5
-      Courtesy: 4
-      Dancing: 3
-      Faerie Lore: 10
-      Falconry: 1
-      "First Aid": 10
-      Flirting: 3
-      Folklore: 5      
-      Gaming: 10
-      Heraldry: 11
-      Hunting: 10
-      Intrigue: 2
-      Orate: 5
-      Recognize: 10
+      Awareness: 10
+      Boating: 0
+      Courtesy: 13
+      Dancing: 2
+      Faerie Lore: 15
+      Falconry: 6
+      "First Aid": 7
+      Flirting: 5
+      Folklore: 2      
+      Gaming: 2
+      Heraldry: 5
+      Hunting: 8
+      Intrigue: 12
+      Orate: 2
+      Recognize: 4
       Romance: 4
-      Stewardship: 2
+      Stewardship: 6
       Swimming: 2
-      Tourney: 11
-      Music*: 10
-
+      Tourney: 2
+   
 russ: 
   name: Sir Russ McConnely
   player: Svo
