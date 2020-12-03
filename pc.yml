@@ -281,3 +281,103 @@ ronan:
       Swimming: 2
       Tourney: 11
       Music*: 10
+
+russ: 
+  name: Sir Russ McConnely
+  player: Svo
+  url: "https://github.com/walakymas/senechal/blob/main/images/Sir%20Russ%20McConneely.jpg?raw=true"
+
+  description: >
+    Leírás de rögtön ám
+
+  main:
+      "Homeland": Salisbury
+      "Lord": "Sir Roderick"
+      "Home": "Wylye"
+      "Distinctive Features": "Irish accent, cold eyed (pale green)"
+      "Culture": "Irish (British Christian)"
+      "Glory": "2178"
+      "Born": "455"
+      "Squired": "472"
+      "Knighted": "476"
+      "Family Characteristic": "Keen-sighted (+5 Awareness)"
+
+  stats: {siz: 17, dex: 10, str: 19, con: 18, app: 7}
+
+  traits: {cha: 8, ene: 14, for: 5, gen: 6, hon: 8, jus: 4, mer: 4, mod: 13, pru: 6, spi: 5, tem: 6, tru: 6, val: 16}
+
+  events:
+    - year: 476
+      glory: 177
+      description: Apai örökség
+    - year: 476
+      glory: 1000
+      description: Lovaggáütés
+    - year: 479
+      glory: 20
+      description: Medve
+    - year: 479
+      glory: 20
+      description: Banditák
+    - year: 479
+      glory: 94
+      description: >
+        Winter, Skill 6, Attr 1
+    - year: 480
+      glory: 2
+      description: Udvarlási intrikák
+    - year: 480
+      glory: 10
+      description: Szkander
+    - year: 480
+      glory: 50
+      description: Madoc lovaggá ütése
+    - year: 480 
+      glory: 720
+      description: Salisbury csata
+    - year: 480  
+      glory: 32
+      description: >
+        Winter, Skill 6, Attr 1
+  passions:
+    "Fealthy (Lord)": 15
+    "Homage (Liege)": 15
+    "Love (Clan McConnely) ": 15  
+    "Hospitability": 15
+    "Honor": 15
+    "Hate Saxons": 9
+        
+  skills:
+    Combat:
+      Battle: 5
+      Siege: 2
+      Horsemanship: 10
+    Weapons:
+      Sword: 15
+      Lance: 5
+      Spear: 5
+      Dagger: 3
+      Mace: 15
+    Other:
+      Awareness: 15
+      Boating: 5
+      Courtesy: 3
+      Dancing: 3
+      Faerie Lore: 11
+      Falconry: 1
+      "First Aid": 10
+      Flirting: 3
+      Folklore: 10 
+      Gaming: 4
+      Heraldry: 3
+      Hunting: 10
+      Intrigue: 11
+      Orate: 5
+      Recognize: 2
+      "Religion (British Christian)": 2 
+      Stewardship: 7
+      Swimming: 2
+      Tourney: 0
+      Music: 11
+        
+

@@ -215,7 +215,7 @@ async def embedPc(ctx, pc, task, param):
         for h in pc['events']:
             glory += h['glory']
             embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
-        embed.add_field(name="Összes Glory: "+str(glory), value=h['description'], inline=False)
+        embed.add_field(name="Összes Glory: "+str(glory), value=":glory:", inline=False)
     if (task == "*" or "skills".startswith(task.lower())):
         for sn, sg in pc['skills'].items():
             s = ""
