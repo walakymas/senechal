@@ -12,13 +12,13 @@ perin:
       "Home": "Steeple Langford"
       "Distinctive Features": "Strong speech"
       "Culture": "Cymric (Pagan)"
-      "Glory": "1651"
+      "Glory": "2203"
       "Born": "458"
       "Squired": "472"
       "Knighted": "479"
       "Family Characteristic": "Clever at Games (+10 Gaming)"
 
-  stats: {siz: 15, dex: 12, str: 11, con: 16, app: 10}
+  stats: {siz: 15, dex: 13, str: 11, con: 16, app: 10}
 
   traits: {cha: 7, ene: 17, for: 10, gen: 13, hon: 13, jus: 10, mer: 10, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15}
 
@@ -42,7 +42,17 @@ perin:
       description: Murdock Lovaggáütése
     - year: 480 
       glory: 540
-      description: Salisbury csata
+      description: >
+        Salisbury csata, utána kissé megtébolyodtam és kábultan hazaindultam, de csak hónapokkal később kerültem elő
+        Csata során szerzett sérülés miatt -2 str, -1 dex
+    - year: 480 
+      glory: 12
+      description: >
+        Winter, Feleség és születendő gyermek halála
+        Rossz időjárás mellett is jó termés
+        12 arany bevétel
+        Egy unokatesvér magasabb pozicióbl szerez feleséget magának
+
   passions:
     "Fealthy (Lord)": 15
     "Homage (Liege)": 15
@@ -59,19 +69,31 @@ perin:
       Horsemanship: 12
     Weapons:
       Sword: 16
-      "Spear Expertise": 15
+      Spear Expertise: 15
       Dagger: 6
       Bow: 1
     Other:
       Awareness: 11
+      Boating: 1
+      Compose: 1
       Courtesy: 5
       Dancing: 2
+      Dancing: 2
+      Faerie Lore: 1
       Falconry: 5
-      "First Aid": 11
+      First Aid: 11
+      Flirting: 3
+      Folklore: 2
       Gaming: 15
       Heraldry: 3
       Hunting: 12
+      Intrigue: 3
       Orate: 3
+      Play (Harp): 3
+      Recognize: 4
+      Religion (Pagan): 2
+      Romance: 2
+      Singing: 3
       Swimming: 2
       Tourney: 10
         
@@ -122,7 +144,7 @@ ulf:
     "Love (Family)": 10  
     "Hospitability": 9
     "Honor": 13
-    "Hate Germans": 211
+    "Hate Germans": 11
     "Loyalty (Vasals)": 13
         
   skills:
