@@ -9,15 +9,38 @@ import subprocess
 from  random import randint
 import sqlite3
 
-senechalBot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...")
+def database():
+    global npcs, pcs, senechalConfig
+    with open(r'senechal.yml') as file:
+        senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
+
+    with open(r'npc.yml') as file:
+        npcs = yaml.load(file, Loader=yaml.FullLoader)
+ 
+    with open(r'pc.yml') as file:
+        pcs = yaml.load(file, Loader=yaml.FullLoader)
+
+database()
+intents = discord.Intents.all()
+senechalBot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
 conn = sqlite3.connect('status.db')
 c = conn.cursor()
 c.execute('CREATE TABLE IF NOT EXISTS status (last_modified text, key text, svalue text, ivalue int, rvalue real)')
 conn.commit()
+with open(r'config.yml') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+    if ('prefix' in config):
+        senechalBot = commands.Bot(command_prefix=config['prefix'], description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
+
+def dice(size):
+    if ('fixDice' in config):
+        return config['fixDice']
+    else:
+        return randint(1,size)
 
 @senechalBot.command()
 async def d20(ctx):
-    await ctx.send(randint(1,20))
+    await ctx.send(dice(20))
 
 @senechalBot.command()
 async def d6(ctx, num = 1 ):
@@ -25,61 +48,63 @@ async def d6(ctx, num = 1 ):
         sum = 0;
         s = '';
         for x in range(num):
-            r = randint(1,6)
+            r = dice(6)
             sum += r
             if (x>0):
                 s += '+';
             s += str(r)
         await ctx.send(s+'= '+str(sum))
     elif num == 1:
-        await ctx.send(randint(1,6))
+        await ctx.send(dice(6))
 
 @senechalBot.command()
 async def c(ctx, spec="", modifier=0):
     """ check unopposed resolution
 
     """
-    if (spec==""):
-        for pc in pcs.values():
-            if ctx.author.nick == pc['name']:
-                embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-                s= ""
-                for t in senechalConfig['traits']:
-                    s+= t[0]+': '+str(pc['traits'][t[0].lower()[:3]])+"\n"
-                    s+= t[1]+': '+str(20 - pc['traits'][t[0].lower()[:3]])+"\n"
-                embed.add_field(name=':hearts: Traits', value=s, inline=False);
-                s= ""
-                for pn, pv in pc['passions'].items():
-                    s+= pn+': '+str(pv)+"\n"
-                embed.add_field(name=':homes: Passions', value=s, inline=False);
-                s= ""
-                for t in senechalConfig['stats']:
-                    s+= t+': '+str(pc['stats'][t.lower()[:3]])+"\n"
-                embed.add_field(name=':muscle: Stats', value=s, inline=False);
-                s= ""
-                for n, sg in pc['skills'].items():
-                    for sn, sv in sg.items():
-                        s+= sn+': '+str(sv)+"\n"
-                embed.add_field(name=':crossed_swords: Skills', value=s, inline=False);
-                await ctx.send(embed=embed)
+
+    if ctx.author.id in pcs:
+        pc = pcs[ctx.author.id]
+        if (spec==""):
+            embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+            s= ""
+            for t in senechalConfig['traits']:
+                s+= t[0]+': '+str(pc['traits'][t[0].lower()[:3]])+"\n"
+                s+= t[1]+': '+str(20 - pc['traits'][t[0].lower()[:3]])+"\n"
+            embed.add_field(name=':hearts: Traits', value=s, inline=False);
+            s= ""
+            for pn, pv in pc['passions'].items():
+                s+= pn+': '+str(pv)+"\n"
+            embed.add_field(name=':homes: Passions', value=s, inline=False);
+            s= ""
+            for t in senechalConfig['stats']:
+                s+= t+': '+str(pc['stats'][t.lower()[:3]])+"\n"
+            embed.add_field(name=':muscle: Stats', value=s, inline=False);
+            s= ""
+            for n, sg in pc['skills'].items():
+                for sn, sv in sg.items():
+                    s+= sn+': '+str(sv)+"\n"
+            embed.add_field(name=':crossed_swords: Skills', value=s, inline=False);
+            await ctx.send(embed=embed)
+        else:
+            for n, sg in pc['skills'].items():
+                for sn, sv in sg.items():
+                    if  sn.lower().startswith(spec.lower()):
+                        await embedCheck(ctx, pc, sn, sv, modifier)
+            for t in senechalConfig['traits']:
+                if  t[0].lower().startswith(spec.lower()):
+                    await embedCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                if  t[1].lower().startswith(spec.lower()):
+                    await embedCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+            for t in senechalConfig['stats']:
+                if  t.lower().startswith(spec.lower()):
+                    await embedCheck(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
+            for pn, pv in pc['passions'].items():
+                if  pn.lower().startswith(spec.lower()):
+                    await embedCheck(ctx, pc, pn, pv, modifier)
     else:
-        for pc in pcs.values():
-            if ctx.author.nick == pc['name']:
-                for n, sg in pc['skills'].items():
-                    for sn, sv in sg.items():
-                        if  sn.lower().startswith(spec.lower()):
-                            await emberCheck(ctx, pc, sn, sv, modifier)
-                for t in senechalConfig['traits']:
-                    if  t[0].lower().startswith(spec.lower()):
-                        await emberCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
-                    if  t[1].lower().startswith(spec.lower()):
-                        await emberCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
-                for t in senechalConfig['stats']:
-                    if  t.lower().startswith(spec.lower()):
-                        await emberCheck(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
-                for pn, pv in pc['passions'].items():
-                    if  pn.lower().startswith(spec.lower()):
-                        await emberCheck(ctx, pc, pn, pv, modifier)
+        await ctx.send('Nem ismerem ön jóuram!')
+
 
 @senechalBot.command()
 async def sum(ctx, numOne: int, numTwo: int):
@@ -102,9 +127,8 @@ async def npc(ctx, *,name=""):
 
 @senechalBot.command()
 async def me(ctx, task="base", param=""):
-    for pc in pcs.values():
-        if ctx.author.nick == pc['name']:
-            await embedPc(ctx, pc, task, param)
+    if ctx.author.id in pcs:
+        await embedPc(ctx, pcs[ctx.author.id], task, param)
 
 @senechalBot.command()
 async def pc(ctx, name="", task="base", param=""):
@@ -129,9 +153,9 @@ async def trait(ctx, lord="", trait="", modifier=0):
         if "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['traits']:
                 if  "*" == trait or t[0].lower().startswith(trait.lower()):
-                    await emberCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
                 if  "*" == trait or t[1].lower().startswith(trait.lower()):
-                    await emberCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
 
 @senechalBot.command()
 async def stat(ctx, lord="", stat="", modifier=0):
@@ -143,7 +167,7 @@ async def stat(ctx, lord="", stat="", modifier=0):
         if  "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['stats']:
                 if  "*" == stat or t.lower().startswith(stat.lower()):
-                    await emberCheck(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
+                    await embedCheck(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
 
 @senechalBot.command()
 async def skill(ctx, lord="", skill="", modifier=0):
@@ -156,7 +180,7 @@ async def skill(ctx, lord="", skill="", modifier=0):
             for n, sg in pc['skills'].items():
                 for sn, sv in sg.items():
                     if  "*" == skill or skill.lower() in sn.lower():
-                        await emberCheck(ctx, pc, sn, sv, modifier)
+                        await embedCheck(ctx, pc, sn, sv, modifier)
 
 @senechalBot.command(hidden=True)
 async def frissito(ctx):
@@ -165,7 +189,22 @@ async def frissito(ctx):
         print(process.communicate()[0])
 
     database()
-    await ctx.send("Egy kupa bort jóuram?"); 
+    await ctx.author.send("Egy kupa bort jóuram?"); 
+
+@senechalBot.command()
+async def info(ctx):
+    s = ""
+    for guild in senechalBot.guilds:
+        s+= "Guild: "+guild.name +"\n"
+        for m in guild.members:
+            s += str(m.id) + ":"+m.name+":"+m.display_name+"\n"
+    print(s)
+    await ctx.author.send(s); 
+
+@senechalBot.command(hidden=True)
+async def senechal(ctx):
+    if ('intro' in senechalConfig):
+         await ctx.author.send(senechalConfig['intro']);
 
 @senechalBot.event
 async def on_ready():
@@ -226,11 +265,9 @@ async def embedPc(ctx, pc, task, param):
         embed.set_thumbnail(url=pc['url'])
     await ctx.send(embed=embed)
 
-
-async def emberCheck(ctx, lord, name, base, modifier):
+async def embedCheck(ctx, lord, name, base, modifier):
     color=discord.Color.blue()
-    ro = randint(1,20)
-##    ro = 16
+    ro = dice(20)
     r = ro;
     c = base + modifier;
     if (c>20):
@@ -240,12 +277,12 @@ async def emberCheck(ctx, lord, name, base, modifier):
     if r==c:
         success = ":crown: Critical"
         color=discord.Color.gold()
-    elif r>c:
-        success = ":thumbsdown: Fail"
-        color=discord.Color.orange()
     elif ro==20:
         success = ":person_facepalming: Fumble"
         color=discord.Color.red()
+    elif r>c:
+        success = ":thumbsdown: Fail"
+        color=discord.Color.orange()
     else:
         success = ":thumbsup: Success"
         color=discord.Color.blue()
@@ -260,19 +297,6 @@ async def emberCheck(ctx, lord, name, base, modifier):
 
     await ctx.send(embed=embed)
 
-def database():
-    global npcs, pcs, senechalConfig
-    with open(r'senechal.yml') as file:
-        senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
 
-    with open(r'npc.yml') as file:
-        npcs = yaml.load(file, Loader=yaml.FullLoader)
- 
-    with open(r'pc.yml') as file:
-        pcs = yaml.load(file, Loader=yaml.FullLoader)
-
-database()
-with open(r'config.yml') as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-    senechalBot.run(config['token'])
+senechalBot.run(config['token'])
 
