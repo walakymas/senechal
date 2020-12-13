@@ -27,10 +27,12 @@ intro: |
 
   Bárkinek elérhető:
   !pc [name=""] [task=""]: ugyanazok az infó blokkok mint me esetében, de a megadott névrészlettel szűrve a lovagokra
-  !np [name=""]: Név részlet szűrővel az npc-k megjelenítése 
+  !np [name=""]: Név részlet szűrővel az npc-k megjelenítése
+  !senechal: Ez a leírás :)
+  !changes: változáslista
 
 changes: |
   **2020-12-13**
-  !senechal és !change utasítás
+  !senechal és !changes utasítás
   A !me szetdarabolása külön üzenetekre valamint event esetén 25 eventenként külön üzenet
 
