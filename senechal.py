@@ -213,9 +213,9 @@ async def senechal(ctx):
          await ctx.author.send(senechalConfig['intro']);
 
 @senechalBot.command(hidden=True)
-async def change(ctx):
-    if ('change' in senechalConfig):
-         await ctx.author.send(senechalConfig['change']);
+async def changes(ctx):
+    if ('changes' in senechalConfig):
+         await ctx.author.send(senechalConfig['changes']);
 
 @senechalBot.event
 async def on_ready():
