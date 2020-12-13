@@ -19,6 +19,12 @@ def database():
  
     with open(r'pc.yml') as file:
         pcs = yaml.load(file, Loader=yaml.FullLoader)
+        for pc in pcs.values():
+            g = 0;
+            for h in pc['events']:
+                g+=h['glory']
+            pc['main']['Glory']=g
+
 
 database()
 intents = discord.Intents.all()
@@ -206,6 +212,11 @@ async def senechal(ctx):
     if ('intro' in senechalConfig):
          await ctx.author.send(senechalConfig['intro']);
 
+@senechalBot.command(hidden=True)
+async def change(ctx):
+    if ('change' in senechalConfig):
+         await ctx.author.send(senechalConfig['change']);
+
 @senechalBot.event
 async def on_ready():
     await senechalBot.change_presence(status=discord.Status.idle)
@@ -225,13 +236,25 @@ async def embedNpc(ctx, npc):
 def tr(a):
     return str(a)+'/'+str(20-a)
 
-async def embedPc(ctx, pc, task, param):
-    embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    if (task == "*" or task == "" or "base".startswith(task.lower())):
+def getEmbed(pc, description=0):
+    embed = 0
+    if (description):
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    else:        
+        embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+    if ('url' in pc):
+        embed.set_thumbnail(url=pc['url'])
+    return embed
+
+
+async def embedPc(ctx, pc, task, param):
+    if (task == "*" or task == "" or "base".startswith(task.lower())):
+        embed = getEmbed(pc, 1)
         for name, value in pc['main'].items():
             embed.add_field(name=name, value=value)
+        await ctx.send(embed=embed)
     if (task == "*" or "stats".startswith(task.lower())):
+        embed = getEmbed(pc, 0)
         for s in senechalConfig['stats']:
             embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
         embed.add_field(name="Damage", value=str(round((pc['stats']['str']+pc['stats']['siz'])/6))+'d6');
@@ -239,7 +262,9 @@ async def embedPc(ctx, pc, task, param):
         embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex']+pc['stats']['siz'])/10)));
         embed.add_field(name="HP", value=str(round((pc['stats']['con']+pc['stats']['siz']))));
         embed.add_field(name="Unconscious", value=str(round((pc['stats']['con']+pc['stats']['siz'])/4)));
+        await ctx.send(embed=embed)
     if (task == "*" or "traits".startswith(task.lower())):
+        embed = getEmbed(pc, 0)
         traits = pc['traits'];
         result = "";
         for row in senechalConfig['traits']:
@@ -249,21 +274,29 @@ async def embedPc(ctx, pc, task, param):
             result += row[1] +": "+str(20-traits[row[0].lower()[:3]])
             result += "\n"
         embed.add_field(name="Traits", value=result, inline=False)
+        await ctx.send(embed=embed)
     if (task == "*" or "events".startswith(task.lower())):
+        embed = getEmbed(pc, 0)
         glory = 0;
+        count=0
         for h in pc['events']:
+            count+=1
+            if (count>20):
+                count=1
+                await ctx.send(embed=embed)
+                embed = getEmbed(pc, 0)
             glory += h['glory']
             embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
         embed.add_field(name="Összes Glory: "+str(glory), value=":glory:", inline=False)
+        await ctx.send(embed=embed)
     if (task == "*" or "skills".startswith(task.lower())):
+        embed = getEmbed(pc, 0)
         for sn, sg in pc['skills'].items():
             s = ""
             for name, value in sg.items():
                 s += name + ": " + str(value)+"\n"
             embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
-    if ('url' in pc):
-        embed.set_thumbnail(url=pc['url'])
-    await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 async def embedCheck(ctx, lord, name, base, modifier):
     color=discord.Color.blue()

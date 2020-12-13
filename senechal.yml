@@ -18,5 +18,19 @@ stats:
   - Strength
   - Constitution
   - Appearance
-intro: >
-  Ide jöhet a leírás
+intro: |
+  Jóuraim a következő fontosabb utasításokat értem:
+
+  Csak lovagoknak a saját karakter leírója alapján ami a pc.yml állományban található:
+  !me [*|base|stats|traits|events|skills]: Információs blokkok a kérdező karakteréről alapértelmezésben a base, * esetén valamennyi megjelenik
+  !c [name=""] [modifier=0]: egy check az adott névrészletet tartalmazó tulajdonságokra a megadott módosítókkal. Ha olyan tulajdonságra keresünk ami szóközt tartalmaz használjunk "-t
+
+  Bárkinek elérhető:
+  !pc [name=""] [task=""]: ugyanazok az infó blokkok mint me esetében, de a megadott névrészlettel szűrve a lovagokra
+  !np [name=""]: Név részlet szűrővel az npc-k megjelenítése 
+
+changes: |
+  **2020-12-13**
+  !senechal és !change utasítás
+  A !me szetdarabolása külön üzenetekre valamint event esetén 25 eventenként külön üzenet
+
