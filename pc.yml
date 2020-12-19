@@ -506,11 +506,11 @@
 
   events:
     - year: 479
-      glory: 94
-      description: Winter phase
+      glory: 3
+      description: Csahos fenevad
     - year: 480 
       glory: 50
-      description: Murdock Lovaggáütése
+      description: Madoc Lovaggáütése
     - year: 480 
       glory: 50
       description: Aurelius Ambrosius temetése
@@ -518,10 +518,10 @@
       glory: 50
       description: Koronázás
     - year: 480 
-      glory: 84
-      description: Winter phase
+      glory: 30
+      description: Toletumi csata
     - year: 480 
-      glory: 720
+      glory: 400
       description: Salisbury csata
   passions:
     "Fealthy (Lord)": 11
