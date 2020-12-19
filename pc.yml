@@ -70,6 +70,9 @@
         Rossz időjárás mellett is jó termés
         12 arany bevétel
         Egy unokatesvér magasabb pozicióbl szerez feleséget magának
+    - year: 480 
+      glory: 20
+      description: Senechal
 
   passions:
     "Fealthy (Lord)": 15
