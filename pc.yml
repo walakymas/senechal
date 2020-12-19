@@ -441,11 +441,12 @@
       glory: 720
       description: Salisbury csata
   passions:
-    "Fealthy (Lord)": 11
+    "Fealthy (Lord)": 14
     "Homage (Liege)": 15
-    "Love (Family)": 18  
-    "Hospitability": 15
-    "Honor": 13
+    "Love (Family)": 15  
+    "Hospitability": 19
+    "Honor": 16
+    "Love (Hunting)": 15
 
   skills:
     Combat:
@@ -454,9 +455,9 @@
       Horsemanship: 7
     Weapons:
       Sword: 18
-      "Spear Expertise": 10
-      Dagger: 8
-      Bow: 3
+      Spear: 8
+      Dagger: 3
+      Lance: 10
     Other:
       Awareness: 14
       Boating: 5
@@ -477,6 +478,83 @@
       Stewardship: 2
       Swimming: 2
       Tourney: 11
-      Music*: 10        
+      Music*: 11      
 
-## Marius: 201060114050842624
+## Marius: 
+201060114050842624:
+  name: Sir Marius
+  player: Szabolcs
+  memberId: 201060114050842624
+  url: "https://i.ytimg.com/vi/vDl8EGo7Mbc/maxresdefault.jpg"
+
+  description: >
+    Leírás is lesz talán....
+  main:
+      "Homeland": "Cartaginiesis"
+      "Lord": "Lor of Toledo"
+      "Home": "Averstack - Breaverspoint"
+      "Distinctive Features": "-"
+      "Culture": "Irish (Pagan)"
+      "Glory": "???"
+      "Born": "459"
+      "Squired": "465"
+      "Knighted": "479"      
+
+  stats: {siz: 10, dex: 15, str: 14, con: 13, app: 14}
+
+  traits: {cha: 14, ene: 10, for: 13, gen: 11, hon: 9, jus: 10, mer: 12, mod: 12, pru: 10, spi: 8, tem: 13, tru: 7, val: 15}
+
+  events:
+    - year: 479
+      glory: 94
+      description: Winter phase
+    - year: 480 
+      glory: 50
+      description: Murdock Lovaggáütése
+    - year: 480 
+      glory: 50
+      description: Aurelius Ambrosius temetése
+    - year: 480 
+      glory: 50
+      description: Koronázás
+    - year: 480 
+      glory: 84
+      description: Winter phase
+    - year: 480 
+      glory: 720
+      description: Salisbury csata
+  passions:
+    "Fealthy (Lord)": 11
+    "Homage (Liege)": 15
+    "Love (Family)": 18  
+    "Hospitability": 15
+    "Honor": 13
+
+  skills:
+    Combat:
+      Battle: 11
+      Siege: 5
+      Horsemanship: 11
+    Weapons:
+      Sword: 10
+      Dagger: 5
+      Spear: 10
+      Lance: 10
+    Other:
+      Awareness: 11
+      Dancing: 2
+      Faerie Lore: 10
+      Falconry: 10
+      "First Aid": 10
+      Flirting: 2
+      Gaming: 2
+      Heraldry: 5
+      Hunting: 15
+      Orate: 10
+      Recognize: 2
+      Romance: 0
+      Stewardship: 2
+      Swimming: 2
+      Tourney: 0
+      Law: 15   
+
