@@ -1,0 +1,8 @@
+!trait kezelje fail esetén a másik oldal ellenőrzését is.
+
+!attack skill modifier kockák ellenfél
+siker esetén kockákd6  sebzés megjelenítése
+kritikus esetén +4 kocka
+
+Akkor is tudjon channelre küldeni, ha magánban jött az üzenet ilyenkor a kockadobásra éslehessen látni ki kezdeményezte
+Alternatíva, hogy ilyet a mesélő tudjon
