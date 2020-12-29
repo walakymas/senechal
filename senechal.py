@@ -9,26 +9,26 @@ import subprocess
 from  random import randint
 import sqlite3
 
+
 def database():
-    global npcs, pcs, senechalConfig
+    global characters, senechalConfig
     with open(r'senechal.yml') as file:
         senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
 
-    with open(r'npc.yml') as file:
-        npcs = yaml.load(file, Loader=yaml.FullLoader)
- 
-    with open(r'pc.yml') as file:
-        pcs = yaml.load(file, Loader=yaml.FullLoader)
-        for pc in pcs.values():
-            g = 0;
-            for h in pc['events']:
-                g+=h['glory']
-            pc['main']['Glory']=g
+    with open(r'characters.yml') as file:
+        characters = yaml.load(file, Loader=yaml.FullLoader)
+        for c in characters:
+            character = characters[c]
+            if ('memberId' in character):
+                g = 0;
+                for h in character['events']:
+                    g+=h['glory']
+                character['main']['Glory']=g
 
 
 database()
 intents = discord.Intents.all()
-senechalBot = commands.Bot(command_prefix='!', description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
+prefix = '!'
 conn = sqlite3.connect('status.db')
 c = conn.cursor()
 c.execute('CREATE TABLE IF NOT EXISTS status (last_modified text, key text, svalue text, ivalue int, rvalue real)')
@@ -36,7 +36,10 @@ conn.commit()
 with open(r'config.yml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
     if ('prefix' in config):
-        senechalBot = commands.Bot(command_prefix=config['prefix'], description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
+        prefix = config['prefix']
+senechalBot = commands.Bot(command_prefix=prefix, description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
+
+dicePattern = re.compile('([0-9]*)[dD]([0-9]+)([+-][0-9]+)?')
 
 def dice(size):
     if ('fixDice' in config):
@@ -45,32 +48,13 @@ def dice(size):
         return randint(1,size)
 
 @senechalBot.command()
-async def d20(ctx):
-    await ctx.send(dice(20))
-
-@senechalBot.command()
-async def d6(ctx, num = 1 ):
-    if (num > 1):
-        sum = 0;
-        s = '';
-        for x in range(num):
-            r = dice(6)
-            sum += r
-            if (x>0):
-                s += '+';
-            s += str(r)
-        await ctx.send(s+'= '+str(sum))
-    elif num == 1:
-        await ctx.send(dice(6))
-
-@senechalBot.command()
 async def c(ctx, spec="", modifier=0):
     """ check unopposed resolution
 
     """
 
-    if ctx.author.id in pcs:
-        pc = pcs[ctx.author.id]
+    if ctx.author.id in characters:
+        pc = characters[ctx.author.id]
         if (spec==""):
             embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
             s= ""
@@ -109,40 +93,21 @@ async def c(ctx, spec="", modifier=0):
                 if  pn.lower().startswith(spec.lower()):
                     await embedCheck(ctx, pc, pn, pv, modifier)
     else:
-        await ctx.send('Nem ismerem ön jóuram!')
+        await ctx.send('Nem ismerem Önt jóuram!')
 
-
-@senechalBot.command()
-async def sum(ctx, numOne: int, numTwo: int):
-    """ Két szám összeadása 
-
-    !sum num1 num2"""
-    await ctx.send(numOne + numTwo)
-
-@senechalBot.command()
-async def npc(ctx, *,name=""):
-    """PC ifnok a npc.yml alapján
-    Ahol a megadott névrészlet illeszkedi a játékosok """
-    count = 0
-    for npc in npcs.values():
-        if "*" == name or name.lower() in npc['name'].lower():
-            count += 1
-            await embedNpc(ctx, npc)
-    if count == 0:
-        await ctx.send(name +'? Ez a név ismeretlen számomra. Utána érdeklődjem Jóuram?')
 
 @senechalBot.command()
 async def me(ctx, task="base", param=""):
-    if ctx.author.id in pcs:
-        await embedPc(ctx, pcs[ctx.author.id], task, param)
+    if ctx.author.id in characters:
+        await embedPc(ctx, characters[ctx.author.id], task, param)
 
-@senechalBot.command()
+@senechalBot.command(aliases=['npc'])
 async def pc(ctx, name="", task="base", param=""):
     """PC ifnok a pc.yml alapján
     A task jelenleg alapértelmezésben base, de lehet statistics, traits vagy events is. Task nevénél elegendő 
     """
     count = 0
-    for pc in pcs.values():
+    for pc in characters.values():
         if "*" == name or name.lower() in pc['name'].lower():
             count+=1
             await embedPc(ctx, pc, task, param)
@@ -155,7 +120,7 @@ async def trait(ctx, lord="", trait="", modifier=0):
     Lovagnév részletét, egy trait nevének részletét és módosítót lehet megadni
     A lord és trait paraméter helyett * is írható  
     """
-    for pc in pcs.values():
+    for pc in characters.values():
         if "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['traits']:
                 if  "*" == trait or t[0].lower().startswith(trait.lower()):
@@ -169,7 +134,7 @@ async def stat(ctx, lord="", stat="", modifier=0):
     Lovagnév részletét, egy stat nevének részletét és módosítót lehet megadni
     A lord és stat paraméter helyett * is írható  
     """
-    for pc in pcs.values():
+    for pc in characters.values():
         if  "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['stats']:
                 if  "*" == stat or t.lower().startswith(stat.lower()):
@@ -181,7 +146,7 @@ async def skill(ctx, lord="", skill="", modifier=0):
     Lovagnév részletét, egy skill nevének részletét és módosítót lehet megadni
     A lord és skill paraméter helyett * is írható  
     """
-    for pc in pcs.values():
+    for pc in characters.values():
         if  "*" == lord or lord.lower() in pc['name'].lower():
             for n, sg in pc['skills'].items():
                 for sn, sv in sg.items():
@@ -222,10 +187,32 @@ async def on_ready():
     await senechalBot.change_presence(status=discord.Status.idle)
     print('Készen állok a szolgálatra!')
 
-@senechalBot.listen()
+@senechalBot.event
 async def on_message(message):
     if "!20" == message.content:
         await d20(message.channel)
+    elif prefix == message.content[:1]:
+        result = dicePattern.match(message.content[1:])
+        if result:
+
+            num =1
+            (db, size, *modifier) = result.groups()
+            if ('' != db):
+                num = int(db)
+            sum = 0;
+            s = '';
+            for x in range(num):
+                r = dice(int(size))
+                sum += r
+                if (x>0):
+                    s += '+';
+                s += str(r)
+            if result.group(3):
+                sum += int(result.group(3))
+                s+=result.group(3)
+            await message.channel.send(message.author.display_name+': '+s+'= '+str(sum))
+    else:
+        await senechalBot.process_commands(message)
 
 async def embedNpc(ctx, npc):
     embed = discord.Embed(title=npc['name'], description=npc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
@@ -250,53 +237,58 @@ def getEmbed(pc, description=0):
 async def embedPc(ctx, pc, task, param):
     if (task == "*" or task == "" or "base".startswith(task.lower())):
         embed = getEmbed(pc, 1)
-        for name, value in pc['main'].items():
-            embed.add_field(name=name, value=value)
+        if ('main' in pc):
+            for name, value in pc['main'].items():
+                embed.add_field(name=name, value=value)
         await ctx.send(embed=embed)
     if (task == "*" or "stats".startswith(task.lower())):
-        embed = getEmbed(pc, 0)
-        for s in senechalConfig['stats']:
-            embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
-        embed.add_field(name="Damage", value=str(round((pc['stats']['str']+pc['stats']['siz'])/6))+'d6');
-        embed.add_field(name="Healing Rate", value=str(round((pc['stats']['con']+pc['stats']['siz'])/10)));
-        embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex']+pc['stats']['siz'])/10)));
-        embed.add_field(name="HP", value=str(round((pc['stats']['con']+pc['stats']['siz']))));
-        embed.add_field(name="Unconscious", value=str(round((pc['stats']['con']+pc['stats']['siz'])/4)));
-        await ctx.send(embed=embed)
+        if 'stats' in  pc:
+            embed = getEmbed(pc, 0)
+            for s in senechalConfig['stats']:
+                embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
+            embed.add_field(name="Damage", value=str(round((pc['stats']['str']+pc['stats']['siz'])/6))+'d6');
+            embed.add_field(name="Healing Rate", value=str(round((pc['stats']['con']+pc['stats']['siz'])/10)));
+            embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex']+pc['stats']['siz'])/10)));
+            embed.add_field(name="HP", value=str(round((pc['stats']['con']+pc['stats']['siz']))));
+            embed.add_field(name="Unconscious", value=str(round((pc['stats']['con']+pc['stats']['siz'])/4)));
+            await ctx.send(embed=embed)
     if (task == "*" or "traits".startswith(task.lower())):
-        embed = getEmbed(pc, 0)
-        traits = pc['traits'];
-        result = "";
-        for row in senechalConfig['traits']:
-            print(row)
-            result += row[0] +": "+str(traits[row[0].lower()[:3]])
-            result += " / "
-            result += row[1] +": "+str(20-traits[row[0].lower()[:3]])
-            result += "\n"
-        embed.add_field(name="Traits", value=result, inline=False)
-        await ctx.send(embed=embed)
+        if 'trait' in pc:
+            embed = getEmbed(pc, 0)
+            traits = pc['traits'];
+            result = "";
+            for row in senechalConfig['traits']:
+                print(row)
+                result += row[0] +": "+str(traits[row[0].lower()[:3]])
+                result += " / "
+                result += row[1] +": "+str(20-traits[row[0].lower()[:3]])
+                result += "\n"
+            embed.add_field(name="Traits", value=result, inline=False)
+            await ctx.send(embed=embed)
     if (task == "*" or "events".startswith(task.lower())):
-        embed = getEmbed(pc, 0)
-        glory = 0;
-        count=0
-        for h in pc['events']:
-            count+=1
-            if (count>20):
-                count=1
-                await ctx.send(embed=embed)
-                embed = getEmbed(pc, 0)
-            glory += h['glory']
-            embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
-        embed.add_field(name="Összes Glory: "+str(glory), value=":glory:", inline=False)
-        await ctx.send(embed=embed)
+        if 'events' in pc:
+            embed = getEmbed(pc, 0)
+            glory = 0;
+            count=0
+            for h in pc['events']:
+                count+=1
+                if (count>20):
+                    count=1
+                    await ctx.send(embed=embed)
+                    embed = getEmbed(pc, 0)
+                glory += h['glory']
+                embed.add_field(name=str(h['year'])+" Glory: "+str(h['glory']), value=h['description'], inline=False)
+            embed.add_field(name="Összes Glory: "+str(glory), value=":glory:", inline=False)
+            await ctx.send(embed=embed)
     if (task == "*" or "skills".startswith(task.lower())):
-        embed = getEmbed(pc, 0)
-        for sn, sg in pc['skills'].items():
-            s = ""
-            for name, value in sg.items():
-                s += name + ": " + str(value)+"\n"
-            embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
-        await ctx.send(embed=embed)
+        if 'skills' in pc:
+            embed = getEmbed(pc, 0)
+            for sn, sg in pc['skills'].items():
+                s = ""
+                for name, value in sg.items():
+                    s += name + ": " + str(value)+"\n"
+                embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
+            await ctx.send(embed=embed)
 
 async def embedCheck(ctx, lord, name, base, modifier):
     color=discord.Color.blue()

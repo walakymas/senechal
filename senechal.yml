@@ -32,6 +32,10 @@ intro: |
   !changes: változáslista
 
 changes: |
+  **2020-12-29**
+  !xdy+z formátumú kockadobás ahol ahol y a kocka lapajainak száma, x a kockák darabszáma (elhagyható, default 1), z módosító szintén elhagyható def 0
+  összevonásra kerültek a pc és npc karakterek, ugyanaz a megjelenítés tartozik hozzájuk és lehetnek statjaik az npc-knek.
+
   **2020-12-13**
   !senechal és !changes utasítás
   A !me szetdarabolása külön üzenetekre valamint event esetén 25 eventenként külön üzenet
