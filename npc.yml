@@ -95,6 +95,7 @@ wynfaith:
   url: https://i.pinimg.com/564x/69/0d/98/690d987f648eca2cd447775ce29cdeb7.jpg
   description: >
     Childbert tetszik neki
+    Sir Mathaban törvényes leánya 
 
 felix:
   name: Sir Felix
@@ -132,4 +133,16 @@ abigail:
   name: Lady Abygail
   description: Sir Hywel lánya
   url: https://cdn.discordapp.com/attachments/779023614057512991/788111117448249354/Medieval-Princess-Hairstyles.png
-  
+
+mathaban:
+  name: Sir Mathaban
+  description: |
+    Már Amrosius alatt is szolgált Sir Sedinel embere feladata, hogy kit fogad a király.
+    Legidősebb lánya kezét Uther Sir Perinnek ajánlja. 
+
+yngire:
+  name: Lady Yngire
+  description: |
+    Sir Mathaban - vélhetően törvényen kívüli - leánya, kezét Uther Sir Perinnek ajánlja 
+  url: https://cdn.discordapp.com/attachments/779023614057512991/789898128987127848/9a8bacad3f8fbcfd151182de7885bb65.png
+

@@ -70,9 +70,17 @@
         Rossz időjárás mellett is jó termés
         12 arany bevétel
         Egy unokatesvér magasabb pozicióbl szerez feleséget magának
-    - year: 480 
+    - year: 481 
       glory: 20
       description: Senechal
+    - year: 481 
+      glory: 10
+      description: Uther megtanított sakkozni, hagytam nyerni, bár áltam a sarat...
+    - year: 481 
+      glory: 0
+      description: |
+        Sir Mathaban már Amrosius alatt is szolgált Sir Sedinel embere feladata, hogy kit fogad a király.
+        Legidősebb lánya kezét Uther nekem ajánlja. 
 
   passions:
     "Fealthy (Lord)": 15
@@ -392,7 +400,7 @@
       Hunting: 10
       Intrigue: 11
       Orate: 5
-      Recognize: 2
+      Recognize: 10
       "Religion (British Christian)": 2 
       Stewardship: 7
       Swimming: 2
