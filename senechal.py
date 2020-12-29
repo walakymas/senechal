@@ -37,6 +37,7 @@ with open(r'config.yml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
     if ('prefix' in config):
         prefix = config['prefix']
+print('"'+prefix+'"')
 senechalBot = commands.Bot(command_prefix=prefix, description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
 
 dicePattern = re.compile('([0-9]*)[dD]([0-9]+)([+-][0-9]+)?')
@@ -189,12 +190,9 @@ async def on_ready():
 
 @senechalBot.event
 async def on_message(message):
-    if "!20" == message.content:
-        await d20(message.channel)
-    elif prefix == message.content[:1]:
+    if prefix == message.content[:1]:
         result = dicePattern.match(message.content[1:])
         if result:
-
             num =1
             (db, size, *modifier) = result.groups()
             if ('' != db):
@@ -211,8 +209,8 @@ async def on_message(message):
                 sum += int(result.group(3))
                 s+=result.group(3)
             await message.channel.send(message.author.display_name+': '+s+'= '+str(sum))
-    else:
-        await senechalBot.process_commands(message)
+            return
+    await senechalBot.process_commands(message)
 
 async def embedNpc(ctx, npc):
     embed = discord.Embed(title=npc['name'], description=npc['description'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())

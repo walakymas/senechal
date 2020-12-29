@@ -12,12 +12,14 @@ traits:
   - [Temperate, Indulgent]
   - [Trusting, Suspicious]
   - [Valorous, Cowardly]
+
 stats:
   - Size
   - Dexterity
   - Strength
   - Constitution
   - Appearance
+
 intro: |
   Jóuraim a következő fontosabb utasításokat értem:
 
