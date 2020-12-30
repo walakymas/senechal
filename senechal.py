@@ -168,9 +168,9 @@ async def trait(ctx, lord="", trait="", modifier=0):
         if "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['traits']:
                 if  "*" == trait or t[0].lower().startswith(trait.lower()):
-                    await embedCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedTrait(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier,t[1])
                 if  "*" == trait or t[1].lower().startswith(trait.lower()):
-                    await embedCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedTrait(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier,t[0])
 
 @senechalBot.command()
 async def stat(ctx, lord="", stat="", modifier=0):
@@ -202,7 +202,7 @@ async def frissito(ctx):
     if ("pull" in config):
         process = subprocess.Popen(["git","pull"], stdout=subprocess.PIPE)
         print(process.communicate()[0])
-        os.execv(sys.executable, ['python'] + sys.argv)
+    os.execv(sys.executable, ['python3'] + sys.argv)
     database()
     await ctx.author.send("Egy kupa bort jóuram?"); 
 
@@ -234,6 +234,7 @@ async def on_ready():
         for m in guild.channels:
             if m.id == mainChannelId:
                 mainChannel = m
+    await mainChannel.send(f'Ismét készen a szolgálatra ({prefix})')
 
 @senechalBot.event
 async def on_message(message):
@@ -386,6 +387,11 @@ async def embedTrait(ctx, lord, name, base, modifier, name2):
     if (modifier!=0):
         embed.add_field(name="Módosító", value=str(modifier));
     embed.add_field(name="Eredmény", value=text, inline=False);
+    if success>2:
+        (color, text, ro, success) = check(20-base, modifier)
+        embed.add_field(name="Dobás", value=str(ro));
+        embed.add_field(name=name2, value=str(base));
+        embed.add_field(name="Eredmény", value=text, inline=False);
 
     await ctx.send(embed=embed)
 
