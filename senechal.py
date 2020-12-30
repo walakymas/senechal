@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+
+import os
+import sys
 import discord
 from discord.ext import commands
 import datetime
@@ -9,6 +13,7 @@ import subprocess
 from  random import randint
 import sqlite3
 
+successes = ['?','Success','Critical','Fumble','Fail']
 
 def database():
     global characters, senechalConfig
@@ -24,20 +29,28 @@ def database():
                 for h in character['events']:
                     g+=h['glory']
                 character['main']['Glory']=g
+                for n, sg in character['skills'].items():
+                    for sn, sv in sg.items():
+                        if '.' == str(sv)[:1]:
+                            sg[sn]=sg[sv[1:]]
 
 
 database()
 intents = discord.Intents.all()
 prefix = '!'
+mainChannelId=779078275111714917 #:senechal
+mainChannel=0
 conn = sqlite3.connect('status.db')
 c = conn.cursor()
 c.execute('CREATE TABLE IF NOT EXISTS status (last_modified text, key text, svalue text, ivalue int, rvalue real)')
+c.execute('CREATE TABLE IF NOT EXISTS pcstat (last_modified text, type int, subtype int, key text, svalue text, ivalue int, rvalue real)')
 conn.commit()
 with open(r'config.yml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
     if ('prefix' in config):
         prefix = config['prefix']
-print('"'+prefix+'"')
+    if ('mainChannel' in config):
+        mainChannelId = config['mainChannel']
 senechalBot = commands.Bot(command_prefix=prefix, description="Szolgálatára Jóuram avagy Hölgyem...",intents=intents)
 
 dicePattern = re.compile('([0-9]*)[dD]([0-9]+)([+-][0-9]+)?')
@@ -48,7 +61,35 @@ def dice(size):
     else:
         return randint(1,size)
 
+@senechalBot.command(aliases=['a'])
+async def attack(ctx, spec="", modifier=0):
+    if isinstance(ctx.channel, discord.DMChannel):
+        await mainChannel.send('magán')
+    else:
+        await ctx.send('rendes channel')
+
+@senechalBot.command(aliases=['o','op'])
+async def opposed(ctx, spec="", modifier=0):
+    if isinstance(ctx.channel, discord.DMChannel):
+        await mainChannel.send('magán')
+    else:
+        await ctx.send('rendes channel')
+
+
 @senechalBot.command()
+async def team(ctx, spec="", modifier=0):
+    s = "Name       Skill Dice Result\n"
+    for pc in characters.values():
+        if 'memberId' in pc:
+            for n, sg in pc['skills'].items():
+                for sn, sv in sg.items():
+                    if  sn.lower().startswith(spec.lower()):
+                        (color, text, ro, success) = check(sv, modifier)
+                        s+=f"{pc['shortName']:10}    {sv:2}   {ro:2} {successes[success]}\n"
+    await ctx.send("```\n"+s+"```")
+
+
+@senechalBot.command(aliases=['check'])
 async def c(ctx, spec="", modifier=0):
     """ check unopposed resolution
 
@@ -85,8 +126,10 @@ async def c(ctx, spec="", modifier=0):
             for t in senechalConfig['traits']:
                 if  t[0].lower().startswith(spec.lower()):
                     await embedCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
                 if  t[1].lower().startswith(spec.lower()):
                     await embedCheck(ctx, pc, t[1], 20 - pc['traits'][t[0].lower()[:3]], modifier)
+                    await embedCheck(ctx, pc, t[0], pc['traits'][t[0].lower()[:3]], modifier)
             for t in senechalConfig['stats']:
                 if  t.lower().startswith(spec.lower()):
                     await embedCheck(ctx, pc, t, pc['stats'][t.lower()[:3]], modifier)
@@ -102,7 +145,7 @@ async def me(ctx, task="base", param=""):
     if ctx.author.id in characters:
         await embedPc(ctx, characters[ctx.author.id], task, param)
 
-@senechalBot.command(aliases=['npc'])
+@senechalBot.command(aliases=['npc','character','cha'])
 async def pc(ctx, name="", task="base", param=""):
     """PC ifnok a pc.yml alapján
     A task jelenleg alapértelmezésben base, de lehet statistics, traits vagy events is. Task nevénél elegendő 
@@ -115,12 +158,12 @@ async def pc(ctx, name="", task="base", param=""):
     if count == 0:
         await ctx.send(name +'? Sajnos nem ismerek ilyen lovagot')
 
-@senechalBot.command()
+@senechalBot.command(aliases=['t','tr'])
 async def trait(ctx, lord="", trait="", modifier=0):
     """ Trait check
     Lovagnév részletét, egy trait nevének részletét és módosítót lehet megadni
     A lord és trait paraméter helyett * is írható  
-    """
+        """
     for pc in characters.values():
         if "*" == lord or lord.lower() in pc['name'].lower():
             for t in senechalConfig['traits']:
@@ -154,12 +197,12 @@ async def skill(ctx, lord="", skill="", modifier=0):
                     if  "*" == skill or skill.lower() in sn.lower():
                         await embedCheck(ctx, pc, sn, sv, modifier)
 
-@senechalBot.command(hidden=True)
+@senechalBot.command(hidden=True,aliases=['refresh'])
 async def frissito(ctx):
     if ("pull" in config):
         process = subprocess.Popen(["git","pull"], stdout=subprocess.PIPE)
         print(process.communicate()[0])
-
+        os.execv(sys.executable, ['python'] + sys.argv)
     database()
     await ctx.author.send("Egy kupa bort jóuram?"); 
 
@@ -168,9 +211,8 @@ async def info(ctx):
     s = ""
     for guild in senechalBot.guilds:
         s+= "Guild: "+guild.name +"\n"
-        for m in guild.members:
-            s += str(m.id) + ":"+m.name+":"+m.display_name+"\n"
-    print(s)
+        for m in guild.channels:
+            s += str(m.id) + ":"+m.name+"\n"
     await ctx.author.send(s); 
 
 @senechalBot.command(hidden=True)
@@ -185,8 +227,13 @@ async def changes(ctx):
 
 @senechalBot.event
 async def on_ready():
+    global mainChannel
     await senechalBot.change_presence(status=discord.Status.idle)
     print('Készen állok a szolgálatra!')
+    for guild in senechalBot.guilds:
+        for m in guild.channels:
+            if m.id == mainChannelId:
+                mainChannel = m
 
 @senechalBot.event
 async def on_message(message):
@@ -194,7 +241,7 @@ async def on_message(message):
         result = dicePattern.match(message.content[1:])
         if result:
             num =1
-            (db, size, *modifier) = result.groups()
+            (db, size, *other) = result.groups()
             if ('' != db):
                 num = int(db)
             sum = 0;
@@ -288,35 +335,76 @@ async def embedPc(ctx, pc, task, param):
                 embed.add_field(name=":crossed_swords:  "+sn , value=s, inline=False)
             await ctx.send(embed=embed)
 
-async def embedCheck(ctx, lord, name, base, modifier):
+def check(base, modifier):
     color=discord.Color.blue()
     ro = dice(20)
     r = ro;
     c = base + modifier;
     if (c>20):
-        r += c-20
+        r -= c-20
         c=20
-    success = '---'
-    if r==c:
-        success = ":crown: Critical"
+    text = '---'
+    success = 1
+    if ro==c:
+        text = ":crown: Critical"
         color=discord.Color.gold()
+        success = 2
     elif ro==20:
-        success = ":person_facepalming: Fumble"
+        text = ":person_facepalming: Fumble"
         color=discord.Color.red()
+        success = 3
     elif r>c:
-        success = ":thumbsdown: Fail"
+        text = ":thumbsdown: Fail"
         color=discord.Color.orange()
+        success = 4
     else:
-        success = ":thumbsup: Success"
+        text = ":thumbsup: Success"
         color=discord.Color.blue()
+        success = 1
 
+    return [color, text, ro, success]    
+
+
+async def embedCheck(ctx, lord, name, base, modifier):
+    (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     embed.add_field(name="Dobás", value=str(ro));
     embed.add_field(name=name, value=str(base));
     if (modifier!=0):
         embed.add_field(name="Módosító", value=str(modifier));
-    embed.add_field(name="Eredmény", value=success, inline=False);
+    embed.add_field(name="Eredmény", value=text, inline=False);
+
+    await ctx.send(embed=embed)
+
+async def embedTrait(ctx, lord, name, base, modifier, name2):
+    (color, text, ro, success) = check(base, modifier)
+
+    embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
+    embed.add_field(name="Dobás", value=str(ro));
+    embed.add_field(name=name, value=str(base));
+    if (modifier!=0):
+        embed.add_field(name="Módosító", value=str(modifier));
+    embed.add_field(name="Eredmény", value=text, inline=False);
+
+    await ctx.send(embed=embed)
+
+async def embedAttack(ctx, lord, name, base, modifier, damage):
+    (color, text, ro, success) = check(base, modifier)
+
+    embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
+    embed.add_field(name="Dobás", value=str(ro));
+    embed.add_field(name=name, value=str(base));
+    if (modifier!=0):
+        embed.add_field(name="Módosító", value=str(modifier));
+    embed.add_field(name="Eredmény", value=text, inline=False);
+    if damage >= 0:
+        sum = 0;
+        if success==2:
+            damage += 4
+        for x in range(damage):
+            sum += dice(6)
+        embed.add_field(name="Sebzés", value=str(modifier));
 
     await ctx.send(embed=embed)
 

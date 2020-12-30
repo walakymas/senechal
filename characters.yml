@@ -1,5 +1,6 @@
 470683159889969153: 
   name: Sir Perin
+  shortName: Perin
   player: Svo
   memberId: 470683159889969153
   url: "https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg"
@@ -102,6 +103,9 @@
       Spear Expertise: 15
       Dagger: 6
       Bow: 1
+      Spear: .Spear Expertise
+      Lance: .Spear Expertise
+      Great Spear: .Spear Expertise
     Other:
       Awareness: 11
       Boating: 1
@@ -130,6 +134,7 @@
 
 778844623476883458: 
   name: Tilgiveren Sir Ulf
+  shortName: Ulf
   player: Zoli
   memberId: 778844623476883458
   url: "https://johnknifton.files.wordpress.com/2044/02/red.jpg"
@@ -203,6 +208,7 @@
       Gaming: 2
       Heraldry: 1
       Hunting: 12
+      Intrigue: 2
       Orate: 2
       Swimming: 8
       Tourney: 2
@@ -214,6 +220,7 @@
 
 281062304265535490: 
   name: Sir Childebert
+  shortName: Childebert
   player: Csepi
   memberId: 281062304265535490
   url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gontran_devant_Childebert_II.jpg/800px-Gontran_devant_Childebert_II.jpg"
@@ -311,6 +318,7 @@
    
 288041106396938244: 
   name: Sir Russ McConneely
+  shortName: Russ
   player: Rejti
   memberId: 288041106396938244
   url: "https://github.com/walakymas/senechal/blob/main/images/Sir%20Russ%20McConneely.jpg?raw=true"
@@ -413,6 +421,7 @@
 778876598132801548: 
   name: Sir Ronan O Sullivan
   player: Robcsa
+  shortName: Ronan
   memberId: 778876598132801548
   url: "https://i.ytimg.com/vi/vDl8EGo7Mbc/maxresdefault.jpg"
 
@@ -490,11 +499,15 @@
       Stewardship: 2
       Swimming: 2
       Tourney: 11
-      Music*: 11      
+      Music: 11
+      Compose: .Music
+      Sing: .Music
+      Play: .Music      
 
 ## Marius: 
 201060114050842624:
   name: Sir Marius
+  shortName: Marius
   player: Szabolcs
   memberId: 201060114050842624
   url: "https://i.ytimg.com/vi/vDl8EGo7Mbc/maxresdefault.jpg"
@@ -554,14 +567,17 @@
       Lance: 10
     Other:
       Awareness: 11
+      Courtesy: .Law
       Dancing: 2
       Faerie Lore: 10
       Falconry: 10
+      Folklore: .Law
       "First Aid": 10
       Flirting: 2
       Gaming: 2
       Heraldry: 5
       Hunting: 15
+      Intrigue: .Law
       Orate: 10
       Recognize: 2
       Romance: 0
