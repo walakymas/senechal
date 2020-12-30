@@ -381,17 +381,11 @@ async def embedCheck(ctx, lord, name, base, modifier):
 async def embedTrait(ctx, lord, name, base, modifier, name2):
     (color, text, ro, success) = check(base, modifier)
 
-    embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
-    embed.add_field(name="Dobás", value=str(ro));
-    embed.add_field(name=name, value=str(base));
-    if (modifier!=0):
-        embed.add_field(name="Módosító", value=str(modifier));
-    embed.add_field(name="Eredmény", value=text, inline=False);
+    embed = discord.Embed(title=lord['name'] +" "+ name + " Trait Check", timestamp=datetime.datetime.utcnow(), color=color)
+    embed.add_field(name="Eredmény", value=text+" ("+str(ro)+" vs "+str(base+modifier)+")", inline=False);
     if success>2:
         (color, text, ro, success) = check(20-base, modifier)
-        embed.add_field(name="Dobás", value=str(ro));
-        embed.add_field(name=name2, value=str(base));
-        embed.add_field(name="Eredmény", value=text, inline=False);
+        embed.add_field(name=name2, value=text+" ("+str(ro)+" vs "+str((20-base)+modifier)+")", inline=False);
 
     await ctx.send(embed=embed)
 
