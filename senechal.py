@@ -62,11 +62,12 @@ def dice(size):
         return randint(1,size)
 
 @senechalBot.command(aliases=['a'])
-async def attack(ctx, spec="", modifier=0):
-    if isinstance(ctx.channel, discord.DMChannel):
-        await mainChannel.send('magán')
-    else:
-        await ctx.send('rendes channel')
+async def attack(ctx, spec="", modifier=0, damage =0, obase=-1, odamage=-1):
+    if ctx.author.id in characters:
+        pc = characters[ctx.author.id]
+        if 'memberId' in pc:
+            for t, name, value, *name2  in getCheckable(pc, spec):
+                await embedAttack(ctx, pc, name, value, modifier, damage, obase, odamage)
 
 @senechalBot.command(aliases=['o','op'])
 async def opposed(ctx, spec="", modifier=0):
@@ -409,22 +410,29 @@ async def embedTrait(ctx, lord, name, base, modifier, name2):
 
     await ctx.send(embed=embed)
 
-async def embedAttack(ctx, lord, name, base, modifier, damage):
+async def embedAttack(ctx, lord, name, base, modifier, damage=-1, obase=-1, odamage=-1):
     (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=lord['name'] +" "+ name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
-    embed.add_field(name="Dobás", value=str(ro));
-    embed.add_field(name=name, value=str(base));
-    if (modifier!=0):
-        embed.add_field(name="Módosító", value=str(modifier));
-    embed.add_field(name="Eredmény", value=text, inline=False);
-    if damage >= 0:
+    embed.add_field(name="Eredmény", value=text+" ("+str(ro)+" vs "+str(base+modifier)+")", inline=False);
+    if damage >= 0 and success<=2:
         sum = 0;
         if success==2:
             damage += 4
         for x in range(damage):
             sum += dice(6)
-        embed.add_field(name="Sebzés", value=str(modifier));
+        embed.add_field(name="Sebzés", value=str(sum));
+    if obase > 0:
+        (ocolor, otext, oro, osuccess) = check(obase, 0)
+        embed.add_field(name="Opposer", value=otext+" ("+str(oro)+" vs "+str(obase)+")", inline=False);
+        if odamage >= 0 and osuccess<=2:
+            sum = 0;
+            if osuccess==2:
+                odamage += 4
+            for x in range(odamage):
+                sum += dice(6)
+            embed.add_field(name="Sebzés", value=str(sum));
+
 
     await ctx.send(embed=embed)
 
