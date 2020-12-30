@@ -78,16 +78,36 @@ async def opposed(ctx, spec="", modifier=0):
 
 @senechalBot.command()
 async def team(ctx, spec="", modifier=0):
-    s = "Name       Skill Dice Result\n"
+    s = "Sir        Skill Dice Result\n"
     for pc in characters.values():
         if 'memberId' in pc:
-            for n, sg in pc['skills'].items():
-                for sn, sv in sg.items():
-                    if  sn.lower().startswith(spec.lower()):
-                        (color, text, ro, success) = check(sv, modifier)
-                        s+=f"{pc['shortName']:10}    {sv:2}   {ro:2} {successes[success]}\n"
+            for t, name, value, *name2  in getCheckable(pc, spec):
+                (color, text, ro, success) = check(value, modifier)
+
+                if 'trait'==t and success>2:
+                    (color2, text2, ro2, success2) = check(20-value, modifier)
+                    s+=f"{pc['shortName']:10}    {value:2}   {ro:2} {successes[success]:10} {name2[0]} {ro2:2} {successes[success2]}\n"
+                else:
+                    s+=f"{pc['shortName']:10}    {value:2}   {ro:2} {successes[success]}\n"
     await ctx.send("```\n"+s+"```")
 
+def getCheckable(pc, spec):
+    spec = spec.lower()
+    for n, sg in pc['skills'].items():
+        for sn, sv in sg.items():
+            if  sn.lower().startswith(spec):
+                yield ['skill', sn, sv]
+    for t in senechalConfig['traits']:
+        if  t[0].lower().startswith(spec):
+            yield ['trait', t[0], pc['traits'][t[0].lower()[:3]], t[1]]
+        if  t[1].lower().startswith(spec.lower()):
+            yield ['trait', t[1], 20-pc['traits'][t[0].lower()[:3]], t[0]]
+    for t in senechalConfig['stats']:
+        if  t.lower().startswith(spec):
+            yield ['stat', t, pc['stats'][t.lower()[:3]]]
+    for pn, pv in pc['passions'].items():
+        if  pn.lower().startswith(spec):
+            yield ['stat', pn, pv]
 
 @senechalBot.command(aliases=['check'])
 async def c(ctx, spec="", modifier=0):
