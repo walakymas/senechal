@@ -59,7 +59,6 @@ def main():
             for m in guild.channels:
                 if m.id == Config.mainChannelId:
                     Config.mainChannel = m
- #       await Config.mainChannel.send(f'Ismét készen a szolgálatra ({Config.prefix})')
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
@@ -73,8 +72,8 @@ def main():
             except:
                 print("Error while handling message", flush=True)
                 raise
-        else:
-            print(f"{text} vs {Config.prefix}")
+#        else:
+#            print(f"{text} vs {Config.prefix}")
     @client.event
     async def on_message(message):
         await common_handle_message(message)

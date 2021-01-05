@@ -17,4 +17,3 @@ class Reload(BaseCommand):
             process = subprocess.Popen(["git","pull"], stdout=subprocess.PIPE)
             print(process.communicate()[0])
         os.execv(sys.executable, ['python3'] + sys.argv)
-        await message.author.send("Egy kupa bort jóuram?");
