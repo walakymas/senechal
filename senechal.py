@@ -39,7 +39,7 @@ def main():
 
         # Set the playing status
         await client.change_presence(
-                activity=discord.Game(name=f"{Config.prefix}senechal {datetime.datetime.utcnow()}" ))
+                activity=discord.Game(name=f"{Config.prefix}senechal since {datetime.datetime.utcnow()}"))
         print("Logged in!", flush=True)
 
         # Load all events
