@@ -6,7 +6,7 @@ from config import Config
 class Team(BaseCommand):
 
     def __init__(self):
-        description = "Channel informations"
+        description = "Check a csapat minden tagjára"
         params = None
         super().__init__(description, ['spec'],['t'])
 
