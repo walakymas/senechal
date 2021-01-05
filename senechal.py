@@ -3,7 +3,7 @@ import sys
 import settings
 import discord
 import message_handler
-import re
+import datetime
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from events.base_event              import BaseEvent
@@ -38,10 +38,8 @@ def main():
         this.running = True
 
         # Set the playing status
-        if settings.NOW_PLAYING:
-            print("Setting NP game", flush=True)
-            await client.change_presence(
-                activity=discord.Game(name=settings.NOW_PLAYING))
+        await client.change_presence(
+                activity=discord.Game(name=f"{Config.prefix}senechal {datetime.datetime.utcnow()}" ))
         print("Logged in!", flush=True)
 
         # Load all events
