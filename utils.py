@@ -90,7 +90,7 @@ def getCheckable(pc, spec):
             yield ['stat', t, pc['stats'][t.lower()[:3]]]
     for pn, pv in pc['passions'].items():
         if pn.lower().startswith(spec):
-            yield ['stat', pn, pv]
+            yield ['pass', pn, pv]
 
 
 def tr(a):
