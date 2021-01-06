@@ -9,7 +9,7 @@ from emoji import emojize
 
 import settings
 from config import Config
-from database import Database
+from database.database import Database
 
 
 # Returns a path relative to the bot directory

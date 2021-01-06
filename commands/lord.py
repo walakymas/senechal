@@ -1,6 +1,5 @@
 from commands.base_command import BaseCommand
-from config import Config
-from database import Database
+from database.lordtable import LordTable
 from utils import *
 
 
@@ -16,10 +15,10 @@ class Lord(BaseCommand):
         me = getMe(message)
         if me:
             if 'setchannel' == params[0].lower():
-                Database.setLord(message.author.id, 0, 'mychannel', message.channel.id)
+                LordTable().set(message.author.id, 0, 'mychannel', message.channel.id)
                 await message.channel.send(me['name'])
             elif 'list' == params[0].lower():
-                rows = Database.listLord()
+                rows = LordTable().list()
                 msg = f"```Modified                   Lord                 Year Key                  Value\n";
                 for row in rows:
                     if message.author.id == int(row[2]):

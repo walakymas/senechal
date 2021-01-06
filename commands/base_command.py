@@ -1,5 +1,6 @@
 from config import Config
 
+
 # Base command class
 # Do not modify!
 class BaseCommand:
@@ -16,6 +17,14 @@ class BaseCommand:
         desc += f": {description}."
         self.description = desc
         self.longdescription = longdescription
+
+    async def help(self, params, message, client):
+        if self.longdescription:
+            await message.channel.send(self.longdescription)
+        elif self.description:
+            await message.channel.send(self.description)
+        else:
+            await message.channelsend(f"Can't help")
 
     # Every command must override this method
     async def handle(self, params, message, client):

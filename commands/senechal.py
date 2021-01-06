@@ -14,13 +14,8 @@ class Senechal(BaseCommand):
     async def handle(self, params, message, client):
         from message_handler import COMMAND_ALIASES
         if len(params) > 0 and params[0].lower() in COMMAND_ALIASES:
-            msg = message.author.mention + "\n"
-            cmd = COMMAND_ALIASES[params[0]]
-            if cmd.longdescription:
-                msg += cmd.longdescription
-            else:
-                msg += cmd.description
-            await message.channel.send(msg)
+            cmd = COMMAND_ALIASES[params[0].lower()]
+            await cmd.help(params, message, client)
         else:
             from message_handler import COMMAND_HANDLERS
             msg = message.author.mention + "\n"

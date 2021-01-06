@@ -10,7 +10,7 @@ from events.base_event              import BaseEvent
 from events                         import *
 from multiprocessing                import Process
 from config                         import Config
-from database                       import Database
+from database.database              import Database
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects

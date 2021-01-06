@@ -1,20 +1,23 @@
 from commands.base_command import BaseCommand
 from config import Config
-from database import Database
+from database.markstable import MarksTable
 from utils import *
 
 
 class Winter(BaseCommand):
 
     def __init__(self):
-        self.hidden = 1
-        description = 0
-        super().__init__(description, None)
+        description = 'Aktuális játékosra a winter phase fontosabb infóit megadja'
+        super().__init__(description, None, longdescription=''' Aktuális játékosra a winter phase fontosabb infóit megadja
+Egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
+Ha nincs megadva a blokk, akkor saját stewarshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
+Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasítással pipát kapott tulajdonságok, azokat listázza dob d20-l és közli az eredményt
+''')
 
     async def handle(self, params, message, client):
         me = getMe(message)
         if me:
-            year = int(Database.getProperties('year')[2])
+            year = MarksTable().year()
             msg = f"```{year} tele, {me['name']}\n"
             ss = 0;
             for s in getCheckable(me, 'stewardship'):
@@ -38,13 +41,13 @@ class Winter(BaseCommand):
             msg += "\nLovak\n"
             for h in winter['horses']:
                 msg += f"  {h}: {('Egészséges','Megdöglött vagy tönkrement')[dice(20)<3]}\n"
-            rows = Database.listMark()
-            msg += f"\nModified  Spec               Dobás   Hatás\n";
+            rows = MarksTable().list()
+            msg += f"\nModified   Spec              Dobás   Hatás\n";
             marks = []
             for row in rows:
                 if message.author.id == int(row[2]) and year == int(row[1]):
                     for t, name, value, *name2 in getCheckable(me, row[3]):
-                        if name not in  marks:
+                        if name not in marks:
                             marks.append(name)
                             (color, text, ro, success) = check(value, 0)
                             msg += f"{row[0][:10]} {row[3]:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"

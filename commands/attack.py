@@ -6,9 +6,9 @@ class Attack(BaseCommand):
 
     def __init__(self):
         params = ['spec']
-        super().__init__("Támadás próba az aktuális karakternek", params, ['a'])
-        self.longdescription = '''Támadás próba az aktuális karakternek 
-            Opcionális paraméterek: módosító, sebzés kockák száma, ellenfél tulajdonsága, ellenfél sebzése'''
+        super().__init__("Támadás próba az aktuális karakternek", params, ['a'],
+                         longdescription= '''Támadás próba az aktuális karakternek 
+Opcionális paraméterek: módosító, sebzés kockák száma, ellenfél tulajdonsága, ellenfél sebzése''')
 
     async def handle(self, params, message, client):
         if message.author.id in Config.characters:
