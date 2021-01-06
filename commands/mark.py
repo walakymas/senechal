@@ -18,12 +18,12 @@ class Mark(BaseCommand):
             if 'list' == params[0].lower():
                 rows = Database.listMark()
                 msg = f"```{me['name']} Év:{year} \nID  Modified            Lord                 Year Spec\n";
+                marks = []
                 for row in rows:
                     if message.author.id == int(row[2]) and year == int(row[1]):
-                        for t, name, value, *name2 in getCheckable(me, row[3]):
-                            (color, text, ro, success) = check(value, 0)
-                            msg += f"{row[4]:3} {row[0][:10]} {row[3]:15} {ro:2} vs {value:2}  {('', 'Increase')[ro > value]}\n"
-
+                        if row[3] not in marks:
+                            marks.append(row[3])
+                            msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
                 await message.channel.send(msg + "```")
             elif 'remove' == params[0].lower():
                 Database.delMark(params[1])

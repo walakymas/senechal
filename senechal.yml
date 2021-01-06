@@ -35,7 +35,10 @@ intro: |
 
 changes: |
   **2021-01-06**
-  Refactor gyakorlatilag teljesen átsruktúráltam a kódot és új alapokra helyeztem a bot működését. Egyelőre csak a korábbi parancsokat éritek el, de már működő adatbázis kezdeményem van és néhány ide tartozó parancs is a működés jeleit mutatja. pl *!set year 481*, *!mark Sword*, *!mark list*, *!lord setchannel*, *!lord list*
+  Refactor gyakorlatilag teljesen átsruktúráltam a kódot és új alapokra helyeztem a bot működését. Egyelőre csak a korábbi parancsokat éritek el, de már működő adatbázis kezdeményem van és néhány ide tartozó parancs is a működés jeleit mutatja. pl *!db prop set year 481*, *!mark Sword*, *!mark list*, *!lord setchannel*, *!lord list*
+  !winter utasítás. egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
+  Ha nincs megadva a blokk, akkor saját stewarshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
+  Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasítással pipát kapott tulajdonságok, azokat listázza dob d20-l és
 
   **2020-12-30**
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, sikertelen trait esetén ellendobást is végez 
