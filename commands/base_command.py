@@ -4,7 +4,7 @@ from config import Config
 # Do not modify!
 class BaseCommand:
 
-    def __init__(self, description, params, aliases=None):
+    def __init__(self, description, params=None, aliases=None, longdescription=None):
         self.name = type(self).__name__.lower()
         self.params = params
         self.aliases = aliases
@@ -15,6 +15,7 @@ class BaseCommand:
 
         desc += f": {description}."
         self.description = desc
+        self.longdescription = longdescription
 
     # Every command must override this method
     async def handle(self, params, message, client):

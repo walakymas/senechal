@@ -1,9 +1,10 @@
-from commands.base_command  import BaseCommand
+from commands.base_command import BaseCommand
+
 
 class Info(BaseCommand):
 
     def __init__(self):
-        description = "Channel informations"
+        description = "Channel információk magán üzenetben"
         params = None
         super().__init__(description, params)
 
@@ -12,12 +13,10 @@ class Info(BaseCommand):
     async def handle(self, params, message, client):
         s = ""
         for pc in client.private_channels:
-            if "private"==str(pc.type):
-                s+= "PC: "+str(pc.id)+":"+pc.recipient.name +"\n"
+            if "private" == str(pc.type):
+                s += "PC: " + str(pc.id) + ":" + pc.recipient.name + "\n"
         for guild in client.guilds:
-            s+= "Guild: "+guild.name +"\n"
+            s += "Guild: " + guild.name + "\n"
             for m in guild.channels:
-                s += str(m.id) + ":"+m.name+"\n"
+                s += str(m.id) + ":" + m.name + "\n"
         await message.author.send(s);
-
-

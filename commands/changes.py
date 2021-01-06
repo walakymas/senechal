@@ -6,7 +6,7 @@ from config                import Config
 class Changes(BaseCommand):
 
     def __init__(self):
-        description = "Displays changelog"
+        description = "Változáslista"
         params = None
         super().__init__(description, params)
 

@@ -1,17 +1,17 @@
 traits:
-  - [Chaste, Lustful]
-  - [Energetic, Lazy]
-  - [Forgiving, Vengeful]
-  - [Generous, Selfish]
-  - [Honest, Deceitful]
-  - [Just, Arbitrary]
-  - [Merciful, Cruel]
-  - [Modest, Proud]
-  - [Prudent, Reckless]
-  - [Spiritual, Worldly]
-  - [Temperate, Indulgent]
-  - [Trusting, Suspicious]
-  - [Valorous, Cowardly]
+  - [ Chaste, Lustful ]
+  - [ Energetic, Lazy ]
+  - [ Forgiving, Vengeful ]
+  - [ Generous, Selfish ]
+  - [ Honest, Deceitful ]
+  - [ Just, Arbitrary ]
+  - [ Merciful, Cruel ]
+  - [ Modest, Proud ]
+  - [ Prudent, Reckless ]
+  - [ Spiritual, Worldly ]
+  - [ Temperate, Indulgent ]
+  - [ Trusting, Suspicious ]
+  - [ Valorous, Cowardly ]
 
 stats:
   - Size
@@ -29,11 +29,14 @@ intro: |
 
   Bárkinek elérhető:
   !pc [name=""] [task=""]: ugyanazok az infó blokkok mint me esetében, de a megadott névrészlettel szűrve a lovagokra
-  !senechal: Ez a leírás :)
+  !senechal: Ez a leírás illetve paraméterrel kiegészítve a megadott parancs bővebb leírása
   !changes: változáslista
-  !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban
+  !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, ha trait és sikertelen, akkor dob az ellentétére is
 
 changes: |
+  **2021-01-06**
+  Refactor gyakorlatilag teljesen átsruktúráltam a kódot és új alapokra helyeztem a bot működését. Egyelőre csak a korábbi parancsokat éritek el, de már működő adatbázis kezdeményem van és néhány ide tartozó parancs is a működés jeleit mutatja. pl *!set year 481*, *!mark Sword*, *!mark list*, *!lord setchannel*, *!lord list*
+
   **2020-12-30**
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, sikertelen trait esetén ellendobást is végez 
   Származtatott skillek támogatása. Pl A Law van csak nyílvántartva, de az Intrigue, Courtesy és Folklore is megjelenik automatikusan.

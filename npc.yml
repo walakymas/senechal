@@ -21,14 +21,14 @@ ryenne:
   name: Lady Ryenne
   url: https://media.discordapp.net/attachments/779023614057512991/779049412533157968/00eed6ff671c1cf503b54027b218bdec--overnight-hairstyles-frida-gustavsson.png
   description: >
-     A nő, aki kifogta a Halászkirályt
+    A nő, aki kifogta a Halászkirályt
 
-indeg :
-  name: Lady Indeg   
+indeg:
+  name: Lady Indeg
   url: https://media.discordapp.net/attachments/779023614057512991/779058485840969748/a57a90be504fa6a0b1012893f58463c7.png
   description: >
     A 40 éves nő a környék leggazdagabb örökösnője
-  
+
 merygold:
   name: Lady Merygold
   url: https://media.discordapp.net/attachments/779023614057512991/779064621016809527/2415406-bigthumbnail.png
@@ -86,12 +86,12 @@ uther:
     Ambrosius testvére
 
 madoc:
-    name: Sir Madoc
-    description: >
-      Uther fattyú fia
+  name: Sir Madoc
+  description: >
+    Uther fattyú fia
 
 wynfaith:
-  name: Lady Wynflaeth     
+  name: Lady Wynflaeth
   url: https://i.pinimg.com/564x/69/0d/98/690d987f648eca2cd447775ce29cdeb7.jpg
   description: >
     Childbert tetszik neki
@@ -122,7 +122,7 @@ brastias:
 nidian:
   name: Sir Nidian
   url: https://image.shutterstock.com/image-photo/middle-aged-male-portrait-headshot-600w-1342172867.jpg
-  description:  >
+  description: >
     Salisbury korábbi főlovászmestere, a seregek új vezére
 
     Címere: Piros fehér alapon inverz lófej

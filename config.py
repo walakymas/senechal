@@ -1,14 +1,15 @@
 import yaml
 
-class Config:
-    config={}
-    characters ={}
-    senechalConfig ={}
-    prefix="!"
-    mainChannelId=779078275111714917
-    mainChannel=None
 
-    def database():
+class Config:
+    config = {}
+    characters = {}
+    senechalConfig = {}
+    prefix = "!"
+    mainChannelId = 779078275111714917
+    mainChannel = None
+
+    def reload():
         with open(r'config.yml') as file:
             Config.config = yaml.load(file, Loader=yaml.FullLoader)
             if ('prefix' in Config.config):
@@ -21,16 +22,16 @@ class Config:
 
         with open(r'characters.yml') as file:
             Config.characters = yaml.load(file, Loader=yaml.FullLoader)
-            for character in  Config.characters.values():
+            for character in Config.characters.values():
                 if ('memberId' in character):
                     g = 0;
                     for h in character['events']:
-                        g+=h['glory']
-                    character['main']['Glory']=g
+                        g += h['glory']
+                    character['main']['Glory'] = g
                     for n, sg in character['skills'].items():
                         for sn, sv in sg.items():
                             if '.' == str(sv)[:1]:
-                                sg[sn]=sg[sv[1:]]
+                                sg[sn] = sg[sv[1:]]
 
     def pcs():
         for c in Config.characters.values():

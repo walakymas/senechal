@@ -10,6 +10,7 @@ from events.base_event              import BaseEvent
 from events                         import *
 from multiprocessing                import Process
 from config                         import Config
+from database                       import Database
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
@@ -57,6 +58,7 @@ def main():
             for m in guild.channels:
                 if m.id == Config.mainChannelId:
                     Config.mainChannel = m
+        Database.initiate()
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
@@ -80,7 +82,7 @@ def main():
     async def on_message_edit(before, after):
         await common_handle_message(after)
 
-    Config.database()
+    Config.reload()
     # Finally, set the bot running
     print(Config.config['token'])
     client.run(Config.config['token'])
