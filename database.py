@@ -96,7 +96,7 @@ class Database:
     @staticmethod
     def setLord(lord, year, key, value):
         cur = Database.conn.cursor()
-        cur.execute("REPLACE INTO lord (last_modified, lord, year, key, value) VALUES(?,?,?,?);",
+        cur.execute("REPLACE INTO lord (last_modified, lord, year, key, value) VALUES(?,?,?,?,?);",
                     [str(datetime.datetime.utcnow()), lord, year, key, value])
         Database.conn.commit()
 
