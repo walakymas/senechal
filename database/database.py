@@ -1,5 +1,6 @@
 import datetime
 import sqlite3
+from config import Config
 
 
 class Database:
@@ -78,6 +79,14 @@ class Database:
                 )
                 """)
             version = 5
+        if version == 5:
+            from database.evantstable import EventsTable
+            print("Update 6")
+            et = EventsTable()
+            for pc in Config.pcs():
+                for e in pc['events']:
+                    et.insert(pc['memberId'], e['description'], e['glory'], e['year'])
+            version = 6
         c.execute("REPLACE INTO properties (last_modified, key, value) VALUES(?,'dbversion',?);",
                   [str(datetime.datetime.utcnow()), version])
         Database.conn.commit()

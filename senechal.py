@@ -44,15 +44,15 @@ def main():
         print("Logged in!", flush=True)
 
         # Load all events
-        print("Loading events...", flush=True)
-        n_ev = 0
-        for ev in BaseEvent.__subclasses__():
-            event = ev()
-            sched.add_job(event.run, 'interval', (client,), 
-                          minutes=event.interval_minutes)
-            n_ev += 1
-        sched.start()
-        print(f"{n_ev} events loaded", flush=True)
+        # print("Loading events...", flush=True)
+        # n_ev = 0
+        # for ev in BaseEvent.__subclasses__():
+        #     event = ev()
+        #     sched.add_job(event.run, 'interval', (client,),
+        #                   minutes=event.interval_minutes)
+        #     n_ev += 1
+        # sched.start()
+        # print(f"{n_ev} events loaded", flush=True)
 
         for guild in client.guilds:
             for m in guild.channels:
@@ -65,15 +65,13 @@ def main():
         text = message.content
         if text.startswith(Config.prefix) and text != Config.prefix:
             cmd_split = text[len(Config.prefix):].split()
-            print (cmd_split)
             try:
                 await message_handler.handle_command(cmd_split[0].lower(), 
                                       cmd_split[1:], message, client)
             except:
                 print("Error while handling message", flush=True)
                 raise
-#        else:
-#            print(f"{text} vs {Config.prefix}")
+
     @client.event
     async def on_message(message):
         await common_handle_message(message)

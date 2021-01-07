@@ -8,10 +8,10 @@ class MarksTable(BaseTableHandler):
 
     def set(self, lord, year, value):
         BaseTableHandler.execute('REPLACE INTO marks (last_modified, lord, year, spec) VALUES(?,?,?,?);',
-                                 [BaseTableHandler.now(), lord, year, value])
+                                 [BaseTableHandler.now(), lord, year, value], commit=True)
 
     def remove(self, key):
-        BaseTableHandler.execute("DELETE FROM marks WHERE id=?", param=[key])
+        BaseTableHandler.execute("DELETE FROM marks WHERE id=?", param=[key], commit=True)
 
     def get(self, lord, year):
         return BaseTableHandler.execute("SELECT * FROM marks WHERE lord=?, year=?", param=[lord, year])

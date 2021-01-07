@@ -8,10 +8,10 @@ class PropertiesTable(BaseTableHandler):
 
     def set(self, key, value):
         BaseTableHandler.execute('REPLACE INTO properties (last_modified, key, value) VALUES(?,?,?);',
-                                 [BaseTableHandler.now(), key, value])
+                                 [BaseTableHandler.now(), key, value], commit=True)
 
     def remove(self, key):
-        BaseTableHandler.execute("DELETE FROM properties WHERE key=?", param=[key])
+        BaseTableHandler.execute("DELETE FROM properties WHERE key=?", param=[key], commit=True)
 
     def get(self, key):
         return BaseTableHandler.execute("SELECT * FROM properties WHERE key=?", param=[key])

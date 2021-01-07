@@ -128,6 +128,8 @@ def getEmbed(pc, description=0):
 async def embedPc(ctx, pc, task, param):
     if (task == "*" or task == "" or "base".startswith(task.lower())):
         embed = getEmbed(pc, 1)
+        from database.evantstable import EventsTable
+        pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
         if ('main' in pc):
             for name, value in pc['main'].items():
                 embed.add_field(name=name, value=value)
@@ -156,21 +158,20 @@ async def embedPc(ctx, pc, task, param):
             embed.add_field(name="Traits", value=result, inline=False)
             await ctx.send(embed=embed)
     if (task == "*" or "events".startswith(task.lower())):
-        if 'events' in pc:
-            embed = getEmbed(pc, 0)
-            glory = 0;
-            count = 0
-            for h in pc['events']:
-                count += 1
-                if (count > 20):
-                    count = 1
-                    await ctx.send(embed=embed)
-                    embed = getEmbed(pc, 0)
-                glory += h['glory']
-                embed.add_field(name=str(h['year']) + " Glory: " + str(h['glory']), value=h['description'],
-                                inline=False)
-            embed.add_field(name="Összes Glory: " + str(glory), value=":glory:", inline=False)
-            await ctx.send(embed=embed)
+        from database.evantstable import EventsTable
+        embed = getEmbed(pc, 0)
+        glory = 0;
+        count = 0
+        for e in EventsTable().list(pc['memberId']):
+            count += 1
+            if (count > 20):
+                count = 1
+                await ctx.send(embed=embed)
+                embed = getEmbed(pc, 0)
+            glory += int(e[6])
+            embed.add_field(name=f"{e[3]}  Glory: {e[6]}", value=e[5].strip(), inline=False)
+        embed.add_field(name="Összes Glory: " + str(glory), value=":glory:", inline=False)
+        await ctx.send(embed=embed)
     if (task == "*" or "skills".startswith(task.lower())):
         if 'skills' in pc:
             embed = getEmbed(pc, 0)

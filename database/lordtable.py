@@ -8,10 +8,10 @@ class LordTable(BaseTableHandler):
 
     def set(self, lord, year, key, value):
         BaseTableHandler.execute('REPLACE INTO lord (last_modified, lord, year, key, value) VALUES(?,?,?,?,?);',
-                                 [BaseTableHandler.now(), lord, year, key, value])
+                                 [BaseTableHandler.now(), lord, year, key, value], commit=True)
 
     def remove(self, key):
-        BaseTableHandler.execute("DELETE FROM properties WHERE key=?", param=[key])
+        BaseTableHandler.execute("DELETE FROM properties WHERE key=?", param=[key], commit=True)
 
     def get(self, lord, year, key):
         return BaseTableHandler.execute("SELECT * FROM lord WHERE lord=?, year=?, key = ?", param=[lord, year, key])

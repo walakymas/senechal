@@ -14,7 +14,7 @@ class Db(BaseCommand):
         super().__init__(description, params, longdescription=''' Adattáblák kezelése
 **!db download** adatbázis mentése
 **!db [list|set|get|remove] [prop|mark|lord|event|note] ... ** Under construction
-prop adatbázis list, set és get művelete megoldott
+prop adatbázis list, set, get és remove művelete valamint a lord és mark adtabázisok list művelete megoldott
         ''')
 
     async def handle(self, params, message, client):
@@ -47,7 +47,8 @@ prop adatbázis list, set és get művelete megoldott
                 msg = 'Under Construction'
         elif "remove" == params[0]:
             if "prop" == params[1]:
-                msg = str(PropertiesTable().remove(params[2]))
+                PropertiesTable().remove(params[2])
+                msg = "Removed"
             else:
                 msg = 'Under Construction'
         elif "download" == params[0]:
