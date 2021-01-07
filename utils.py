@@ -195,7 +195,7 @@ def check(base, modifier):
     color = discord.Color.blue()
     ro = dice(20)
     r = ro;
-    c = base + modifier;
+    c = base + int(modifier)
     if (c > 20):
         r -= c - 20
         c = 20
@@ -239,9 +239,9 @@ async def embedTrait(ctx, lord, name, base, modifier, name2):
 
     embed = discord.Embed(title=lord['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
                           color=color)
-    embed.add_field(name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
+    embed.add_field(name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")", inline=False);
     if success > 2:
-        (color, text, ro, success) = check(20 - base, modifier)
+        (color, text, ro, success) = check(20 - base, 0)
         embed.add_field(name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base) + modifier) + ")",
                         inline=False);
 

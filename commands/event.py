@@ -1,8 +1,10 @@
 from commands.base_command import BaseCommand
 from utils import *
 from database.evantstable import EventsTable
+import re
 
 class Event(BaseCommand):
+    yearPattern = re.compile('^[yY]([0-9]+)$')
 
     def __init__(self):
         self.hidden = 1
@@ -11,6 +13,7 @@ class Event(BaseCommand):
 
 **!event [list]** karakter eventjeinek listája  
 **!event {glory} {leírás}** új event  rögzítése aktuális karakterhez és évhez
+amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évhez rögzíti
 **!event remove {id}** event eltávolítása
 **!event modify {id} {glory} {leírás}** event módosítása''')
 
@@ -34,5 +37,11 @@ class Event(BaseCommand):
                 await message.channel.send("Removed")
             else:
                 glory = int(params[0])
-                EventsTable().insert(me['memberId'], message.content[message.content.index(" ")+len(params[0])+1:].strip(), glory)
+                year = -1
+                result = Event.yearPattern.match(params[1])
+                msg = message.content[message.content.index(" ")+len(params[0])+1:].strip()
+                if result:
+                    year = int(params[1][1:])
+                    msg = msg[len(params[1])+1:]
+                EventsTable().insert(me['memberId'], msg, glory, year)
                 await message.channel.send("inserted")
