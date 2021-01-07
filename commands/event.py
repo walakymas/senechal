@@ -6,8 +6,13 @@ class Event(BaseCommand):
 
     def __init__(self):
         self.hidden = 1
-        description = ''
-        super().__init__(description, None)
+        description = 'Event/history kezelés glory támogatással.'
+        super().__init__(description, None, longdescription='''Event/history kezelés glory támogatással.
+
+**!event [list]** karakter eventjeinek listája aktuális karakterhez és évhez lesz rögzítve 
+**!event {glory} {leírás}** új event  rögzítése
+**!event remove {id}** event eltávolítása
+**!event modify {id} {glory} {leírás} event módosítása''')
 
     async def handle(self, params, message, client):
         me = getMe(message)
