@@ -242,7 +242,7 @@ async def embedTrait(ctx, lord, name, base, modifier, name2):
     embed.add_field(name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")", inline=False);
     if success > 2:
         (color, text, ro, success) = check(20 - base, 0)
-        embed.add_field(name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base) + modifier) + ")",
+        embed.add_field(name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base)) + ")",
                         inline=False);
 
     await ctx.send(embed=embed)
