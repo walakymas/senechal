@@ -129,7 +129,8 @@ async def embedPc(ctx, pc, task, param):
     if (task == "*" or task == "" or "base".startswith(task.lower())):
         embed = getEmbed(pc, 1)
         from database.evantstable import EventsTable
-        pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
+        if 'memberId' in pc:
+            pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
         if ('main' in pc):
             for name, value in pc['main'].items():
                 embed.add_field(name=name, value=value)
