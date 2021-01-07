@@ -6,7 +6,7 @@ class Info(BaseCommand):
     def __init__(self):
         description = "Channel információk magán üzenetben"
         params = None
-        super().__init__(description, params)
+        super().__init__(description, None, ['i'])
 
     # Override the handle() method
     # It will be called every time the command is received

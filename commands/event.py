@@ -9,7 +9,7 @@ class Event(BaseCommand):
     def __init__(self):
         self.hidden = 1
         description = 'Event/history kezelés glory támogatással.'
-        super().__init__(description, None, longdescription='''Event/history kezelés glory támogatással.
+        super().__init__(description, None, ['e', 'esemeny'], longdescription='''Event/history kezelés glory támogatással.
 
 **!event [list]** karakter eventjeinek listája  
 **!event {glory} {leírás}** új event  rögzítése aktuális karakterhez és évhez
@@ -18,7 +18,7 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
 **!event modify {id} {glory} {leírás}** event módosítása''')
 
     async def handle(self, params, message, client):
-        me = getMe(message)
+        me = get_me(message)
         if me:
             if len(params)== 0 or 'list' == params[0].lower():
                 msg = f"**{me['name']}**\n"

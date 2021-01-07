@@ -12,6 +12,6 @@ class Note(BaseCommand):
         super().__init__(description, ['task'],['n'])
 
     async def handle(self, params, message, client):
-        me = getMe(message)
+        me = get_me(message)
         if me:
             print('note:'+me['name'])

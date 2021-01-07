@@ -4,6 +4,7 @@ import yaml
 class Config:
     config = {}
     characters = {}
+    charactersOrig = {}
     senechalConfig = {}
     prefix = "!"
     mainChannelId = 779078275111714917
@@ -22,6 +23,7 @@ class Config:
 
         with open(r'characters.yml') as file:
             Config.characters = yaml.load(file, Loader=yaml.FullLoader)
+            Config.charactersOrig = yaml.load(file, Loader=yaml.FullLoader)
             for character in Config.characters.values():
                 if ('memberId' in character):
                     g = 0;
@@ -33,12 +35,13 @@ class Config:
                             if '.' == str(sv)[:1]:
                                 sg[sn] = sg[sv[1:]]
 
-    def pcs():
+    def pcs(name=None):
         for c in Config.characters.values():
-            if "memberId" in c:
+            if ("memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
+                print(f"{name} {c['name']}")
                 yield c
 
-    def npcs():
+    def npcs(name=None):
         for c in Config.characters.values():
-            if not "memberId" in c:
+            if (not "memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
                 yield c

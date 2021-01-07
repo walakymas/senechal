@@ -21,6 +21,6 @@ class Npc(BaseCommand):
         for pc in Config.npcs():
             if "*" == name or name.lower() in pc['name'].lower():
                 count += 1
-                await embedPc(message.channel, pc, task, params)
+                await embed_pc(message.channel, pc, task, params)
         if count == 0:
             await message.channel.send(name + '? Sajnos nem ismerek ilyen lovagot')

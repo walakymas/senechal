@@ -9,7 +9,7 @@ class Senechal(BaseCommand):
     def __init__(self):
         description = "Ez az üzenet. Opcionális paraméter: egy parancs neve"
         params = None
-        super().__init__(description, params, ['h', 'help', 'segítség'])
+        super().__init__(description, params, ['h', 'help', 'segitseg'])
 
     async def handle(self, params, message, client):
         from message_handler import COMMAND_ALIASES

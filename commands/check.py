@@ -8,7 +8,7 @@ class Check(BaseCommand):
     def __init__(self):
         description = "Trait, stat, passion vagy skill check"
         params = ['spec']
-        super().__init__(description, aliases=['c','ch'], longdescription='''Trait, stat, passion vagy skill próba
+        super().__init__(description, aliases=['c', 'ch'], longdescription='''Trait, stat, passion vagy skill próba
         
 ***!c {spec} {modifier=0}*** A játékosok saját karakterhez indíthatnak próbát 
 ***!c {név} {spec} {modifier=0}*** A mesélő egy névrészlet megadásával azonosíthatja a karaktert
@@ -17,8 +17,8 @@ class Check(BaseCommand):
 ''')
 
     async def handle(self, params, message, client):
-        if message.author.id in Config.characters:
-            pc = Config.characters[message.author.id]
+        pc = get_me(message)
+        if pc:
             (spec, modifier) = extract(params, ["---", 0])
             await self.check(message.channel, pc, spec, modifier)
         else:
@@ -51,9 +51,9 @@ class Check(BaseCommand):
             embed.add_field(name=':crossed_swords: Skills', value=s, inline=False);
             await ctx.send(embed=embed)
         else:
-            for t, name, value, *name2 in getCheckable(pc, spec):
+            for t, name, value, *name2 in get_checkable(pc, spec):
                 if 'trait' == t:
-                    await embedTrait(ctx, pc, name, value, modifier, name2[0])
+                    await embed_trait(ctx, pc, name, value, modifier, name2[0])
                 else:
-                    await embedCheck(ctx, pc, name, value, modifier)
+                    await embed_check(ctx, pc, name, value, modifier)
 

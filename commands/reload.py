@@ -11,7 +11,7 @@ class Reload(BaseCommand):
     def __init__(self):
         self.hidden = 1
         description = "Restart"
-        super().__init__(description, None)
+        super().__init__(description, None, ['frissito', 'restart'])
 
     # Override the handle() method
     # It will be called every time the command is received

@@ -16,8 +16,8 @@ class LordTable(BaseTableHandler):
     def get(self, lord, year, key):
         return BaseTableHandler.execute("SELECT * FROM lord WHERE lord=?, year=?, key = ?", param=[lord, year, key])
 
-    def getbyvalue(self, year, key, value):
-        return BaseTableHandler.execute("SELECT * FROM lord WHERE year=?, key = ?, value=?", param=[year, key, value])
+    def get_by_value(self, year, key, value):
+        return BaseTableHandler.execute("SELECT * FROM lord WHERE year=? AND key = ? AND value=?", param=[year, key, value])
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM lord ORDER BY lord, key', fetch='all')

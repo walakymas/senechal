@@ -7,21 +7,20 @@ class Me(BaseCommand):
 
     def __init__(self):
         description = "Saját karakter adatai"
-        params = None
-        self.aliases = ['m']
-        super().__init__(description, params)
+        super().__init__(description, None, ['m', 'en'])
 
     async def handle(self, params, message, client):
         (task,*ex) = extract(params, ["base"])
-        if message.author.id in Config.characters:
-            me = Config.characters[message.author.id]
+        me = get_me(message)
+        if me:
+            i = me['memberId']
             if "download" == task:
+                me2 = Config.charactersOrig[i]
                 fp = next(tempfile._get_candidate_names())
-                print(fp)
                 with open(fp, 'w') as file:
-                    documents = yaml.dump(me, file, allow_unicode=True)
+                    yaml.dump(me2, file, allow_unicode=True)
                 await try_upload_file(client, message.channel, file_path=fp, filename=str(me['name'])+'.yaml', delete_after_send=True)
             else:
-                await embedPc(message.channel, me, task, params)
+                await embed_pc(message.channel, me, task, params)
         else:
             print(Config.characters.keys())

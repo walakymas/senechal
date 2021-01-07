@@ -11,10 +11,9 @@ class Opposed(BaseCommand):
         super().__init__(description, params, ['o'])
 
     async def handle(self, params, message, client):
-        if message.author.id in Config.characters:
-            pc = Config.characters[message.author.id]
+        pc = get_me(message)
+        if pc:
             (spec, *extra) = params
             (modifier, obase) = extract(extra, [0, -1])
-            if 'memberId' in pc:
-                for t, name, value, *name2 in getCheckable(pc, spec):
-                    await embedAttack(message.channel, pc, name, value, int(modifier), -1, int(obase), -1)
+            for t, name, value, *name2 in get_checkable(pc, spec):
+                await embed_attack(message.channel, pc, name, value, int(modifier), -1, int(obase), -1)

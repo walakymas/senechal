@@ -74,7 +74,7 @@ async def try_upload_file(client, channel, file_path, content=None,
     return sent_msg
 
 
-def getCheckable(pc, spec):
+def get_checkable(pc, spec):
     spec = spec.lower()
     for n, sg in pc['skills'].items():
         for sn, sv in sg.items():
@@ -98,46 +98,51 @@ def tr(a):
 
 
 def dice(size):
-    if 'fixDice' in Config.config and int(Config.config['fixDice']) >= 0:
-        return int(Config.config['fixDice'])
+    return int(overwrite('debugdice', randint(1, size)))
+
+
+def overwrite(cname, orig):
+    if cname in Config.config and "---" != Config.config[cname]:
+        return Config.config[cname]
     else:
-        return randint(1, size)
+        return orig
 
 
-def getMe(message):
-    if message.author.id in Config.characters:
-        return Config.characters[message.author.id]
-    row = Database.getLordByValue(0, 'mychannel', message.channel.id)
+def get_me(message):
+    i = int(overwrite('debugme', message.author.id))
+    if i in Config.characters:
+        return Config.characters[i]
+    from database.lordtable import LordTable
+    row = LordTable().get_by_value(0, 'mychannel', i)
     if row:
         return Config.characters[int(row[2])]
     return None
 
 
-def getEmbed(pc, description=0):
-    embed = 0
-    if (description):
+def get_embed(pc, description=0):
+    if description:
         embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(),
                               color=discord.Color.blue())
     else:
         embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
-    if ('url' in pc):
+    if 'url' in pc:
         embed.set_thumbnail(url=pc['url'])
     return embed
 
 
-async def embedPc(ctx, pc, task, param):
-    if (task == "*" or task == "" or "base".startswith(task.lower())):
-        embed = getEmbed(pc, 1)
+async def embed_pc(channel, pc, task, param):
+    if task == "*" or task == "" or "base".startswith(task.lower()):
+        embed = get_embed(pc, 1)
         from database.evantstable import EventsTable
         if 'memberId' in pc:
             pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
-        if ('main' in pc):
+        if 'main' in pc:
             for name, value in pc['main'].items():
                 embed.add_field(name=name, value=value)
-        await ctx.send(embed=embed)
-    if (task == "*" or "stats".startswith(task.lower())):
+        await channel.send(embed=embed)
+    if task == "*" or "stats".startswith(task.lower()):
         if 'stats' in pc:
-            embed = getEmbed(pc, 0)
+            embed = get_embed(pc, 0)
             for s in Config.senechalConfig['stats']:
                 embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
             embed.add_field(name="Damage", value=str(round((pc['stats']['str'] + pc['stats']['siz']) / 6)) + 'd6');
@@ -145,10 +150,10 @@ async def embedPc(ctx, pc, task, param):
             embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex'] + pc['stats']['siz']) / 10)));
             embed.add_field(name="HP", value=str(round((pc['stats']['con'] + pc['stats']['siz']))));
             embed.add_field(name="Unconscious", value=str(round((pc['stats']['con'] + pc['stats']['siz']) / 4)));
-            await ctx.send(embed=embed)
-    if (task == "*" or "traits".startswith(task.lower())):
+            await channel.send(embed=embed)
+    if task == "*" or "traits".startswith(task.lower()):
         if 'trait' in pc:
-            embed = getEmbed(pc, 0)
+            embed = get_embed(pc, 0)
             traits = pc['traits'];
             result = "";
             for row in Config.senechalConfig['traits']:
@@ -157,72 +162,59 @@ async def embedPc(ctx, pc, task, param):
                 result += row[1] + ": " + str(20 - traits[row[0].lower()[:3]])
                 result += "\n"
             embed.add_field(name="Traits", value=result, inline=False)
-            await ctx.send(embed=embed)
-    if (task == "*" or "events".startswith(task.lower())):
+            await channel.send(embed=embed)
+    if task == "*" or "events".startswith(task.lower()):
         from database.evantstable import EventsTable
-        embed = getEmbed(pc, 0)
+        embed = get_embed(pc, 0)
         glory = 0;
         count = 0
         for e in EventsTable().list(pc['memberId']):
             count += 1
             if (count > 20):
                 count = 1
-                await ctx.send(embed=embed)
-                embed = getEmbed(pc, 0)
+                await channel.send(embed=embed)
+                embed = get_embed(pc, 0)
             glory += int(e[6])
             embed.add_field(name=f"{e[3]}  Glory: {e[6]}", value=e[5].strip(), inline=False)
         embed.add_field(name="Összes Glory: " + str(glory), value=":glory:", inline=False)
-        await ctx.send(embed=embed)
-    if (task == "*" or "skills".startswith(task.lower())):
+        await channel.send(embed=embed)
+    if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in pc:
-            embed = getEmbed(pc, 0)
+            embed = get_embed(pc, 0)
             for sn, sg in pc['skills'].items():
                 s = ""
                 for name, value in sg.items():
                     s += name + ": " + str(value) + "\n"
                 embed.add_field(name=":crossed_swords:  " + sn, value=s, inline=False)
-            await ctx.send(embed=embed)
+            await channel.send(embed=embed)
 
 
-async def embedNpc(ctx, npc):
-    embed = discord.Embed(title=npc['name'], description=npc['description'], timestamp=datetime.datetime.utcnow(),
-                          color=discord.Color.blue())
-    if ('url' in npc):
-        embed.set_thumbnail(url=npc['url'])
-    await ctx.send(embed=embed)
-
-
-def check(base, modifier):
-    color = discord.Color.blue()
+def check(base, modifier=0, emoji=True):
     ro = dice(20)
     r = ro;
     c = base + int(modifier)
-    if (c > 20):
+    if c > 20:
         r -= c - 20
         c = 20
-    text = '---'
-    success = 1
     if ro == c:
-        text = ":crown: Critical"
         color = discord.Color.gold()
         success = 2
     elif ro == 20:
-        text = ":person_facepalming: Fumble"
         color = discord.Color.red()
         success = 3
     elif r > c:
-        text = ":thumbsdown: Fail"
         color = discord.Color.orange()
         success = 4
     else:
-        text = ":thumbsup: Success"
         color = discord.Color.blue()
         success = 1
+    if emoji:
+        return [color, success_emojis[success] + " " + successes[success], ro, success]
+    else:
+        return [color, successes[success], ro, success]
 
-    return [color, text, ro, success]
 
-
-async def embedCheck(ctx, lord, name, base, modifier):
+async def embed_check(ctx, lord, name, base, modifier):
     (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=lord['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
@@ -235,7 +227,7 @@ async def embedCheck(ctx, lord, name, base, modifier):
     await ctx.send(embed=embed)
 
 
-async def embedTrait(ctx, lord, name, base, modifier, name2):
+async def embed_trait(ctx, lord, name, base, modifier, name2):
     (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=lord['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
@@ -249,7 +241,7 @@ async def embedTrait(ctx, lord, name, base, modifier, name2):
     await ctx.send(embed=embed)
 
 
-async def embedAttack(ctx, lord, name, base, modifier, damage=-1, obase=-1, odamage=-1):
+async def embed_attack(ctx, lord, name, base, modifier, damage=-1, obase=-1, odamage=-1):
     (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
@@ -281,4 +273,4 @@ def extract(l, defa):
 
 
 successes = ['?', 'Success', 'Critical', 'Fumble', 'Fail']
-success_emojis = ['?', 'Success', 'Critical', 'Fumble', 'Fail']
+success_emojis = ['?', ':thumbsdown:', ':crown:', ':person_facepalming:', ':thumbsdown:']

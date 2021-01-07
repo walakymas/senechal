@@ -8,7 +8,7 @@ class Changes(BaseCommand):
     def __init__(self):
         description = "Változáslista"
         params = None
-        super().__init__(description, params)
+        super().__init__(description, params, ['valtozas'])
 
     async def handle(self, params, message, client):
         if 'changes' in Config.senechalConfig:

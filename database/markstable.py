@@ -16,6 +16,7 @@ class MarksTable(BaseTableHandler):
     def get(self, lord, year):
         return BaseTableHandler.execute("SELECT * FROM marks WHERE lord=?, year=?", param=[lord, year])
 
-    def list(self):
-        return BaseTableHandler.execute('SELECT * FROM marks ORDER BY lord, year, spec', fetch='all')
+    def list(self, lord=0, year=0):
+        return BaseTableHandler.execute('SELECT * FROM marks WHERE (0==? OR lord=?) AND (0==? OR year=?) '
+                                        'ORDER BY lord, year, spec', [lord, lord, year, year], fetch='all')
 

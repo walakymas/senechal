@@ -8,53 +8,53 @@ class Mark(BaseCommand):
     def __init__(self):
         description = '"Pipa" kezelés'
         params = ['spec']
-        super().__init__(description, params,longdescription='''Pipa kezelés
+        super().__init__(description, None, longdescription='''Pipa kezelés
         
 **!mark list** A bejelölt tulajdonságok listája
-**!mark remove {id} Egy jelölés eltávolítása
-**!mark spec** Egy-vagy több elem megjelölése 
+**!mark remove {id}** Egy jelölés eltávolítása
+**!mark {spec}** Egy-vagy több elem megjelölése 
 ''')
 
     async def handle(self, params, message, client):
-        me = getMe(message)
+        me = get_me(message)
         year = int(MarksTable.year())
         if me:
-            if 'list' == params[0].lower():
-                rows = MarksTable().list()
+            if len(params) == 0 or 'list' == params[0].lower():
+                rows = MarksTable().list(lord=me['memberId'], year=year)
                 msg = f"```{me['name']} Év: {year} \n\nID  Modified   Spec\n";
                 marks = []
                 for row in rows:
-                    if message.author.id == int(row[2]) and year == int(row[1]):
-                        if row[3] not in marks:
-                            marks.append(row[3])
-                            msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
+                    if row[3] not in marks:
+                        marks.append(row[3])
+                        msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
                 await message.channel.send(msg + "```")
             elif 'remove' == params[0].lower():
                 MarksTable().remove(params[1])
                 await message.channel.send("removed")
             else:
                 msg = f"Year:{year}\n"
-                for t, name, value, *name2 in getCheckable(me, params[0]):
+                for t, name, value, *name2 in get_checkable(me, params[0]):
                     if 'stat' != t:
                         MarksTable().set(me['memberId'], year, name)
                         msg += f"{name} marked"
                 await message.channel.send(msg)
         else:
-            if 'list' == params[0].lower():
+            if len(params) == 0 or 'list' == params[0].lower():
                 rows = MarksTable().list()
-                msg = "```"
+                msg = ""
                 marks = []
                 last_lord = 0;
                 for row in rows:
                     if int(row[2]) != last_lord:
                         last_lord = int(row[2])
                         lord = Config.characters[last_lord]
-                        msg += f"{lord} Év:{year} \nID  Modified            Spec\n";
+                        msg += f"\n{lord['name']} Év:{year} \n ID Modified   Spec\n";
+                        marks = []
                     if year == int(row[1]):
                         if row[3] not in marks:
                             marks.append(row[3])
                             msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
-                await message.channel.send(msg + "```")
+                await message.channel.send("```" + msg.strip() + "```")
             elif 'remove' == params[0].lower():
                 MarksTable().remove(params[1])
                 await message.channel.send("removed")

@@ -7,7 +7,6 @@ class Team(BaseCommand):
 
     def __init__(self):
         description = "Check a csapat minden tagjára"
-        params = None
         super().__init__(description, ['spec'], ['t'])
 
     async def handle(self, params, message, client):
@@ -16,14 +15,14 @@ class Team(BaseCommand):
         print(modifier)
         if len(params) > 0:
             for pc in Config.pcs():
-                for t, name, value, *name2 in getCheckable(pc, spec):
-                    (color, text, ro, success) = check(value, int(modifier))
+                for t, name, value, *name2 in get_checkable(pc, spec):
+                    (color, text, ro, success) = check(value, int(modifier), False)
 
                     if 'trait' == t and success > 2:
-                        (color2, text2, ro2, success2) = check(20 - value, int(modifier))
-                        s += f"{pc['shortName']:10}    {value:2}   {ro:2} {successes[success]:10} {name2[0]} {ro2:2} {successes[success2]}\n"
+                        (color2, text2, ro2, success2) = check(20 - value, int(modifier), False)
+                        s += f"{pc['shortName']:10}    {value:2}   {ro:2} {text:10} {name2[0]} {ro2:2} {text2}\n"
                     else:
-                        s += f"{pc['shortName']:10}    {value:2}   {ro:2} {successes[success]}\n"
+                        s += f"{pc['shortName']:10}    {value:2}   {ro:2} {text}\n"
             await message.channel.send("```\n" + s + "```")
         else:
             await message.channel.send("Kérlek uram add meg mitt ellenőrizzünk!")

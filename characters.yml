@@ -100,12 +100,12 @@
       Horsemanship: 12
     Weapons:
       Sword: 16
-      Spear Expertise: 15
+      SpearExpertise: 15
       Dagger: 6
       Bow: 1
-      Spear: .Spear Expertise
-      Lance: .Spear Expertise
-      Great Spear: .Spear Expertise
+      Spear: .SpearExpertise
+      Lance: .SpearExpertise
+      Great Spear: .SpearExpertise
     Other:
       Awareness: 11
       Boating: 1
@@ -127,6 +127,7 @@
       Religion (Pagan): 2
       Romance: 2
       Singing: 3
+      Stewardship: 2
       Swimming: 2
       Tourney: 10
   winter:
@@ -219,9 +220,8 @@
       Intrigue: 2
       Orate: 2
       Swimming: 8
+      Stewardship: 2
       Tourney: 2
-
-
 
 
 #Csepi
@@ -571,7 +571,7 @@
     Weapons:
       Sword: 10
       Dagger: 5
-      Spear: 10
+      Spear: 15
       Lance: 10
     Other:
       Awareness: 11
