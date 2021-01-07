@@ -9,10 +9,10 @@ class Event(BaseCommand):
         description = 'Event/history kezelés glory támogatással.'
         super().__init__(description, None, longdescription='''Event/history kezelés glory támogatással.
 
-**!event [list]** karakter eventjeinek listája aktuális karakterhez és évhez lesz rögzítve 
-**!event {glory} {leírás}** új event  rögzítése
+**!event [list]** karakter eventjeinek listája  
+**!event {glory} {leírás}** új event  rögzítése aktuális karakterhez és évhez
 **!event remove {id}** event eltávolítása
-**!event modify {id} {glory} {leírás} event módosítása''')
+**!event modify {id} {glory} {leírás}** event módosítása''')
 
     async def handle(self, params, message, client):
         me = getMe(message)
