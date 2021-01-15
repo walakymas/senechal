@@ -1,0 +1,3 @@
+import senechal
+
+senechal.main()
