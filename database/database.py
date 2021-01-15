@@ -6,7 +6,11 @@ import os
 
 class Database:
     conn = sqlite3.connect('senechal.db')
-    db = postgresql.open(os.environ['DATABASE_URL'])
+    pq  = os.environ['DATABASE_URL']
+    if pq.startswith("postgres:"):
+        pq = "pq"+pq[8:]
+    print(pq)
+    db = postgresql.open(pq)
 
     @staticmethod
     def pgInit():
