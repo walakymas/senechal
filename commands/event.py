@@ -19,12 +19,7 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
         me = get_me(message)
         if me:
             if len(params)== 0 or 'list' == params[0].lower():
-                msg = f"**{me['name']}**\n"
-                glory = 0;
-                for e in EventsTable().list(me['memberId']):
-                    msg+=f"***Year: {e[3]}  Glory: {e[6]}*** *Id:{e[0]}*\n{e[5]}\n"
-                    glory += int(e[6])
-                await message.channel.send(f"**Összes Glory: {glory}**\n\n{msg}")
+                await embed_pc(message.channel, me, "event", None)
             elif 'modify' == params[0].lower():
                 id = int(params[1])
                 glory = int(params[2])

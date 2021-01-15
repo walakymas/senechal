@@ -121,21 +121,27 @@ def get_me(message):
 
 def get_embed(pc, description=0):
     if description:
-        embed = discord.Embed(title=pc['name'], description=pc['description'], timestamp=datetime.datetime.utcnow(),
+        embed = discord.Embed(title=pc['name'],
+                              description=pc['description'],
+                              timestamp=datetime.datetime.now(),
                               color=discord.Color.blue())
     else:
-        embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+        embed = discord.Embed(title=pc['name'], color=discord.Color.blue(),
+                              timestamp=datetime.datetime.now(),
+                              footer="alma")
     if 'url' in pc:
         embed.set_thumbnail(url=pc['url'])
+        embed.set_footer(text=f"{Config.prefix}senechal")
     return embed
 
 
 async def embed_pc(channel, pc, task, param):
+    print(task)
     if task == "*" or task == "" or "base".startswith(task.lower()):
         embed = get_embed(pc, 1)
         from database.eventstable import EventsTable
         if 'memberId' in pc:
-            pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
+            pc['main']['Glory'] = EventsTable().glory(pc['memberId'])
         if 'main' in pc:
             for name, value in pc['main'].items():
                 embed.add_field(name=name, value=value)
@@ -152,31 +158,27 @@ async def embed_pc(channel, pc, task, param):
             embed.add_field(name="Unconscious", value=str(round((pc['stats']['con'] + pc['stats']['siz']) / 4)));
             await channel.send(embed=embed)
     if task == "*" or "traits".startswith(task.lower()):
-        if 'trait' in pc:
+        if 'traits' in pc:
             embed = get_embed(pc, 0)
             traits = pc['traits'];
             result = "";
             for row in Config.senechalConfig['traits']:
-                result += row[0] + ": " + str(traits[row[0].lower()[:3]])
-                result += " / "
-                result += row[1] + ": " + str(20 - traits[row[0].lower()[:3]])
-                result += "\n"
-            embed.add_field(name="Traits", value=result, inline=False)
+                result += f"{row[0]:10} {traits[row[0].lower()[:3]]:2} / {row[1]:10} {20-traits[row[0].lower()[:3]]:2}\n"
+            embed.add_field(name="Traits", value=f"```{result}```", inline=False)
             await channel.send(embed=embed)
     if task == "*" or "events".startswith(task.lower()):
+        embed = get_embed(pc)
         from database.eventstable import EventsTable
-        embed = get_embed(pc, 0)
-        glory = 0;
+        embed.add_field(name="Összes Glory", value=f"{EventsTable().glory(pc['memberId'])}", inline=False)
+        msg = f""
         count = 0
         for e in EventsTable().list(pc['memberId']):
             count += 1
-            if (count > 20):
+            if count > 25:
                 count = 1
                 await channel.send(embed=embed)
                 embed = get_embed(pc, 0)
-            glory += int(e[6])
-            embed.add_field(name=f"{e[3]}  Glory: {e[6]}", value=e[5].strip(), inline=False)
-        embed.add_field(name="Összes Glory: " + str(glory), value=":glory:", inline=False)
+            embed.add_field(name=f"Year: {e['year']}  Glory: {e['glory']} Id:{e['id']}", value=e['description'], inline=False)
         await channel.send(embed=embed)
     if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in pc:
@@ -185,27 +187,30 @@ async def embed_pc(channel, pc, task, param):
                 s = ""
                 for name, value in sg.items():
                     s += name + ": " + str(value) + "\n"
-                embed.add_field(name=":crossed_swords:  " + sn, value=s, inline=False)
+                embed.add_field(name=":crossed_swords:  " + sn, value=f"```{s}```", inline=False)
             await channel.send(embed=embed)
 
     if task == "*" or "winter".startswith(task.lower()):
         winter = winterData(pc)
         i = int(pc['memberId'])
+        embed = get_embed(pc)
         year = MarksTable().year()
-        msg = f"```{year} tele\nStewardship: {winter['stewardship']}\n"
-        msg += "\nLovak\n"
+        embed.add_field(name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
+        msg = ""
         for h in winter['horses']:
             msg += f"  {h}\n"
+        embed.add_field(name="Lovak", value=f"```{msg}```", inline=False)
         rows = MarksTable().list(lord=i, year=year)
-        msg += f"\nModified   Spec\n";
+        msg = f"\nModified   Spec\n";
         marks = []
         for row in rows:
-            for t, name, value, *name2 in get_checkable(pc, row[3]):
+            for t, name, value, *name2 in get_checkable(pc, row['spec']):
                 if name not in marks:
                     marks.append(name)
-                    msg += f"{row[0][:10]} {row[3]:15} {value:2} \n"
+                    msg += f"{str(row['modified'])[:10]} {name:15} {value:2} \n"
+        embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
 
-        await channel.send(msg + "```")
+        await channel.send(embed=embed)
 
 
 def winterData(me):
@@ -220,11 +225,11 @@ def winterData(me):
             winter['horses'] = me['winter']['horses']
     ss = 0;
     from database.lordtable import LordTable
-    for r in LordTable().list(me['memberId'], 0):
+    for r in LordTable().list(int(me['memberId']), 0):
         if r[3] == 'winter.stewardship':
-            winter['stewardship'] = r[4];
+            winter['stewardship'] = r[5];
         elif r[3] == 'winter.horses':
-            winter['horses'] = r[4].strip().split(',')
+            winter['horses'] = r[5].strip().split(',')
     return winter
 
 

@@ -35,20 +35,19 @@ class BaseTableHandler:
         except TypeError:
             return 481
 
+    def db(self):
+        return Database.db
+
     @staticmethod
-    def execute(sql, param=None, commit=None, fetch=None, many=0):
-        cur = Database.conn.cursor()
-        if param:
-            cur.execute(sql, param)
-        else:
-            cur.execute(sql)
-        if commit:
-            Database.conn.commit()
+    def execute(sql, param=None, commit=None, fetch=None):
+        print(param)
+        p = Database.db.query(sql, param)
         if fetch == 'all':
-            return cur.fetchall()
+            return p.rows()
         elif fetch == 'one':
-            return cur.fetchone()
-        elif many:
-            return cur.fetchmany(many)
+            return p.first()
+        else:
+            p()
+
 
 

@@ -7,16 +7,15 @@ class MarksTable(BaseTableHandler):
         super().__init__('marks')
 
     def set(self, lord, year, value):
-        BaseTableHandler.execute('REPLACE INTO marks (last_modified, lord, year, spec) VALUES(?,?,?,?);',
-                                 [BaseTableHandler.now(), lord, year, value], commit=True)
+        super().db().prepare('INSERT INTO marks (modified, lord, year, spec) VALUES(now(),$1,$2,$3)'
+                             ' ON CONFLICT (lord, year, spec) DO UPDATE SET spec=$3')(lord, year, value)
 
     def remove(self, key):
-        BaseTableHandler.execute("DELETE FROM marks WHERE id=?", param=[key], commit=True)
+        super().db().prepare("DELETE FROM marks WHERE id=$1")(int(key))
 
     def get(self, lord, year):
-        return BaseTableHandler.execute("SELECT * FROM marks WHERE lord=?, year=?", param=[lord, year])
+        return super().db().prepare("SELECT * FROM marks WHERE lord=$1, year=$2")(lord, year)
 
-    def list(self, lord=0, year=0):
-        return BaseTableHandler.execute('SELECT * FROM marks WHERE (0==? OR lord=?) AND (0==? OR year=?) '
-                                        'ORDER BY lord, year, spec', [lord, lord, year, year], fetch='all')
+    def list(self, lord=-1, year=-1):
+        return super().db().prepare('SELECT * FROM marks WHERE (-1=$1::bigint OR lord=$1::bigint) AND (-1=$2 OR year=$2) ORDER BY lord, year, spec').rows(lord, year)
 

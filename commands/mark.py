@@ -19,14 +19,16 @@ class Mark(BaseCommand):
         year = int(MarksTable.year())
         if me:
             if len(params) == 0 or 'list' == params[0].lower():
-                rows = MarksTable().list(lord=me['memberId'], year=year)
-                msg = f"```{me['name']} Év: {year} \n\nID  Modified   Spec\n";
+                embed = get_embed(me)
+                rows = MarksTable().list(lord=int(me['memberId']), year=year)
+                msg = f"```ID  Modified   Spec\n";
                 marks = []
                 for row in rows:
-                    if row[3] not in marks:
-                        marks.append(row[3])
-                        msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
-                await message.channel.send(msg + "```")
+                    if row['spec'] not in marks:
+                        marks.append(row['spec'])
+                        msg += f"{row['id']:3} {str(row['modified'])[:10]} {row['spec']:15}\n"
+                embed.add_field(name=f"{me['name']} Év: {year}", value=msg+"```", inline=False )
+                await message.channel.send(embed=embed)
             elif 'remove' == params[0].lower():
                 MarksTable().remove(params[1])
                 await message.channel.send("removed")

@@ -27,9 +27,9 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
     async def winter(self, me, message):
         winter = winterData(me)
         year = MarksTable().year()
+        embed = get_embed(me)
         major = dice(6)
-        msg = f"```{year} tele, {me['name']}\n"
-        msg += f"Gazdaság: {('Terrible','Bad','Normal','Normal','Good','Excellent')[major-1]} ({major})\n"
+        msg = f"Gazdaság: {('Terrible','Bad','Normal','Normal','Good','Excellent')[major-1]} ({major})\n"
         (c, t, dobas, siker) = check(int(winter['stewardship']), 0, False)
         if major in (1,2):
             msg += f"Stewardship({winter['stewardship']}): {dobas} {t}  {('Kemény munkával kivédtétek a bajt','Szegény lovag vagy')[siker>=3]} \n"
@@ -37,19 +37,22 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
             msg += f"Extra bevétel: {dice(20)} \n"
         elif major == 6:
             msg += f"Stewardship({winter['stewardship']}): {dobas} {t}  {('Gazdag lovag vagy','Nem sikerült kihasználni a remek időt')[siker>=3]} \n"
-
-        msg += "\nLovak\n"
+        embed.add_field(name=f"{year} tele", value=f"```{msg}```", inline=False)
+        msg = ""
         for h in winter['horses']:
             msg += f"  {h}: {('Egészséges','Megdöglött vagy tönkrement')[dice(20)<3]}\n"
+        embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
         i = int(me['memberId'])
+        msg = ""
         rows = MarksTable().list(lord=i, year=year)
-        msg += f"\nModified   Spec              Dobás   Hatás\n";
+        msg += f"Modified   Spec              Dobás   Hatás\n";
         marks = []
         for row in rows:
-            for t, name, value, *name2 in get_checkable(me, row[3]):
+            for t, name, value, *name2 in get_checkable(me, row['spec']):
                 if name not in marks:
                     marks.append(name)
                     (color, text, ro, success) = check(value, 0)
-                    msg += f"{row[0][:10]} {row[3]:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
+                    msg += f"{str(row['modified'])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
+        embed.add_field(name="Pipák",value=f"```{msg}```", inline=False)
 
-        await message.channel.send(msg + "```")
+        await message.channel.send(embed=embed)
