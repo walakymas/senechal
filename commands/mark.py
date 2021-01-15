@@ -8,9 +8,8 @@ class Mark(BaseCommand):
     def __init__(self):
         description = '"Pipa" kezelés'
         params = ['spec']
-        super().__init__(description, None, longdescription='''Pipa kezelés
-        
-**!mark list** A bejelölt tulajdonságok listája
+        super().__init__(description, None, aliases=['pipa'],
+                         longdescription='''**!mark list** A bejelölt tulajdonságok listája
 **!mark remove {id}** Egy jelölés eltávolítása
 **!mark {spec}** Egy-vagy több elem megjelölése 
 ''')

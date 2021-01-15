@@ -7,7 +7,9 @@ class Pc(BaseCommand):
 
     def __init__(self):
         description = "Pc információk *: mind"
-        super().__init__(description, ['név'])
+        super().__init__(description, ['név'],
+                         longdescription='''**!npc {nev} [*|_base_|stats|events|traits|skills] ** információs blokkok a characters.yaml illetve az addatbázisban tárolt eventek alapján
+Paraméter nélkül a base blokk jelenik meg, * esetén az összes.''')
 
     async def handle(self, params, message, client):
         task = "base"

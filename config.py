@@ -22,14 +22,12 @@ class Config:
             Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
 
         with open(r'characters.yml') as file:
-            Config.characters = yaml.load(file, Loader=yaml.FullLoader)
             Config.charactersOrig = yaml.load(file, Loader=yaml.FullLoader)
+
+        with open(r'characters.yml') as file:
+            Config.characters = yaml.load(file, Loader=yaml.FullLoader)
             for character in Config.characters.values():
                 if ('memberId' in character):
-                    g = 0;
-                    for h in character['events']:
-                        g += h['glory']
-                    character['main']['Glory'] = g
                     for n, sg in character['skills'].items():
                         for sn, sv in sg.items():
                             if '.' == str(sv)[:1]:

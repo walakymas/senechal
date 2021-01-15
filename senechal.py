@@ -81,8 +81,6 @@ def main():
         await common_handle_message(after)
 
     Config.reload()
-    # Finally, set the bot running
-    print(Config.config['token'])
     client.run(Config.config['token'])
 
 ###############################################################################

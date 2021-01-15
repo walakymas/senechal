@@ -1,2 +1,9 @@
 Akkor is tudjon channelre küldeni, ha magánban jött az üzenet ilyenkor a kockadobásra éslehessen látni ki kezdeményezte
 Alternatíva, hogy ilyet a mesélő tudjon
+
+lord és winter parancs olvadjon be a me-be
+!me winter          Winter blokk, hozzáadódik a *-hoz, de csak megadja a stewardship-t, lovakat, és a pipált tulajdonságokat
+!me set key value   keys: stewardship, horses (,-l elválasztva), married:
+!me setchannel      saját channel jelölése bár bizonytalan van-e értelme még.
+
+winter adatok a lord adatbázisból.

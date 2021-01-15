@@ -7,9 +7,11 @@ from config import Config
 class Senechal(BaseCommand):
 
     def __init__(self):
-        description = "Ez az üzenet. Opcionális paraméter: egy parancs neve"
+        description = "Ez az üzenet."
         params = None
-        super().__init__(description, params, ['h', 'help', 'segitseg'])
+        super().__init__(description, params, ['h', 'help', 'segitseg'],
+                         longdescription='''**!senechal** egy lista a lehetséges parancsokról és egy intro szöveg
+ **!senechal {parancs}** bővebb leírás az adott parancsról. Alias is megfelel''')
 
     async def handle(self, params, message, client):
         from message_handler import COMMAND_ALIASES

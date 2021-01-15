@@ -6,8 +6,7 @@ from utils import *
 class Lord(BaseCommand):
 
     def __init__(self):
-        self.hidden = 1
-        description = 0
+        description = 'Egyes játékosokra vonatkozó beállítások, egyelőre csak a saját channel rögzítésére'
         params = ['task']
         super().__init__(description, params, ['l'])
 

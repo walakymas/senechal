@@ -9,7 +9,7 @@ from emoji import emojize
 
 import settings
 from config import Config
-from database.database import Database
+from database.markstable import MarksTable
 
 
 # Returns a path relative to the bot directory
@@ -133,7 +133,7 @@ def get_embed(pc, description=0):
 async def embed_pc(channel, pc, task, param):
     if task == "*" or task == "" or "base".startswith(task.lower()):
         embed = get_embed(pc, 1)
-        from database.evantstable import EventsTable
+        from database.eventstable import EventsTable
         if 'memberId' in pc:
             pc['main']['Glory']=EventsTable().glory(pc['memberId'])[0]
         if 'main' in pc:
@@ -164,7 +164,7 @@ async def embed_pc(channel, pc, task, param):
             embed.add_field(name="Traits", value=result, inline=False)
             await channel.send(embed=embed)
     if task == "*" or "events".startswith(task.lower()):
-        from database.evantstable import EventsTable
+        from database.eventstable import EventsTable
         embed = get_embed(pc, 0)
         glory = 0;
         count = 0
@@ -187,6 +187,45 @@ async def embed_pc(channel, pc, task, param):
                     s += name + ": " + str(value) + "\n"
                 embed.add_field(name=":crossed_swords:  " + sn, value=s, inline=False)
             await channel.send(embed=embed)
+
+    if task == "*" or "winter".startswith(task.lower()):
+        winter = winterData(pc)
+        i = int(pc['memberId'])
+        year = MarksTable().year()
+        msg = f"```{year} tele\nStewardship: {winter['stewardship']}\n"
+        msg += "\nLovak\n"
+        for h in winter['horses']:
+            msg += f"  {h}\n"
+        rows = MarksTable().list(lord=i, year=year)
+        msg += f"\nModified   Spec\n";
+        marks = []
+        for row in rows:
+            for t, name, value, *name2 in get_checkable(pc, row[3]):
+                if name not in marks:
+                    marks.append(name)
+                    msg += f"{row[0][:10]} {row[3]:15} {value:2} \n"
+
+        await channel.send(msg + "```")
+
+
+def winterData(me):
+    ss = 0;
+    for s in get_checkable(me, 'stewardship'):
+        ss = s[2]
+    winter = {'stewardship': ss, 'horses':['charger', 'rouncy', 'rouncy', 'stumper', 'stumper' ]}
+    if 'winter' in me:
+        if 'stewardship' in me['winter']:
+            winter['stewardship'] = me['winter']['stewardship']
+        if 'horses' in me['winter']:
+            winter['horses'] = me['winter']['horses']
+    ss = 0;
+    from database.lordtable import LordTable
+    for r in LordTable().list(me['memberId'], 0):
+        if r[3] == 'winter.stewardship':
+            winter['stewardship'] = r[4];
+        elif r[3] == 'winter.horses':
+            winter['horses'] = r[4].strip().split(',')
+    return winter
 
 
 def check(base, modifier=0, emoji=True):

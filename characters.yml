@@ -251,7 +251,7 @@
 
   stats: { siz: 10, dex: 15, str: 12, con: 11, app: 14 }
 
-  traits: { cha: 12, ene: 11, for: 13, gen: 16, hon: 12, jus: 9, mer: 12, mod: 12, spi: 7, pru: 6, tem: 13, tru: 6, val: 16 }
+  traits: { cha: 9, ene: 11, for: 10, gen: 13, hon: 10, jus: 10, mer: 9, mod: 6, spi: 7, pru: 6, tem: 7, tru: 10, val: 16 }
 
   events:
     - year: 479

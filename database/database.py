@@ -80,7 +80,7 @@ class Database:
                 """)
             version = 5
         if version == 5:
-            from database.evantstable import EventsTable
+            from database.eventstable import EventsTable
             print("Update 6")
             et = EventsTable()
             for pc in Config.pcs():

@@ -7,9 +7,7 @@ class Attack(BaseCommand):
     def __init__(self):
         params = ['spec']
         super().__init__("Támadás próba az aktuális karakternek", params, ['a'],
-                         longdescription= '''Támadás próba az aktuális karakternek
-                         
-**!attack {skill} *{modoító}* *{sebzés kockák}* *{ellenfél skill}* *{ellenfél sebzés kockák}* **
+                         longdescription= '''**!attack {skill} *{modoító}* *{sebzés kockák}* *{ellenfél skill}* *{ellenfél sebzés kockák}* **
 Kritikus siker esetén mindkét oldal esetén automatikusan 4 kockával növeli a sebzést. 
 ''')
 

@@ -11,7 +11,8 @@ class Reload(BaseCommand):
     def __init__(self):
         self.hidden = 1
         description = "Restart"
-        super().__init__(description, None, ['frissito', 'restart'])
+        super().__init__(description, None, ['frissito', 'restart'],
+                         longdescription='''Újraindítja a botot. Aamennyiben engedélyezve van a configban, előtte frissíti a githubról a configot és a forráskódot''')
 
     # Override the handle() method
     # It will be called every time the command is received

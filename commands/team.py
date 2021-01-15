@@ -25,4 +25,4 @@ class Team(BaseCommand):
                         s += f"{pc['shortName']:10}    {value:2}   {ro:2} {text}\n"
             await message.channel.send("```\n" + s + "```")
         else:
-            await message.channel.send("Kérlek uram add meg mitt ellenőrizzünk!")
+            await message.channel.send("Kérlek uram add meg mit ellenőrizzünk!")

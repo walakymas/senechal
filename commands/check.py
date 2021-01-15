@@ -6,11 +6,10 @@ from utils import *
 class Check(BaseCommand):
 
     def __init__(self):
-        description = "Trait, stat, passion vagy skill check"
+        description = "Trait, stat, passion vagy skill próba"
         params = ['spec']
-        super().__init__(description, aliases=['c', 'ch'], longdescription='''Trait, stat, passion vagy skill próba
-        
-***!c {spec} {modifier=0}*** A játékosok saját karakterhez indíthatnak próbát 
+        super().__init__(description, aliases=['c', 'ch'],
+                         longdescription='''***!c {spec} {modifier=0}*** A játékosok saját karakterhez indíthatnak próbát 
 ***!c {név} {spec} {modifier=0}*** A mesélő egy névrészlet megadásával azonosíthatja a karaktert
 *spec* próbáratett tulajdonság nevének kezdő részlete
 *modifier* aktuális módosító  

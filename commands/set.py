@@ -5,10 +5,11 @@ from config import Config
 class Set(BaseCommand):
 
     def __init__(self):
-        self.hidden = 1
-        description = 0
+        description = 'Egyes beállítások ideiglenes felülbírálása főként teszt célokra'
         params = ['key', 'value']
-        super().__init__(description, params)
+        super().__init__(description, params, '''Jelenleg két key van kezelve:
+**debugdice:** minden dobás értéke a paraméterben megadott érték legyen
+**debugme:** fix user id, az üzenet küldőjétől függetlenül. így megnézhetem másnak mi jelenne meg.''')
 
     async def handle(self, params, message, client):
         Config.config[params[0]] = params[1]

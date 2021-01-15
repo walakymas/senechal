@@ -11,8 +11,8 @@ class Db(BaseCommand):
     def __init__(self):
         description = 'Adattáblák kezelése'
         params = ['task']
-        super().__init__(description, params, longdescription=''' Adattáblák kezelése
-**!db download** adatbázis mentése
+        super().__init__(description, params,
+                         longdescription='''**!db download** adatbázis mentése
 **!db [list|set|get|remove] [prop|mark|lord|event|note] ... ** Under construction
 prop adatbázis list, set, get és remove művelete valamint a lord és mark adtabázisok list művelete megoldott
         ''')

@@ -1,6 +1,6 @@
 from commands.base_command import BaseCommand
 from utils import *
-from database.evantstable import EventsTable
+from database.eventstable import EventsTable
 import re
 
 class Event(BaseCommand):
@@ -9,9 +9,7 @@ class Event(BaseCommand):
     def __init__(self):
         self.hidden = 1
         description = 'Event/history kezelés glory támogatással.'
-        super().__init__(description, None, ['e', 'esemeny'], longdescription='''Event/history kezelés glory támogatással.
-
-**!event [list]** karakter eventjeinek listája  
+        super().__init__(description, None, ['e', 'esemeny'], longdescription='''**!event [list]** karakter eventjeinek listája  
 **!event {glory} {leírás}** új event  rögzítése aktuális karakterhez és évhez
 amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évhez rögzíti
 **!event remove {id}** event eltávolítása
