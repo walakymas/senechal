@@ -1,4 +1,5 @@
 import yaml
+import os
 
 
 class Config:
@@ -11,12 +12,20 @@ class Config:
     mainChannel = None
 
     def reload():
-        with open(r'config.yml') as file:
-            Config.config = yaml.load(file, Loader=yaml.FullLoader)
-            if ('prefix' in Config.config):
-                Config.prefix = Config.config['prefix']
-            if ('mainChannel' in Config.config):
-                Config.mainChannelId = Config.config['mainChannel']
+        try:
+            with open(r'config.yml') as file:
+                Config.config = yaml.load(file, Loader=yaml.FullLoader)
+                if ('prefix' in Config.config):
+                    Config.prefix = Config.config['prefix']
+                if ('mainChannel' in Config.config):
+                    Config.mainChannelId = Config.config['mainChannel']
+        except IOError:
+            Config.config = {'token': os.environ['token']}
+            if ('prefix' in os.environ):
+                Config.prefix = os.environ['prefix']
+
+            if ('mainChannel' in os.environ):
+                Config.mainChannelId = os.environ['mainChannel']
 
         with open(r'senechal.yml') as file:
             Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)

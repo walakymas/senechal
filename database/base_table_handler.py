@@ -30,7 +30,10 @@ class BaseTableHandler:
 
     @staticmethod
     def year():
-        return int(BaseTableHandler.execute("SELECT value FROM properties WHERE key = 'year'", fetch='one')[0])
+        try:
+            return int(BaseTableHandler.execute("SELECT value FROM properties WHERE key = 'year'", fetch='one')[0])
+        except TypeError:
+            return 481
 
     @staticmethod
     def execute(sql, param=None, commit=None, fetch=None, many=0):
