@@ -10,4 +10,4 @@ six
 tzlocal
 websockets
 pyyaml
-py-postgresql
+psycopg2-binary

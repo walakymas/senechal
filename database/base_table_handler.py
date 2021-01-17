@@ -39,15 +39,14 @@ class BaseTableHandler:
         return Database.db
 
     @staticmethod
-    def execute(sql, param=None, commit=None, fetch=None):
-        print(param)
-        p = Database.db.query(sql, param)
-        if fetch == 'all':
-            return p.rows()
-        elif fetch == 'one':
-            return p.first()
-        else:
-            p()
-
+    def execute(sql, param=None, commit=None, fetch=None, many=0):
+        with Database.db.cursor() as cur:
+            cur.execute(sql, vars=param)
+            if fetch == 'all':
+                return cur.fetchall()
+            elif fetch == 'one':
+                return cur.fetchone()
+            elif many:
+                return cur.fetchmany(many)
 
 

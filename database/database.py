@@ -1,81 +1,86 @@
 import datetime
 import sqlite3
 from config import Config
-import postgresql
+from urllib.parse import urlparse
+import psycopg2
 import os
 
 class Database:
     conn = sqlite3.connect('senechal.db')
     pq  = os.environ['DATABASE_URL']
-    if pq.startswith("postgres:"):
-        pq = "pq"+pq[8:]
-    print(pq)
-    db = postgresql.open(pq)
-
+    url = urlparse(pq)
+    db = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
     @staticmethod
     def pgInit():
-        db = Database.db
-        db.execute("""CREATE TABLE IF NOT EXISTS properties (
-            created timestamp without time zone NOT NULL DEFAULT now(), 
-            modified timestamp without time zone NOT NULL DEFAULT now(), 
-            key text NOT NULL UNIQUE, 
-            value text
-            )""")
-        v = 0
-        r = db.query.first("SELECT value FROM properties WHERE key = 'dbversion'")
-        print(r)
-        if r:
-            v = int(r)
-        else:
-            db.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'dbversion',0)")
-        if v == 0:
-            db.execute("""CREATE TABLE IF NOT EXISTS events (
-                    id SERIAL PRIMARY KEY,
-                    created timestamp without time zone NOT NULL DEFAULT now(), 
-                    modified timestamp without time zone NOT NULL DEFAULT now(), 
-                    year int, 
-                    lord bigint,
-                    description text,
-                    glory int
-                    )
-                    """)
-            db.execute("""CREATE TABLE IF NOT EXISTS lord (
-                    created timestamp without time zone NOT NULL DEFAULT now(), 
-                    modified timestamp without time zone NOT NULL DEFAULT now(), 
-                    year int, 
-                    lord bigint,
-                    key text,
-                    value text
-                    )
-                    """)
-            db.execute("CREATE UNIQUE INDEX idx_lord_key ON lord (lord, key);")
-            db.execute("""CREATE TABLE IF NOT EXISTS marks (
-                    id SERIAL PRIMARY KEY,
-                    created timestamp without time zone NOT NULL DEFAULT now(), 
-                    modified timestamp without time zone NOT NULL DEFAULT now(), 
-                    year int, 
-                    lord bigint,
-                    spec text
-                    )
-                    """)
-            db.execute("CREATE UNIQUE INDEX idx_marks_lys ON marks (lord, year, spec);")
-            v = 1
-            db.execute("UPDATE properties  SET value = 1 WHERE key = 'dbversion'")
-        if v == 1:
-            c = Database.conn.cursor()
-            rows = c.execute("SElECT modified, year, lord, description, glory FROM events ORDER BY id").fetchall()
-            print(len(rows))
-            insert = db.prepare("INSERT INTO events (created, modified, year, lord, description, glory) VALUES(now(), to_timestamp(substr($1,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, $2, $3, $4, $5)")
-            insert.load_rows(rows)
-            v = 2
-        if v == 2:
-            c = Database.conn.cursor()
-            rows = c.execute("SElECT last_modified, year, lord, spec FROM marks ORDER BY id").fetchall()
-            print(len(rows))
-            insert = db.prepare("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr($1,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, $2, $3, $4)")
-            insert.load_rows(rows)
-            v = 3
-        db.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
+        with Database.db.cursor() as cur:
+            cur.execute("""CREATE TABLE IF NOT EXISTS properties (
+                created timestamp without time zone NOT NULL DEFAULT now(), 
+                modified timestamp without time zone NOT NULL DEFAULT now(), 
+                key text NOT NULL UNIQUE, 
+                value text
+                )""")
+            v = 0
+            cur.execute("""SELECT value FROM properties WHERE key = 'dbversion';""")
+            r = cur.fetchone()
+            if r:
+                v = int(r[0])
+            else:
+                cur.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'dbversion',0)")
+            print(f"PG version: {v}")
+            if v == 0:
+                cur.execute("""CREATE TABLE IF NOT EXISTS events (
+                        id SERIAL PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(), 
+                        year int, 
+                        lord bigint,
+                        description text,
+                        glory int
+                        )
+                        """)
+                cur.execute("""CREATE TABLE IF NOT EXISTS lord (
+                        created timestamp without time zone NOT NULL DEFAULT now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(), 
+                        year int, 
+                        lord bigint,
+                        key text,
+                        value text
+                        )
+                        """)
+                cur.execute("CREATE UNIQUE INDEX idx_lord_key ON lord (lord, key);")
+                cur.execute("""CREATE TABLE IF NOT EXISTS marks (
+                        id SERIAL PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(), 
+                        year int, 
+                        lord bigint,
+                        spec text
+                        )
+                        """)
+                cur.execute("CREATE UNIQUE INDEX idx_marks_lys ON marks (lord, year, spec);")
+                v = 1
+                cur.execute("UPDATE properties  SET value = 1 WHERE key = 'dbversion'")
+            if v == 1:
+                c = Database.conn.cursor()
+                rows = c.execute("SElECT modified, year, lord, description, glory FROM events ORDER BY id").fetchall()
+                print(len(rows))
+                insert = cur.prepare("INSERT INTO events (created, modified, year, lord, description, glory) VALUES(now(), to_timestamp(substr($1,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, $2, $3, $4, $5)")
+                insert.load_rows(rows)
+                v = 2
+            if v == 2:
+                c = Database.conn.cursor()
+                rows = c.execute("SElECT last_modified, year, lord, spec FROM marks ORDER BY id").fetchall()
+                print(len(rows))
+                insert = cur.prepare("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr($1,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, $2, $3, $4)")
+                insert.load_rows(rows)
+                v = 3
+            cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
 
     @staticmethod
     def initiate():
@@ -159,6 +164,6 @@ class Database:
                     et.insert(pc['memberId'], e['description'], e['glory'], e['year'])
             version = 6
         c.execute("REPLACE INTO properties (last_modified, key, value) VALUES(?,'dbversion',?);",
-                  [str(datetime.datetime.utcnow()), version])
+                  [str(datetime.datetime.now()), version])
         Database.pgInit()
         Database.conn.commit()
