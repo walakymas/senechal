@@ -2,16 +2,6 @@ from database.base_table_handler import BaseTableHandler
 
 
 class EventsTable(BaseTableHandler):
-    # """CREATE TABLE IF NOT EXISTS events (
-    #                 id INTEGER PRIMARY KEY,
-    #                 modified text,
-    #                 created text,
-    #                 year int,
-    #                 lord int,
-    #                 description text,
-    #                 glory int
-    #                 )
-    #                 """
     def __init__(self):
         super().__init__('events')
 
@@ -25,7 +15,7 @@ class EventsTable(BaseTableHandler):
                                         [description, glory, id], commit=True)
 
     def remove(self, id):
-        return BaseTableHandler.execute('DELETE * FROM events WHERE id=%s', [id], commit=True)
+        return BaseTableHandler.execute('DELETE FROM events WHERE id=%s', [id], commit=True)
 
     def get(self, id):
         return BaseTableHandler.execute('SELECT * FROM events WHERE id=%s', [id], commit=True, fetch='one')
