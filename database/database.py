@@ -82,6 +82,7 @@ class Database:
                     insert = cur.execute("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s)", row)
                 v = 3
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
+            Database.db.commit()
 
     @staticmethod
     def initiate():

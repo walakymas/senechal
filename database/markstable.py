@@ -7,7 +7,7 @@ class MarksTable(BaseTableHandler):
         super().__init__('marks')
 
     def set(self, lord, year, value):
-        BaseTableHandler.execute('INSERT INTO marks (modified, lord, year, spec) VALUES(now(),$%(lord)s,%(year)s,%(spec)s)'
+        BaseTableHandler.execute('INSERT INTO marks (modified, lord, year, spec) VALUES(now(),%(lord)s,%(year)s,%(spec)s)'
                              ' ON CONFLICT (lord, year, spec) DO UPDATE SET spec=%(spec)s', {'lord':lord, 'year':year, 'spec':value})
 
     def remove(self, key):
