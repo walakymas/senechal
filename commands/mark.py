@@ -24,10 +24,10 @@ class Mark(BaseCommand):
                 msg = f"```ID  Modified   Spec\n";
                 marks = []
                 for row in rows:
-                    if row['spec'] not in marks:
-                        marks.append(row['spec'])
-                        msg += f"{row['id']:3} {str(row['modified'])[:10]} {row['spec']:15}\n"
-                embed.add_field(name=f"{me['name']} Év: {year}", value=msg+"```", inline=False )
+                    if row[5] not in marks:
+                        marks.append(row[5])
+                        msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
+                embed.add_field(name=f"Év: {year} pipák", value=msg+"```", inline=False )
                 await message.channel.send(embed=embed)
             elif 'remove' == params[0].lower():
                 MarksTable().remove(params[1])

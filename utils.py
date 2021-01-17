@@ -189,7 +189,18 @@ async def embed_pc(channel, pc, task, param):
                     s += name + ": " + str(value) + "\n"
                 embed.add_field(name=":crossed_swords:  " + sn, value=f"```{s}```", inline=False)
             await channel.send(embed=embed)
-
+    if task == "*" or "marks".startswith(task.lower()):
+        embed = get_embed(pc, 0)
+        year = MarksTable().year()
+        rows = MarksTable().list(lord=int(pc['memberId']), year=year)
+        msg = f"```ID  Modified   Spec\n";
+        marks = []
+        for row in rows:
+            if row[5] not in marks:
+                marks.append(row[5])
+                msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
+        embed.add_field(name=f"Év: {year} pipák", value=msg+"```", inline=False )
+        await channel.send(embed=embed)
     if task == "*" or "winter".startswith(task.lower()):
         winter = winterData(pc)
         i = int(pc['memberId'])
@@ -204,10 +215,10 @@ async def embed_pc(channel, pc, task, param):
         msg = f"\nModified   Spec\n";
         marks = []
         for row in rows:
-            for t, name, value, *name2 in get_checkable(pc, row['spec']):
+            for t, name, value, *name2 in get_checkable(pc, row[5]):
                 if name not in marks:
                     marks.append(name)
-                    msg += f"{str(row['modified'])[:10]} {name:15} {value:2} \n"
+                    msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
         embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
 
         await channel.send(embed=embed)

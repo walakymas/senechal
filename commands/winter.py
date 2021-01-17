@@ -48,11 +48,11 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         msg += f"Modified   Spec              Dobás   Hatás\n";
         marks = []
         for row in rows:
-            for t, name, value, *name2 in get_checkable(me, row['spec']):
+            for t, name, value, *name2 in get_checkable(me, row[5]):
                 if name not in marks:
                     marks.append(name)
                     (color, text, ro, success) = check(value, 0)
-                    msg += f"{str(row['modified'])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
+                    msg += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
         embed.add_field(name="Pipák",value=f"```{msg}```", inline=False)
 
         await message.channel.send(embed=embed)
