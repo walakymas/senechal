@@ -32,6 +32,7 @@ class Database:
                 v = int(r[0])
             else:
                 cur.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'dbversion',0)")
+                cur.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'year',481)")
             print(f"PG version: {v}")
             if v == 0:
                 cur.execute("""CREATE TABLE IF NOT EXISTS events (
