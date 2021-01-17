@@ -172,13 +172,13 @@ async def embed_pc(channel, pc, task, param):
         embed.add_field(name="Összes Glory", value=f"{EventsTable().glory(pc['memberId'])}", inline=False)
         msg = f""
         count = 0
-        for e in EventsTable().list(pc['memberId']):
+        for (id, created, modified, year, lord, desc, glory) in EventsTable().list(pc['memberId']):
             count += 1
             if count > 25:
                 count = 1
                 await channel.send(embed=embed)
                 embed = get_embed(pc, 0)
-            embed.add_field(name=f"Year: {e['year']}  Glory: {e['glory']} Id:{e['id']}", value=e['description'], inline=False)
+            embed.add_field(name=f"Year: {year}  Glory: {glory} Id:{id}", value=desc, inline=False)
         await channel.send(embed=embed)
     if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in pc:
