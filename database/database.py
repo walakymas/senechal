@@ -70,15 +70,15 @@ class Database:
                 c = Database.conn.cursor()
                 rows = c.execute("SElECT modified, year, lord, description, glory FROM events ORDER BY id").fetchall()
                 print(len(rows))
-                insert = cur.prepare("INSERT INTO events (created, modified, year, lord, description, glory) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s, %s)")
-                insert.load_rows(rows)
+                for row in rows:
+                    cur.execute("INSERT INTO events (created, modified, year, lord, description, glory) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s, %s)", row)
                 v = 2
             if v == 2:
                 c = Database.conn.cursor()
                 rows = c.execute("SElECT last_modified, year, lord, spec FROM marks ORDER BY id").fetchall()
                 print(len(rows))
-                insert = cur.prepare("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s)")
-                insert.load_rows(rows)
+                for row in rows:
+                    insert = cur.execute("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s)", row)
                 v = 3
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
 
