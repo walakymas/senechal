@@ -39,55 +39,14 @@
 
   stats: { siz: 15, dex: 13, str: 11, con: 16, app: 10 }
 
-  traits: { cha: 7, ene: 16, for: 10, gen: 13, hon: 13, jus: 10, mer: 10, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15 }
-
-  events:
-    - year: 479
-      glory: 213
-      description: Apai örökség
-    - year: 479
-      glory: 44
-      description: |
-        Több fontosabb kaland:
-        Bika, csahos fenevad, szász utonállók, medve
-    - year: 479
-      glory: 1000
-      description: Lovaggáütés
-    - year: 479
-      glory: 344
-      description: 479 tele
-    - year: 480
-      glory: 50
-      description: Murdock Lovaggáütése
-    - year: 480
-      glory: 540
-      description: >
-        Salisbury csata, utána kissé megtébolyodtam és kábultan hazaindultam, de csak hónapokkal később kerültem elő
-        Csata során szerzett sérülés miatt -2 str, -1 dex
-    - year: 480
-      glory: 29
-      description: >
-        Winter, Feleség és születendő gyermek halála
-        Rossz időjárás mellett is jó termés
-        12 arany bevétel
-        Egy unokatesvér magasabb pozicióbl szerez feleséget magának
-    - year: 481
-      glory: 20
-      description: Senechal
-    - year: 481
-      glory: 10
-      description: Uther megtanított sakkozni, hagytam nyerni, bár áltam a sarat...
-    - year: 481
-      glory: 0
-      description: |
-        Sir Mathaban már Amrosius alatt is szolgált Sir Sedinel embere feladata, hogy kit fogad a király.
-        Legidősebb lánya kezét Uther nekem ajánlja. 
+  traits: { cha: 6, ene: 16, for: 10, gen: 13, hon: 13, jus: 10, mer: 11, mod: 7, pru: 11, spi: 10, tem: 10, tru: 10, val: 15 }
 
   passions:
     "Loyalty (Lord)": 15
     "Loyalty (Uther)": 14
     "Homage (Liege)": 15
     "Love (Family)": 15
+    "Love (Yngire)": 8
     "Hospitability": 15
     "Honor": 15
     "Hate Saxons": 11
@@ -110,7 +69,7 @@
       Awareness: 11
       Boating: 1
       Compose: 1
-      Courtesy: 5
+      Courtesy: 6
       Dancing: 2
       Faerie Lore: 1
       Falconry: 5
@@ -127,7 +86,7 @@
       Religion (Pagan): 2
       Romance: 2
       Singing: 3
-      Stewardship: 2
+      Stewardship: 3
       Swimming: 2
       Tourney: 10
   winter:
@@ -167,23 +126,6 @@
 
   traits: { cha: 10, ene: 11, for: 12, gen: 13, hon: 12, jus: 8, mer: 9, mod: 7, pru: 7, spi: 7, tem: 7, tru: 11, val: 16 }
 
-  events:
-    - year: 479
-      glory: 1477
-      description: |
-        Apai örökség
-        Lovaggáütés
-        Több fontosabb kaland:
-        Bika, csahos fenevad, szász utonállók, medve
-    - year: 479
-      glory: 15
-      description: ???
-    - year: 480
-      glory: 2
-      description: Salisbury
-    - year: 480
-      glory: 540
-      description: Salisbury csata
   passions:
     "Fealthy (Lord)": 14
     "Homage (Liege)": 15
@@ -253,40 +195,6 @@
 
   traits: { cha: 9, ene: 11, for: 10, gen: 13, hon: 10, jus: 10, mer: 9, mod: 6, spi: 7, pru: 6, tem: 7, tru: 10, val: 16 }
 
-  events:
-    - year: 479
-      glory: 213
-      description: Apai örökség
-    - year: 479
-      glory: 44
-      description: |
-        Több fontosabb kaland:
-        Bika, csahos fenevad, szász utonállók, medve
-    - year: 479
-      glory: 1000
-      description: Lovaggáütés
-    - year: 480
-      glory: 50
-      description: Maddoc Lovaggáütése
-    - year: 480
-      glory: 720
-      description: Salisbury csata
-    - year: 479
-      glory: 0
-      description: |
-        Winter
-        Normal
-        Horse (Healthy)
-        Twins (one gone with changelings...)
-    - year: 480
-      glory: 0
-      description: |
-        Winter 480 
-        Poor (6 gold)
-        Horse (healthy)
-        Wife died
-        Overseas family feud
-
   passions:
     "Fealthy (Lord)": 13
     "Love (Family)": 14
@@ -348,41 +256,8 @@
 
   stats: { siz: 17, dex: 10, str: 19, con: 18, app: 7 }
 
-  traits: { cha: 8, ene: 14, for: 5, gen: 6, hon: 8, jus: 4, mer: 4, mod: 13, pru: 6, spi: 5, tem: 6, tru: 6, val: 16 }
+  traits: { cha: 8, ene: 14, for: 5, gen: 6, hon: 9, jus: 4, mer: 4, mod: 13, pru: 6, spi: 5, tem: 6, tru: 6, val: 16 }
 
-  events:
-    - year: 476
-      glory: 177
-      description: Apai örökség
-    - year: 476
-      glory: 1000
-      description: Lovaggáütés
-    - year: 479
-      glory: 20
-      description: Medve
-    - year: 479
-      glory: 20
-      description: Banditák
-    - year: 479
-      glory: 94
-      description: >
-        Winter, Skill 6, Attr 1
-    - year: 480
-      glory: 2
-      description: Udvarlási intrikák
-    - year: 480
-      glory: 10
-      description: Szkander
-    - year: 480
-      glory: 50
-      description: Madoc lovaggá ütése
-    - year: 480
-      glory: 720
-      description: Salisbury csata
-    - year: 480
-      glory: 32
-      description: >
-        Winter, Skill 6, Attr 1
   passions:
     "Fealthy (Lord)": 15
     "Homage (Liege)": 15
@@ -401,7 +276,7 @@
       Lance: 5
       Spear: 5
       Dagger: 3
-      Mace: 15
+      Mace: 16
     Other:
       Awareness: 15
       Boating: 5
@@ -413,9 +288,9 @@
       Flirting: 3
       Folklore: 10
       Gaming: 4
-      Heraldry: 3
+      Heraldry: 4
       Hunting: 10
-      Intrigue: 11
+      Intrigue: 15
       Orate: 5
       Recognize: 10
       "Religion (British Christian)": 2
@@ -423,6 +298,15 @@
       Swimming: 2
       Tourney: 0
       Music: 11
+  winter:
+    stewardship: 12
+    horses:
+      - charger
+      - rouncy
+      - rouncy
+      - rouncy
+      - stumper
+      - stumper
 
 #Robcsa
 
@@ -448,27 +332,8 @@
 
   stats: { siz: 12, dex: 11, str: 15, con: 18, app: 11 }
 
-  traits: { cha: 6, ene: 14, for: 8, gen: 14, hon: 16, jus: 10, mer: 14, mod: 7, pru: 9, spi: 10, tem: 6, tru: 10, val: 15 }
+  traits: { cha: 6, ene: 14, for: 9, gen: 15, hon: 16, jus: 10, mer: 15, mod: 7, pru: 9, spi: 10, tem: 6, tru: 10, val: 15 }
 
-  events:
-    - year: 479
-      glory: 94
-      description: Winter phase
-    - year: 480
-      glory: 50
-      description: Murdock Lovaggáütése
-    - year: 480
-      glory: 50
-      description: Aurelius Ambrosius temetése
-    - year: 480
-      glory: 50
-      description: Koronázás
-    - year: 480
-      glory: 84
-      description: Winter phase
-    - year: 480
-      glory: 720
-      description: Salisbury csata
   passions:
     "Fealthy (Lord)": 14
     "Homage (Liege)": 15
@@ -492,25 +357,35 @@
       Boating: 5
       Courtesy: 4
       Dancing: 3
-      Faerie Lore: 10
+      Faerie Lore: 11
       Falconry: 1
       "First Aid": 10
-      Flirting: 3
+      Flirting: 4
       Folklore: 5
       Gaming: 10
       Heraldry: 11
-      Hunting: 10
+      Hunting: 11
       Intrigue: 2
       Orate: 5
+      Religion: 2
       Recognize: 10
       Romance: 4
       Stewardship: 2
       Swimming: 2
-      Tourney: 11
+      Tourney: 1
       Music: 11
       Compose: .Music
       Sing: .Music
       Play: .Music
+  winter:
+    stewardship: 12
+    horses:
+      - charger
+      - rouncy
+      - rouncy
+      - rouncy
+      - stumper
+      - stumper
 
 ## Marius: 
 201060114050842624:
@@ -610,7 +485,7 @@ yngire:
 
   skills:
     Other:
-      Stewardship: 12
+      Stewardship: 13
       First Aid: 11
       Chirurgery: 11
 

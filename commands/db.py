@@ -23,15 +23,15 @@ prop adatbázis list, set, get és remove művelete valamint a lord és mark adt
             msg = ""
             if "prop" == params[1]:
                 for row in PropertiesTable().list():
-                    msg += f"{row[0][:10]} {row[1]:20} {row[2]}\n"
+                    msg += f"{str(row[0])[:10]} {row[2]:20} {row[3]}\n"
             elif "lord" == params[1]:
                 ch = Config.characters
                 for row in LordTable().list():
-                    msg += f"{row[0][:10]} {int(row[1]):4} {ch[int(row[2])]['shortName']:10} {row[3]:20} {row[4]}\n"
+                    msg += f"{str(row[0])[:10]} {int(row[2]):4} {ch[int(row[3])]['shortName']:10} {row[4]:20} {row[5]}\n"
             elif "mark" == params[1]:
                 ch = Config.characters
                 for row in MarksTable().list():
-                    msg += f"{int(row[4]):3} {row[0][:10]} {row[1]:4} {ch[int(row[2])]['shortName']:10} {row[3]}\n"
+                    msg += f"{int(row[4]):3} {str(row[0])[:10]} {row[1]:4} {ch[int(row[2])]['shortName']:10} {row[3]}\n"
             else:
                 msg = 'Under Construction'
         elif "set" == params[0]:
