@@ -15,6 +15,7 @@ class BaseCommand:
             desc += " " + " ".join(f"*<{p}>*" for p in params)
 
         self.description = desc + f": {description}."
+        self.longdescription = None
         if longdescription:
             alias = ""
             if self.aliases:

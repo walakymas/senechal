@@ -7,9 +7,10 @@ class LordTable(BaseTableHandler):
         super().__init__('lord')
 
     def set(self, lord, year, key, value):
-        BaseTableHandler.execute('INSERT INTO lord (modified, lord, year, key, value) VALUES(now(),%(lord)s,%(year)s,%(key)s,%(value)s)'
-                                 ' ON CONFLICT (lord, year, key) DO UPDATE SET value=%(value)s', {'lord':lord, 'year':year, 'key':key, 'value':value})
-
+        BaseTableHandler.execute('INSERT INTO lord (modified, lord, year, key, value) VALUES(now(),'
+                                 ' %(lord)s, %(year)s, %(key)s, %(value)s)'
+                                 ' ON CONFLICT (lord, year, key) DO UPDATE SET value=%(value)s',
+                                 {'lord': lord, 'year': year, 'key': key, 'value': value})
 
     def remove(self, lord, year, key):
         BaseTableHandler.execute("DELETE FROM properties WHERE lord=%s, year=%s, key=%s", param=[lord, year, key], commit=True)

@@ -81,6 +81,10 @@ class Database:
                 for row in rows:
                     insert = cur.execute("INSERT INTO marks (created, modified, year, lord, spec) VALUES(now(), to_timestamp(substr(%s,0,21), 'YYYY-MM-DD hh24:mi:ss')::timestamp, %s, %s, %s)", row)
                 v = 3
+            if v == 3:
+                cur.execute("DROP INDEX IF EXISTS idx_lord_key;")
+                cur.execute("CREATE UNIQUE INDEX idx_lord_year_key ON lord (lord, year, key);")
+                v = 4
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

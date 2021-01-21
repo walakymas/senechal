@@ -38,6 +38,13 @@ prop adatbázis list, set, get és remove művelete valamint a lord és mark adt
             if "prop" == params[1]:
                 PropertiesTable().set(params[2], params[3])
                 msg = f"Set '{params[2]}' to '{params[3]}'"
+            elif "lord" == params[1]:
+                me = get_me(message)
+                if me:
+                    LordTable().set(me['memberId'], 0, params[2], params[3])
+                    msg = f"Set '{params[2]}' to '{params[3]}'"
+                else:
+                    msg = f"Őnt nem ismerem sajnos"
             else:
                 msg = 'Under Construction'
         elif "get" == params[0]:

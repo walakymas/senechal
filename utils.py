@@ -237,9 +237,9 @@ def winterData(me):
     ss = 0;
     from database.lordtable import LordTable
     for r in LordTable().list(int(me['memberId']), 0):
-        if r[3] == 'winter.stewardship':
+        if r[4] == 'winter.stewardship':
             winter['stewardship'] = r[5];
-        elif r[3] == 'winter.horses':
+        elif r[4] == 'winter.horses':
             winter['horses'] = r[5].strip().split(',')
     return winter
 
