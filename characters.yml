@@ -56,7 +56,7 @@
     Combat:
       Battle: 15
       Siege: 2
-      Horsemanship: 12
+      Horsemanship: 15
     Weapons:
       Sword: 16
       SpearExpertise: 15
@@ -66,7 +66,7 @@
       Lance: .SpearExpertise
       Great Spear: .SpearExpertise
     Other:
-      Awareness: 11
+      Awareness: 12
       Boating: 1
       Compose: 1
       Courtesy: 6
@@ -78,7 +78,7 @@
       Folklore: 2
       Gaming: 15
       Heraldry: 3
-      Hunting: 12
+      Hunting: 15
       Intrigue: 3
       Orate: 3
       Play (Harp): 3
