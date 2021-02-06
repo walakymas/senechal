@@ -6,7 +6,7 @@
   url: "https://i.pinimg.com/564x/33/45/2c/33452ccd88e91aabf2fc5d77b721264f.jpg"
 
   description: >
-    Egy egyszerű lovag másodszülötteként erős bizonyítási vággyal és ebből fakadóan sok energiával rendelkező lovagságot nehezen
+    Egy egyszerű lovag másodszülötteként erős bizonyítási vággyal és ebből fakadóan sok energiával rendelkező, a címet nehezen
     megszerző lovag. A tömgből kinézetével nem, csak átlagot meghaladó termetével és kitartásával tűnik ki, inkább erős hangjára,
     semmint megjelenésére emlékeznek utólag azok akik találkoznak vele.
 
@@ -99,6 +99,26 @@
       - stumper
       - stumper
 
+
+yngire:
+  name: Lady Yngire
+  description: |
+    Sir Mathaban - vélhetően törvényen kívüli - leánya, kezét Uther Sir Perinnek ajánlja
+  url: https://cdn.discordapp.com/attachments/779023614057512991/789898128987127848/9a8bacad3f8fbcfd151182de7885bb65.png
+
+  main:
+    "Homeland": "Dover"
+    "Husband": "Sir Perin"
+
+  stats: { siz: 9, dex: 7, str: 11, con: 10, app: 15 }
+
+  traits: { cha: 10, ene: 11, for: 10, gen: 8, hon: 10, jus: 10, mer: 10, mod: 10, pru: 10, spi: 10, tem: 10, tru: 10, val: 10 }
+
+  skills:
+    Other:
+      Distaff: 13
+      First Aid: 11
+      Chirurgery: 11
 
 778844623476883458:
   name: Tilgiveren Sir Ulf
@@ -468,29 +488,6 @@
       Swimming: 2
       Tourney: 0
       Law: 15
-
-yngire:
-  name: Lady Yngire
-  description: |
-    Sir Mathaban - vélhetően törvényen kívüli - leánya, kezét Uther Sir Perinnek ajánlja 
-  url: https://cdn.discordapp.com/attachments/779023614057512991/789898128987127848/9a8bacad3f8fbcfd151182de7885bb65.png
-
-  main:
-    "Homeland": "Dover"
-    "Husband": "Sir Perin"
-
-  stats: { siz: 9, dex: 7, str: 11, con: 10, app: 15 }
-
-  traits: { cha: 10, ene: 11, for: 10, gen: 8, hon: 10, jus: 10, mer: 10, mod: 10, pru: 10, spi: 10, tem: 10, tru: 10, val: 10 }
-
-  skills:
-    Other:
-      Stewardship: 13
-      First Aid: 11
-      Chirurgery: 11
-
-
-
 
 roderick:
   name: Sir Roderick

@@ -48,5 +48,5 @@ class BaseTableHandler:
                 return cur.fetchone()
             elif many:
                 return cur.fetchmany(many)
-
+        Database.db.commit()
 

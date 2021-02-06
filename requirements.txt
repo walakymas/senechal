@@ -11,3 +11,4 @@ tzlocal
 websockets
 pyyaml
 psycopg2-binary
+fpdf

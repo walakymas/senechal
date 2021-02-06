@@ -7,7 +7,7 @@ class Set(BaseCommand):
     def __init__(self):
         description = 'Egyes beállítások ideiglenes felülbírálása főként teszt célokra'
         params = ['key', 'value']
-        super().__init__(description, params, '''Jelenleg két key van kezelve:
+        super().__init__(description, params, longdescription='''Jelenleg két key van kezelve:
 **debugdice:** minden dobás értéke a paraméterben megadott érték legyen
 **debugme:** fix user id, az üzenet küldőjétől függetlenül. így megnézhetem másnak mi jelenne meg.''')
 
