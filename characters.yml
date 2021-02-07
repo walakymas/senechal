@@ -36,6 +36,7 @@
     "Squired": "472"
     "Knighted": "479"
     "Family Characteristic": "Clever at Games (+10 Gaming)"
+    "Squire": Eliot
 
   stats: { siz: 15, dex: 13, str: 11, con: 16, app: 10 }
 
@@ -197,8 +198,8 @@ yngire:
 
   description: >
     Általában csendes szavú, mosolygós, jóképű lovag. Ha az udvarban beszélni kell, felkészül és egyszerű nyelvezettel, 
-    enyhe akcentussal, kifinomultan beszél. Derűs szemléletét az első komolyabb csata sérülései, feleségének, egyik i
-    kergyermekének elvesztése kissé megtépázta, attól tart tengerentúli családja miatt megátkozhatta vérét egy boszorkány, 
+    enyhe akcentussal, kifinomultan beszél. Derűs szemléletét az első komolyabb csata sérülései, feleségének, egyik
+    ikergyermekének elvesztése kissé megtépázta, attól tart tengerentúli családja miatt megátkozhatta vérét egy boszorkány,
     de erről nemigen beszél. 
 
   main:
@@ -213,7 +214,7 @@ yngire:
 
   stats: { siz: 10, dex: 15, str: 12, con: 11, app: 14 }
 
-  traits: { cha: 9, ene: 11, for: 10, gen: 13, hon: 10, jus: 10, mer: 9, mod: 6, spi: 7, pru: 6, tem: 7, tru: 10, val: 16 }
+  traits: { cha: 8, ene: 11, for: 10, gen: 13, hon: 10, jus: 11, mer: 9, mod: 6, spi: 7, pru: 7, tem: 6 , tru: 10, val: 16 }
 
   passions:
     "Fealthy (Lord)": 13

@@ -180,6 +180,16 @@ async def embed_pc(channel, pc, task, param):
                 embed = get_embed(pc, 0)
             embed.add_field(name=f"Year: {year}  Glory: {glory} Id:{id}", value=desc, inline=False)
         await channel.send(embed=embed)
+    if task == "*" or "passions".startswith(task.lower()):
+        if 'passions' in pc:
+            embed = get_embed(pc, 0)
+            s = ""
+            for name, value  in pc['passions'].items():
+                s += name + ": " + str(value) + "\n"
+            embed.add_field(name=":crossed_swords:  Passions", value=f"```{s}```", inline=False)
+            await channel.send(embed=embed)
+        else:
+            print("no passions")
     if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in pc:
             embed = get_embed(pc, 0)

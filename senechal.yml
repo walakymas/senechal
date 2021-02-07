@@ -20,6 +20,11 @@ stats:
   - Constitution
   - Appearance
 
+virtues:
+  Roman: [Chaste, Forgiving, Merciful, Modest, Temperate]
+  British: [Chaste, Energetic, Generous, Modest, Temperate]
+  Pagan: [Generous, Energetic, Honest, Lustful, Proud]
+
 intro: |
   Jóuraim a következő fontosabb utasításokat értem:
 

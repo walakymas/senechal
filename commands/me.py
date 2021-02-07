@@ -27,6 +27,13 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
                 with open(fp, 'w') as file:
                     yaml.dump(me2, file, allow_unicode=True)
                 await try_upload_file(client, message.author, file_path=fp, filename=str(me['name'])+'.yaml', delete_after_send=True)
+            elif "pdf" == task:
+                from pdf.sheet import Sheet
+                pdf = Sheet(me)
+                pdf.fill()
+                fp = next(tempfile._get_candidate_names())
+                pdf.output(fp, 'F')
+                await try_upload_file(client, message.author, file_path=fp, filename=str(me['name'])+'.pdf', delete_after_send=True)
             elif "set" == task:
                 if len(params) < 3:
                     await message.channel.send("!me send [stewardship,horses] {value}")
