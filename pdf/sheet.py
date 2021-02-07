@@ -6,7 +6,7 @@ class Sheet(FPDF):
     def __init__(self, pc):
         self.pc = pc
         super().__init__()
-        self.add_font('Sofia','','pdf/Sofia-Regular.ttf',uni=True)
+        self.add_font('Sofia', '', 'pdf/GISMONDA.TTF', uni=True)
         self.add_page()
         self.year = int(MarksTable.year())
         self.set_font('Sofia', '', 22)
@@ -69,6 +69,14 @@ class Sheet(FPDF):
                 self.cell(3, 3, "on"[name in self.marks], 0, 2)
                 self.set_x(x)
 
+    def setTraitFont(self, name, virtues):
+        s = ''
+        if name in virtues:
+            s += 'U'
+        if name in Config.senechalConfig['chivalry']:
+            s += 'B'
+        self.set_font('Times', s, 8)
+
     def traits(self):
         x = self.get_x()
         traits = self.pc['traits'];
@@ -82,20 +90,13 @@ class Sheet(FPDF):
         for row in Config.senechalConfig['traits']:
             self.set_font('ZapfDingbats', '', 8)
             self.cell(3, 3, "on"[row[0] in self.marks], 0, 0)
-            if row[0] in virtues:
-                self.set_font('Times', 'U', 8)
-            else:
-                self.set_font('Times', '', 8)
-
+            self.setTraitFont(row[0], virtues)
             self.cell(15, 3, row[0], 0, 0)
             self.set_font('Times', '', 8)
             self.cell(5, 3, str(traits[row[0].lower()[:3]]), align='R')
             self.cell(3, 3, "/", 0, 0, align='C')
             self.cell(5, 3, str(20-traits[row[0].lower()[:3]]), align='R')
-            if row[1] in virtues:
-                self.set_font('Times', 'U', 8)
-            else:
-                self.set_font('Times', '', 8)
+            self.setTraitFont(row[1], virtues)
             self.cell(15, 3, row[1], 0, 0)
             self.set_font('ZapfDingbats', '', 8)
             self.cell(3, 3, "on"[row[1] in self.marks], 0, 2)
