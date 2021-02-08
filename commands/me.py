@@ -30,7 +30,6 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
             elif "pdf" == task:
                 from pdf.sheet import Sheet
                 pdf = Sheet(me)
-                pdf.fill()
                 fp = next(tempfile._get_candidate_names())
                 pdf.output(fp, 'F')
                 await try_upload_file(client, message.author, file_path=fp, filename=str(me['name'])+'.pdf', delete_after_send=True)

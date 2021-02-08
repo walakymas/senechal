@@ -2,6 +2,7 @@ from fpdf                import FPDF
 from config              import Config
 from database.markstable import MarksTable
 
+
 class Sheet(FPDF):
     def __init__(self, pc):
         self.pc = pc
@@ -11,10 +12,11 @@ class Sheet(FPDF):
         self.year = int(MarksTable.year())
         self.set_font('Sofia', '', 22)
         self.cell(180, 10, self.pc['name'], 0, 1, align='C')
-        markList = MarksTable().list(lord=pc['memberId'], year=self.year)
+        mark_list = MarksTable().list(lord=pc['memberId'], year=self.year)
         self.marks = []
-        for row in markList:
+        for row in mark_list:
             self.marks.append(row[5])
+        self.fill()
 
     def parchment(self, text, width):
         y = self.get_y()
@@ -69,7 +71,7 @@ class Sheet(FPDF):
                 self.cell(3, 3, "on"[name in self.marks], 0, 2)
                 self.set_x(x)
 
-    def setTraitFont(self, name, virtues):
+    def set_trait_font(self, name, virtues):
         s = ''
         if name in virtues:
             s += 'U'
@@ -79,7 +81,7 @@ class Sheet(FPDF):
 
     def traits(self):
         x = self.get_x()
-        traits = self.pc['traits'];
+        traits = self.pc['traits']
         virtues = []
         if 'Culture' in self.pc['main']:
             for name, value in Config.senechalConfig['virtues'].items():
@@ -90,26 +92,25 @@ class Sheet(FPDF):
         for row in Config.senechalConfig['traits']:
             self.set_font('ZapfDingbats', '', 8)
             self.cell(3, 3, "on"[row[0] in self.marks], 0, 0)
-            self.setTraitFont(row[0], virtues)
+            self.set_trait_font(row[0], virtues)
             self.cell(15, 3, row[0], 0, 0)
             self.set_font('Times', '', 8)
             self.cell(5, 3, str(traits[row[0].lower()[:3]]), align='R')
             self.cell(3, 3, "/", 0, 0, align='C')
             self.cell(5, 3, str(20-traits[row[0].lower()[:3]]), align='R')
-            self.setTraitFont(row[1], virtues)
+            self.set_trait_font(row[1], virtues)
             self.cell(15, 3, row[1], 0, 0)
             self.set_font('ZapfDingbats', '', 8)
             self.cell(3, 3, "on"[row[1] in self.marks], 0, 2)
             self.set_x(x)
         chivalry = traits['ene']+traits['gen']+traits['jus']+traits['mod']+traits['mer']+traits['val']
         self.set_font('Times', '', 8)
-        self.cell(50, 3, "Chivalry: " +str(chivalry)+"/80", 0, 2, align='C')
-
+        self.cell(50, 3, "Chivalry: " + str(chivalry) + "/80", 0, 2, align='C')
 
     def passions(self):
         x = self.get_x()
         self.parchment('Passions', 50)
-        for name, value  in self.pc['passions'].items():
+        for name, value in self.pc['passions'].items():
             self.set_font('Times', '', 8)
             self.cell(42, 3, name, 0, 0)
             self.cell(5, 3, str(value), 0, 0, align='R')
@@ -124,10 +125,7 @@ class Sheet(FPDF):
         self.write(3, str(value)+"\n")
 
     def main(self):
-        self.parchment( 'Knight', 80)
-        x = self.get_x()
-        y = self.get_y()
-
+        self.parchment('Knight', 80)
         from database.eventstable import EventsTable
         if 'memberId' in self.pc:
             self.pc['main']['Glory'] = EventsTable().glory(self.pc['memberId'])
