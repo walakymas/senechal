@@ -20,11 +20,12 @@ class Config:
                 if ('mainChannel' in Config.config):
                     Config.mainChannelId = Config.config['mainChannel']
         except IOError:
-            Config.config = {'token': os.environ['token']}
-            if ('prefix' in os.environ):
+            Config.config = {'token': None}
+            if 'token' in os.environ:
+                Config.config['token'] = os.environ['token']
+            if 'prefix' in os.environ:
                 Config.prefix = os.environ['prefix']
-
-            if ('mainChannel' in os.environ):
+            if 'mainChannel' in os.environ:
                 Config.mainChannelId = os.environ['mainChannel']
 
         with open(r'senechal.yml') as file:

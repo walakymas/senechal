@@ -8,7 +8,6 @@ class TestSheet(TestCase):
         Config.reload()
         from pdf.sheet import Sheet
         pdf = Sheet(Config.characters[470683159889969153])
-        pdf.fill()
         pdf.output('/tmp/Perin.pdf')
         print("saved")
 

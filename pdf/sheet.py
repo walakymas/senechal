@@ -1,5 +1,5 @@
-from fpdf                import FPDF
-from config              import Config
+from fpdf import FPDF
+from config import Config
 from database.markstable import MarksTable
 
 

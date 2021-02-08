@@ -11,4 +11,9 @@ tzlocal
 websockets
 pyyaml
 psycopg2-binary
-fpdf
+fpdf2
+django
+gunicorn
+django-heroku
+whitenoise
+dj-database-url

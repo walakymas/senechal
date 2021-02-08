@@ -4,6 +4,8 @@ import settings
 import discord
 import message_handler
 import datetime
+import os
+import sys
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from events.base_event              import BaseEvent
@@ -23,9 +25,9 @@ sched = AsyncIOScheduler()
 
 ###############################################################################
 
+
 def main():
-    # Initialize the client
-    print("Starting up...")
+    print("Starting up bot...")
     client = discord.Client()
 
     # Define event handlers for the client

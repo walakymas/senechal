@@ -36,7 +36,12 @@
     "Squired": "472"
     "Knighted": "479"
     "Family Characteristic": "Clever at Games (+10 Gaming)"
-    "Squire": Eliot
+
+  squire:
+    name: Eliot
+    born: 465
+    skills:
+
 
   stats: { siz: 15, dex: 13, str: 11, con: 16, app: 10 }
 

@@ -85,6 +85,32 @@ class Database:
                 cur.execute("DROP INDEX IF EXISTS idx_lord_key;")
                 cur.execute("CREATE UNIQUE INDEX idx_lord_year_key ON lord (lord, year, key);")
                 v = 4
+            if v == 4:
+                cur.execute("""CREATE TABLE IF NOT EXISTS characters (
+                        id SERIAL PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(), 
+                        memberid bigint, 
+                        name varchar not null, 
+                        url varchar, 
+                        yaml text
+                        )
+                        """)
+                v = 5
+            if v == 5:
+                import yaml
+                for name, ch in Config.charactersOrig.items():
+                    mid = None
+                    if "memberId" in ch:
+                        mid = ch['memberId']
+                    url = None
+                    if "url" in ch:
+                        url = ch['url']
+
+                    insert = cur.execute("""INSERT INTO characters (created, modified, memberid, name, url, yaml) 
+                        VALUES(now(), now(), %s, %s, %s, %s)""",
+                        [mid, ch['name'], url, yaml.dump(ch, allow_unicode=True)])
+                v = 6
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 
