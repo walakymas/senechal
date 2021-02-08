@@ -27,7 +27,7 @@ SECRET_KEY = '@9b(x7vf$=2!5h=3$n0jimllr*wmhc)hakobzsst8g%tl^=iaf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['senechal.herokuapp.com']
 
 
 # Application definition
