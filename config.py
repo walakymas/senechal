@@ -43,13 +43,27 @@ class Config:
                             if '.' == str(sv)[:1]:
                                 sg[sn] = sg[sv[1:]]
 
+    @staticmethod
+    def get_character(name='---'):
+        if not Config.charactersOrig:
+            Config.reload()
+        for c in Config.characters.values():
+            if name.lower() in c['name'].lower():
+                return c
+
+    @staticmethod
     def pcs(name=None):
+        if not Config.charactersOrig:
+            Config.reload()
         for c in Config.characters.values():
             if ("memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
                 print(f"{name} {c['name']}")
                 yield c
 
+    @staticmethod
     def npcs(name=None):
+        if not Config.charactersOrig:
+            Config.reload()
         for c in Config.characters.values():
-            if (not "memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
+            if ("memberId" not in c) and ((not name) or (name.lower() in c['name'].lower())):
                 yield c

@@ -7,7 +7,7 @@ import os
 
 class Database:
     conn = sqlite3.connect('senechal.db')
-    pq  = os.environ['DATABASE_URL']
+    pq = os.environ['DATABASE_URL']
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],
@@ -16,6 +16,7 @@ class Database:
         host=url.hostname,
         port=url.port
     )
+
     @staticmethod
     def pgInit():
         with Database.db.cursor() as cur:

@@ -21,7 +21,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
             await self.winter(me, message)
         elif len(params) > 0:
             print(params[0])
-            for pc in Config.pcs(name=params[0]):
+            for pc in Config.pcs():
                 await self.winter(pc, message)
 
     async def winter(self, me, message):

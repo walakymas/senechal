@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
     path('', views.index, name='index'),
-    path('yaml', views.yaml, name='yaml'),
+    path('json', views.json, name='json'),
+    path('pdf', views.pdf, name='pdf'),
 ]

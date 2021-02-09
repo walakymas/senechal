@@ -12,10 +12,11 @@ class Sheet(FPDF):
         self.year = int(MarksTable.year())
         self.set_font('Sofia', '', 22)
         self.cell(180, 10, self.pc['name'], 0, 1, align='C')
-        mark_list = MarksTable().list(lord=pc['memberId'], year=self.year)
         self.marks = []
-        for row in mark_list:
-            self.marks.append(row[5])
+        if 'memberId' in pc:
+            mark_list = MarksTable().list(lord=pc['memberId'], year=self.year)
+            for row in mark_list:
+                self.marks.append(row[5])
         self.fill()
 
     def parchment(self, text, width):
