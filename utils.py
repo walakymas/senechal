@@ -8,6 +8,7 @@ from discord import HTTPException
 from emoji import emojize
 
 import settings
+from character import Character
 from config import Config
 from database.markstable import MarksTable
 
@@ -74,21 +75,21 @@ async def try_upload_file(client, channel, file_path, content=None,
     return sent_msg
 
 
-def get_checkable(pc, spec):
+def get_checkable(data, spec):
     spec = spec.lower()
-    for n, sg in pc['skills'].items():
+    for n, sg in data['skills'].items():
         for sn, sv in sg.items():
             if sn.lower().startswith(spec):
                 yield ['skill', sn, sv]
     for t in Config.senechalConfig['traits']:
         if t[0].lower().startswith(spec):
-            yield ['trait', t[0], pc['traits'][t[0].lower()[:3]], t[1]]
+            yield ['trait', t[0], data['traits'][t[0].lower()[:3]], t[1]]
         if t[1].lower().startswith(spec.lower()):
-            yield ['trait', t[1], 20 - pc['traits'][t[0].lower()[:3]], t[0]]
+            yield ['trait', t[1], 20 - data['traits'][t[0].lower()[:3]], t[0]]
     for t in Config.senechalConfig['stats']:
         if t.lower().startswith(spec):
-            yield ['stat', t, pc['stats'][t.lower()[:3]]]
-    for pn, pv in pc['passions'].items():
+            yield ['stat', t, data['stats'][t.lower()[:3]]]
+    for pn, pv in data['passions'].items():
         if pn.lower().startswith(spec):
             yield ['pass', pn, pv]
 
@@ -110,143 +111,138 @@ def overwrite(cname, orig):
 
 def get_me(message):
     i = int(overwrite('debugme', message.author.id))
-    if i in Config.characters:
-        return Config.characters[i]
-    from database.lordtable import LordTable
-    row = LordTable().get_by_value(0, 'mychannel', i)
-    if row:
-        return Config.characters[int(row[2])]
-    return None
+    return Character.get_by_memberid(i)
 
 
-def get_embed(pc, description=0):
+def get_embed(char, description=0):
     if description:
-        embed = discord.Embed(title=pc['name'],
-                              description=pc['description'],
+        embed = discord.Embed(title=char.name,
+                              description=char.get_data(False)['description'],
                               timestamp=datetime.datetime.now(),
                               color=discord.Color.blue())
     else:
-        embed = discord.Embed(title=pc['name'], color=discord.Color.blue(),
-                              timestamp=datetime.datetime.now(),
-                              footer="alma")
-    if 'url' in pc:
-        embed.set_thumbnail(url=pc['url'])
-        embed.set_footer(text=f"{Config.prefix}senechal")
+        embed = discord.Embed(title=char.name, color=discord.Color.blue(),
+                              timestamp=datetime.datetime.now()
+                              )
+    if char.url:
+        embed.set_thumbnail(url=char.url)
+    embed.set_footer(text=f"{Config.prefix}senechal")
     return embed
 
 
-async def embed_pc(channel, pc, task, param):
-    print(task)
+async def embed_char(channel, char, task, param):
+    data = char.get_data()
     if task == "*" or task == "" or "base".startswith(task.lower()):
-        embed = get_embed(pc, 1)
-        from database.eventstable import EventsTable
-        if 'memberId' in pc:
-            pc['main']['Glory'] = EventsTable().glory(pc['memberId'])
-        if 'main' in pc:
-            for name, value in pc['main'].items():
+        if 'main' in data:
+            embed = get_embed(char, 1)
+            from database.eventstable import EventsTable
+            if char.memberid:
+                data['main']['Glory'] = EventsTable().glory(char.memberid)
+            for name, value in data['main'].items():
                 embed.add_field(name=name, value=value)
-        await channel.send(embed=embed)
+            await channel.send(embed=embed)
     if task == "*" or "stats".startswith(task.lower()):
-        if 'stats' in pc:
-            embed = get_embed(pc, 0)
+        if 'stats' in data:
+            embed = get_embed(char, 0)
             for s in Config.senechalConfig['stats']:
-                embed.add_field(name=s, value=pc['stats'][s.lower()[:3]])
-            embed.add_field(name="Damage", value=str(round((pc['stats']['str'] + pc['stats']['siz']) / 6)) + 'd6');
-            embed.add_field(name="Healing Rate", value=str(round((pc['stats']['con'] + pc['stats']['siz']) / 10)));
-            embed.add_field(name="Move Rate", value=str(round((pc['stats']['dex'] + pc['stats']['siz']) / 10)));
-            embed.add_field(name="HP", value=str(round((pc['stats']['con'] + pc['stats']['siz']))));
-            embed.add_field(name="Unconscious", value=str(round((pc['stats']['con'] + pc['stats']['siz']) / 4)));
+                embed.add_field(name=s, value=data['stats'][s.lower()[:3]])
+            embed.add_field(name="Damage", value=str(round((data['stats']['str'] + data['stats']['siz']) / 6)) + 'd6');
+            embed.add_field(name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)));
+            embed.add_field(name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)));
+            embed.add_field(name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))));
+            embed.add_field(name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)));
             await channel.send(embed=embed)
     if task == "*" or "traits".startswith(task.lower()):
-        if 'traits' in pc:
-            embed = get_embed(pc, 0)
-            traits = pc['traits'];
+        if 'traits' in data:
+            embed = get_embed(char, 0)
+            traits = data['traits'];
             result = "";
             for row in Config.senechalConfig['traits']:
                 result += f"{row[0]:10} {traits[row[0].lower()[:3]]:2} / {row[1]:10} {20-traits[row[0].lower()[:3]]:2}\n"
             embed.add_field(name="Traits", value=f"```{result}```", inline=False)
             await channel.send(embed=embed)
     if task == "*" or "events".startswith(task.lower()):
-        embed = get_embed(pc)
-        from database.eventstable import EventsTable
-        embed.add_field(name="Összes Glory", value=f"{EventsTable().glory(pc['memberId'])}", inline=False)
-        msg = f""
-        count = 0
-        for (id, created, modified, year, lord, desc, glory) in EventsTable().list(pc['memberId']):
-            count += 1
-            if count > 25:
-                count = 1
-                await channel.send(embed=embed)
-                embed = get_embed(pc, 0)
-            embed.add_field(name=f"Year: {year}  Glory: {glory} Id:{id}", value=desc, inline=False)
-        await channel.send(embed=embed)
+        if char.memberid:
+            embed = get_embed(char)
+            from database.eventstable import EventsTable
+            embed.add_field(name="Összes Glory", value=f"{EventsTable().glory(char.memberid)}", inline=False)
+            msg = f""
+            count = 0
+            for (id, created, modified, year, lord, desc, glory) in EventsTable().list(char.memberid):
+                count += 1
+                if count > 25:
+                    count = 1
+                    await channel.send(embed=embed)
+                    embed = get_embed(char, 0)
+                embed.add_field(name=f"Year: {year}  Glory: {glory} Id:{id}", value=desc, inline=False)
+            await channel.send(embed=embed)
     if task == "*" or "passions".startswith(task.lower()):
-        if 'passions' in pc:
-            embed = get_embed(pc, 0)
+        if 'passions' in data:
+            embed = get_embed(char, 0)
             s = ""
-            for name, value  in pc['passions'].items():
+            for name, value  in sorted(data['passions'].items()):
                 s += name + ": " + str(value) + "\n"
             embed.add_field(name=":crossed_swords:  Passions", value=f"```{s}```", inline=False)
             await channel.send(embed=embed)
         else:
             print("no passions")
     if task == "*" or "skills".startswith(task.lower()):
-        if 'skills' in pc:
-            embed = get_embed(pc, 0)
-            for sn, sg in pc['skills'].items():
+        if 'skills' in data:
+            embed = get_embed(char, 0)
+            for sn, sg in data['skills'].items():
                 s = ""
-                for name, value in sg.items():
+                for name, value in sorted(sg.items()):
                     s += name + ": " + str(value) + "\n"
                 embed.add_field(name=":crossed_swords:  " + sn, value=f"```{s}```", inline=False)
             await channel.send(embed=embed)
     if task == "*" or "marks".startswith(task.lower()):
-        embed = get_embed(pc, 0)
-        year = MarksTable().year()
-        rows = MarksTable().list(lord=int(pc['memberId']), year=year)
-        msg = f"```ID  Modified   Spec\n";
-        marks = []
-        for row in rows:
-            if row[5] not in marks:
-                marks.append(row[5])
-                msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
-        embed.add_field(name=f"Év: {year} pipák", value=msg+"```", inline=False )
-        await channel.send(embed=embed)
+        if char.memberid:
+            embed = get_embed(char, 0)
+            year = MarksTable().year()
+            rows = MarksTable().list(lord=char.memberid, year=year)
+            msg = f"```ID  Modified   Spec\n"
+            marks = []
+            for row in rows:
+                if row[5] not in marks:
+                    marks.append(row[5])
+                    msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
+            embed.add_field(name=f"Év: {year} pipák", value=msg+"```", inline=False )
+            await channel.send(embed=embed)
     if task == "*" or "winter".startswith(task.lower()):
-        winter = winterData(pc)
-        i = int(pc['memberId'])
-        embed = get_embed(pc)
-        year = MarksTable().year()
-        embed.add_field(name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
-        msg = ""
-        for h in winter['horses']:
-            msg += f"  {h}\n"
-        embed.add_field(name="Lovak", value=f"```{msg}```", inline=False)
-        rows = MarksTable().list(lord=i, year=year)
-        msg = f"\nModified   Spec\n";
-        marks = []
-        for row in rows:
-            for t, name, value, *name2 in get_checkable(pc, row[5]):
-                if name not in marks:
-                    marks.append(name)
-                    msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
-        embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
+        if char.memberid:
+            winter = winterData(char, data)
+            embed = get_embed(char)
+            year = MarksTable().year()
+            embed.add_field(name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
+            msg = ""
+            for h in winter['horses']:
+                msg += f"  {h}\n"
+            embed.add_field(name="Lovak", value=f"```{msg}```", inline=False)
+            rows = MarksTable().list(lord=char.memberid, year=year)
+            msg = f"\nModified   Spec\n"
+            marks = []
+            for row in rows:
+                for t, name, value, *name2 in get_checkable(data, row[5]):
+                    if name not in marks:
+                        marks.append(name)
+                        msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
+            embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
 
-        await channel.send(embed=embed)
+            await channel.send(embed=embed)
 
 
-def winterData(me):
+def winterData(char, data):
     ss = 0;
-    for s in get_checkable(me, 'stewardship'):
+    for s in get_checkable(data, 'stewardship'):
         ss = s[2]
     winter = {'stewardship': ss, 'horses':['charger', 'rouncy', 'rouncy', 'stumper', 'stumper' ]}
-    if 'winter' in me:
-        if 'stewardship' in me['winter']:
-            winter['stewardship'] = me['winter']['stewardship']
-        if 'horses' in me['winter']:
-            winter['horses'] = me['winter']['horses']
-    ss = 0;
+    if 'winter' in data:
+        if 'stewardship' in data['winter']:
+            winter['stewardship'] = data['winter']['stewardship']
+        if 'horses' in data['winter']:
+            winter['horses'] = data['winter']['horses']
     from database.lordtable import LordTable
-    for r in LordTable().list(int(me['memberId']), 0):
+    for r in LordTable().list(char.memberid, 0):
         if r[4] == 'winter.stewardship':
             winter['stewardship'] = r[5];
         elif r[4] == 'winter.horses':
@@ -279,10 +275,10 @@ def check(base, modifier=0, emoji=True):
         return [color, successes[success], ro, success]
 
 
-async def embed_check(ctx, lord, name, base, modifier):
+async def embed_check(ctx, data, name, base, modifier):
     (color, text, ro, success) = check(base, modifier)
 
-    embed = discord.Embed(title=lord['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
+    embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     embed.add_field(name="Dobás", value=str(ro));
     embed.add_field(name=name, value=str(base));
     if (modifier != 0):
@@ -292,10 +288,10 @@ async def embed_check(ctx, lord, name, base, modifier):
     await ctx.send(embed=embed)
 
 
-async def embed_trait(ctx, lord, name, base, modifier, name2):
+async def embed_trait(ctx, data, name, base, modifier, name2):
     (color, text, ro, success) = check(base, modifier)
 
-    embed = discord.Embed(title=lord['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
+    embed = discord.Embed(title=data['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
                           color=color)
     embed.add_field(name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")", inline=False);
     if success > 2:
@@ -338,4 +334,4 @@ def extract(l, defa):
 
 
 successes = ['?', 'Success', 'Critical', 'Fumble', 'Fail']
-success_emojis = ['?', ':thumbsdown:', ':crown:', ':person_facepalming:', ':thumbsdown:']
+success_emojis = ['?', ':thumbsup?:', ':crown:', ':person_facepalming:', ':thumbsdown:']

@@ -15,5 +15,6 @@ Kritikus siker esetén mindkét oldal esetén automatikusan 4 kockával növeli 
         pc = get_me(message)
         if pc:
             (spec, modifier, damage, base2, damage2) = extract(params, ['---', 0, 0, -1, -1])
-            for t, name, value, *name2 in get_checkable(pc, spec):
-                await embed_attack(message.channel, pc, name, value, int(modifier), int(damage), int(base2), int(damage2))
+            for t, name, value, *name2 in get_checkable(pc.get_data(), spec):
+                await embed_attack(message.channel, pc.get_data(), name, value, int(modifier),
+                                   int(damage), int(base2), int(damage2))

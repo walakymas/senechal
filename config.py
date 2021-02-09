@@ -4,9 +4,8 @@ import os
 
 class Config:
     config = {}
-    characters = {}
-    charactersOrig = {}
     senechalConfig = {}
+    charactersOrig = {}
     prefix = "!"
     mainChannelId = 779078275111714917
     mainChannel = None
@@ -34,22 +33,6 @@ class Config:
         with open(r'characters.yml') as file:
             Config.charactersOrig = yaml.load(file, Loader=yaml.FullLoader)
 
-        with open(r'characters.yml') as file:
-            Config.characters = yaml.load(file, Loader=yaml.FullLoader)
-            for character in Config.characters.values():
-                if ('memberId' in character):
-                    for n, sg in character['skills'].items():
-                        for sn, sv in sg.items():
-                            if '.' == str(sv)[:1]:
-                                sg[sn] = sg[sv[1:]]
-
-    @staticmethod
-    def get_character(name='---'):
-        if not Config.charactersOrig:
-            Config.reload()
-        for c in Config.characters.values():
-            if name.lower() in c['name'].lower():
-                return c
 
     @staticmethod
     def pcs(name=None):

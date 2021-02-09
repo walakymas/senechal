@@ -16,43 +16,48 @@ class Check(BaseCommand):
 ''')
 
     async def handle(self, params, message, client):
-        pc = get_me(message)
-        if pc:
+        char = get_me(message)
+        if char:
             (spec, modifier) = extract(params, ["---", 0])
-            await self.check(message.channel, pc, spec, modifier)
+            await self.check(message.channel, char, spec, modifier)
         else:
             (name, spec, modifier) = extract(params, ["---", "---", 0])
-            for pc in Config.pcs():
-                if "*" == name or name.lower() in pc['name'].lower():
-                    await self.check(message.channel, pc, spec, modifier)
+            for char in Character.pcs(name):
+                await self.check(message.channel, char, spec, modifier)
 
-    async def check(self, ctx, pc, spec, modifier):
+    async def check(self, ctx, char, spec, modifier):
         if spec == "---":
-            embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(),
+            data = char.get_data()
+            embed = discord.Embed(title=char.name, timestamp=datetime.datetime.utcnow(),
                                   color=discord.Color.blue())
-            s = ""
-            for t in Config.senechalConfig['traits']:
-                s += t[0] + ': ' + str(pc['traits'][t[0].lower()[:3]]) + "\n"
-                s += t[1] + ': ' + str(20 - pc['traits'][t[0].lower()[:3]]) + "\n"
-            embed.add_field(name=':hearts: Traits', value=s, inline=False);
-            s = ""
-            for pn, pv in pc['passions'].items():
-                s += pn + ': ' + str(pv) + "\n"
-            embed.add_field(name=':homes: Passions', value=s, inline=False);
-            s = ""
-            for t in Config.senechalConfig['stats']:
-                s += t + ': ' + str(pc['stats'][t.lower()[:3]]) + "\n"
-            embed.add_field(name=':muscle: Stats', value=s, inline=False);
-            s = ""
-            for n, sg in pc['skills'].items():
-                for sn, sv in sg.items():
-                    s += sn + ': ' + str(sv) + "\n"
-            embed.add_field(name=':crossed_swords: Skills', value=s, inline=False);
+            if 'traits' in data:
+                s = ""
+                for t in Config.senechalConfig['traits']:
+                    s += t[0] + ': ' + str(data['traits'][t[0].lower()[:3]]) + "\n"
+                    s += t[1] + ': ' + str(20 - data['traits'][t[0].lower()[:3]]) + "\n"
+                embed.add_field(name=':hearts: Traits', value=s, inline=False);
+            if 'passions' in data:
+                s = ""
+                for pn, pv in sorted(data['passions'].items()):
+                    s += pn + ': ' + str(pv) + "\n"
+                embed.add_field(name=':homes: Passions', value=s, inline=False);
+            if 'stats' in data:
+                s = ""
+                for t in Config.senechalConfig['stats']:
+                    s += t + ': ' + str(data['stats'][t.lower()[:3]]) + "\n"
+                embed.add_field(name=':muscle: Stats', value=s, inline=False);
+            if 'skills' in data:
+                s = ""
+                for n, sg in sorted(data['skills'].items()):
+                    for sn, sv in sg.items():
+                        s += sn + ': ' + str(sv) + "\n"
+                embed.add_field(name=':crossed_swords: Skills', value=s, inline=False);
             await ctx.send(embed=embed)
         else:
-            for t, name, value, *name2 in get_checkable(pc, spec):
+            data = char.get_data()
+            for t, name, value, *name2 in get_checkable(data, spec):
                 if 'trait' == t:
-                    await embed_trait(ctx, pc, name, value, modifier, name2[0])
+                    await embed_trait(ctx, data, name, value, modifier, name2[0])
                 else:
-                    await embed_check(ctx, pc, name, value, modifier)
+                    await embed_check(ctx, data, name, value, modifier)
 

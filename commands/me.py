@@ -17,34 +17,16 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
                          ''')
 
     async def handle(self, params, message, client):
-        (task,*ex) = extract(params, ["base"])
+        (task, *ex) = extract(params, ["base"])
         me = get_me(message)
         if me:
-            i = me['memberId']
-            if "download" == task:
-                me2 = Config.charactersOrig[i]
-                fp = next(tempfile._get_candidate_names())
-                with open(fp, 'w') as file:
-                    yaml.dump(me2, file, allow_unicode=True)
-                await try_upload_file(client, message.author, file_path=fp, filename=str(me['name'])+'.yaml', delete_after_send=True)
-            elif "pdf" == task:
+            if "pdf" == task:
                 from pdf.sheet import Sheet
-                pdf = Sheet(me)
+                pdf = Sheet(me.get_data(False))
                 fp = next(tempfile._get_candidate_names())
                 pdf.output(fp, 'F')
-                await try_upload_file(client, message.author, file_path=fp, filename=str(me['name'])+'.pdf', delete_after_send=True)
-            elif "set" == task:
-                if len(params) < 3:
-                    await message.channel.send("!me send [stewardship,horses] {value}")
-                elif params[1] == 'stewardship':
-                    LordTable().set(i, 0, 'winter.stewardship', params[2])
-                    await message.channel.send("updated")
-                elif params[1] == 'horses':
-                    LordTable().set(i, 0, 'winter.horses', params[2])
-                    await message.channel.send("updated")
-                else:
-                    await message.channel.send("!me send [senechal,horses] {value}")
+                await try_upload_file(client, message.author, file_path=fp, filename=str(me.name)+'.pdf', delete_after_send=True)
             else:
-                await embed_pc(message.channel, me, task, params)
+                await embed_char(message.channel, me, task, params)
         else:
             print(Config.characters.keys())

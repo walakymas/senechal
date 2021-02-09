@@ -1,5 +1,4 @@
 from commands.base_command import BaseCommand
-from config import Config
 from utils import *
 
 
@@ -19,9 +18,8 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.''')
         if len(params) > 0:
             name = params[0]
         count = 0
-        for pc in Config.pcs():
-            if "*" == name or name.lower() in pc['name'].lower():
-                count += 1
-                await embed_pc(message.channel, pc, task, params)
+        for char in Character.pcs(name):
+            count += 1
+            await embed_char(message.channel, char, task, params)
         if count == 0:
             await message.channel.send(name + '? Sajnos nem ismerek ilyen lovagot')

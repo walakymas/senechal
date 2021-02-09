@@ -110,8 +110,27 @@ class Database:
 
                     insert = cur.execute("""INSERT INTO characters (created, modified, memberid, name, url, yaml) 
                         VALUES(now(), now(), %s, %s, %s, %s)""",
-                        [mid, ch['name'], url, yaml.dump(ch, allow_unicode=True)])
+                                         [mid, ch['name'], url, yaml.dump(ch, allow_unicode=True)])
                 v = 6
+            if v == 6:
+                cur.execute("ALTER TABLE characters DROP yaml ")
+                cur.execute("ALTER TABLE characters ADD data text")
+                v = 7
+            if v == 7:
+                cur.execute("TRUNCATE characters")
+                import json
+                for name, ch in Config.charactersOrig.items():
+                    mid = None
+                    if "memberId" in ch:
+                        mid = ch['memberId']
+                    url = None
+                    if "url" in ch:
+                        url = ch['url']
+
+                    insert = cur.execute("""INSERT INTO characters (created, modified, memberid, name, url, data) 
+                        VALUES(now(), now(), %s, %s, %s, %s)""",
+                                         [mid, ch['name'], url, json.dumps(ch, ensure_ascii=False)])
+                v = 8
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

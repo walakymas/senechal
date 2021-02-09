@@ -15,12 +15,12 @@ class Mark(BaseCommand):
 ''')
 
     async def handle(self, params, message, client):
-        me = get_me(message)
+        char = get_me(message)
         year = int(MarksTable.year())
-        if me:
+        if char:
             if len(params) == 0 or 'list' == params[0].lower():
-                embed = get_embed(me)
-                rows = MarksTable().list(lord=int(me['memberId']), year=year)
+                embed = get_embed(char)
+                rows = MarksTable().list(lord=char.memberid, year=year)
                 msg = f"```ID  Modified   Spec\n";
                 marks = []
                 for row in rows:
@@ -34,9 +34,9 @@ class Mark(BaseCommand):
                 await message.channel.send("removed")
             else:
                 msg = f"Year:{year}\n"
-                for t, name, value, *name2 in get_checkable(me, params[0]):
+                for t, name, value, *name2 in get_checkable(char.get_data(), params[0]):
                     if 'stat' != t:
-                        MarksTable().set(me['memberId'], year, name)
+                        MarksTable().set(char.memberid, year, name)
                         msg += f"{name} marked"
                 await message.channel.send(msg)
         else:
@@ -48,7 +48,7 @@ class Mark(BaseCommand):
                 for row in rows:
                     if int(row[2]) != last_lord:
                         last_lord = int(row[2])
-                        lord = Config.characters[last_lord]
+                        lord = Character.get_by_memberid(last_lord)
                         msg += f"\n{lord['name']} Év:{year} \n ID Modified   Spec\n";
                         marks = []
                     if year == int(row[1]):
