@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 from database.charactertable import CharacterTable
@@ -7,7 +8,8 @@ class Character:
     fallbacks = {
         'SpearExpertise': ['Spear', 'Lance', 'Great Spear'],
         'Law': ['Courtesy', 'Folklore', 'Intrigue'],
-        'Music': ['Play (Instrument)']
+        'Music': ['Play (Instrument)', 'Signing', 'Compose'],
+        'Distaff': ['Stewardship', 'Industry']
     }
 
     def __init__(self, record):
@@ -35,25 +37,54 @@ class Character:
                 sg.update(up)
         return self.data
 
+    cache = {}
+    cache_timeline = 0
     @staticmethod
-    def get_by_memberid(mid):
-        record = CharacterTable().get_by_memberid(mid)
-        if record:
-            return Character(record)
+    def check_cache():
+        now = datetime.timestamp(datetime.now())
+        print("timestamp =", now)
+        if now > Character.cache_timeline:
+            Character.cache = {}
+            Character.cache_timeline = 60+now ## Egy perc cache
 
     @staticmethod
-    def get_by_id(mid):
-        record = CharacterTable().get_by_id(mid)
-        if record:
-            return Character(record)
+    def get_by_memberid(mid, force=False):
+        if not force:
+            Character.check_cache()
+        if force or mid in Character.cache:
+            return Character.cache[mid]
         else:
-            print(f'get_by_id: {mid} : {record}')
+            record = CharacterTable().get_by_memberid(mid)
+            if record:
+                c = Character(record)
+                Character.cache[mid] = c
+                return c
 
     @staticmethod
-    def get_by_name(name):
-        record = CharacterTable().get_by_name(name)
-        if record:
-            return Character(record)
+    def get_by_id(mid, force=False):
+        if not force:
+            Character.check_cache()
+        if force or mid in Character.cache:
+            return Character.cache[mid]
+        else:
+            record = CharacterTable().get_by_id(mid)
+            if record:
+                c = Character(record)
+                Character.cache[mid] = c
+                return c
+
+    @staticmethod
+    def get_by_name(name, force=False):
+        if not force:
+            Character.check_cache()
+        if force or name in Character.cache:
+            return Character.cache[name]
+        else:
+            record = CharacterTable().get_by_name(name)
+            if record:
+                c = Character(record)
+                Character.cache[name] = c
+                return c
 
     @staticmethod
     def list_by_name(name=None):

@@ -15,5 +15,5 @@ class Opposed(BaseCommand):
         if pc:
             (spec, *extra) = params
             (modifier, obase) = extract(extra, [0, -1])
-            for t, name, value, *name2 in get_checkable(pc, spec):
+            for t, name, value, *name2 in get_checkable(pc.get_data(), spec):
                 await embed_attack(message.channel, pc, name, value, int(modifier), -1, int(obase), -1)

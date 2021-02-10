@@ -13,7 +13,7 @@ class Lord(BaseCommand):
 
     async def handle(self, params, message, client):
         me = get_me(message)
-        i = me['memberId']
+        i = me.memberid
         if me:
             if 'setchannel' == params[0].lower():
                 LordTable().set(i, 0, 'mychannel', message.channel.id)
@@ -29,5 +29,5 @@ class Lord(BaseCommand):
                 msg = f"```Modified                   Lord                 Year Key                  Value\n";
                 for row in rows:
                     if i == int(row[2]):
-                        msg += f"{row[0]:19} {Config.characters[int(row[2])]['name']:20} {row[1]:4} {row[3]:20} {row[4]}\n"
+                        msg += f"{row[0]:19} {Character.get_by_memberid(int(row[2])).name:20} {row[1]:4} {row[3]:20} {row[4]}\n"
                 await message.channel.send(msg + "```")

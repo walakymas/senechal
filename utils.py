@@ -133,14 +133,14 @@ def get_embed(char, description=0):
 async def embed_char(channel, char, task, param):
     data = char.get_data()
     if task == "*" or task == "" or "base".startswith(task.lower()):
+        embed = get_embed(char, 1)
         if 'main' in data:
-            embed = get_embed(char, 1)
             from database.eventstable import EventsTable
             if char.memberid:
                 data['main']['Glory'] = EventsTable().glory(char.memberid)
             for name, value in data['main'].items():
                 embed.add_field(name=name, value=value)
-            await channel.send(embed=embed)
+        await channel.send(embed=embed)
     if task == "*" or "stats".startswith(task.lower()):
         if 'stats' in data:
             embed = get_embed(char, 0)
@@ -210,7 +210,7 @@ async def embed_char(channel, char, task, param):
             await channel.send(embed=embed)
     if task == "*" or "winter".startswith(task.lower()):
         if char.memberid:
-            winter = winterData(char, data)
+            winter = winterData(char)
             embed = get_embed(char)
             year = MarksTable().year()
             embed.add_field(name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
@@ -231,8 +231,9 @@ async def embed_char(channel, char, task, param):
             await channel.send(embed=embed)
 
 
-def winterData(char, data):
-    ss = 0;
+def winterData(char):
+    ss = 0
+    data = char.get_data()
     for s in get_checkable(data, 'stewardship'):
         ss = s[2]
     winter = {'stewardship': ss, 'horses':['charger', 'rouncy', 'rouncy', 'stumper', 'stumper' ]}
@@ -302,11 +303,12 @@ async def embed_trait(ctx, data, name, base, modifier, name2):
     await ctx.send(embed=embed)
 
 
-async def embed_attack(ctx, lord, name, base, modifier, damage=-1, obase=-1, odamage=-1):
+async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1, odamage=-1):
     (color, text, ro, success) = check(base, modifier)
 
+    data = character.get_data(False)
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
-    embed.add_field(name=lord['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
+    embed.add_field(name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
     if damage >= 0 and success <= 2:
         sum = 0;
         if success == 2:
@@ -334,4 +336,4 @@ def extract(l, defa):
 
 
 successes = ['?', 'Success', 'Critical', 'Fumble', 'Fail']
-success_emojis = ['?', ':thumbsup?:', ':crown:', ':person_facepalming:', ':thumbsdown:']
+success_emojis = ['?', ':thumbsup:', ':crown:', ':person_facepalming:', ':thumbsdown:']

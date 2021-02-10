@@ -19,7 +19,7 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
         me = get_me(message)
         if me:
             if len(params)== 0 or 'list' == params[0].lower():
-                await embed_pc(message.channel, me, "event", None)
+                await embed_char(message.channel, me, "event", None)
             elif 'modify' == params[0].lower():
                 id = int(params[1])
                 glory = int(params[2])
@@ -36,5 +36,5 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
                 if result:
                     year = int(params[1][1:])
                     msg = msg[len(params[1])+1:]
-                EventsTable().insert(me['memberId'], msg, glory, year)
+                EventsTable().insert(me.memberid, msg, glory, year)
                 await message.channel.send("inserted")

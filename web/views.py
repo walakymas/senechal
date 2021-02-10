@@ -13,22 +13,19 @@ def index(request):
 
 @never_cache
 def get_character(request):
+    pc = None
     if 'id' in request.GET:
-        pc = Character.get_by_id(request.GET['id'])
-        if pc:
-            data = pc.get_data(False)
-            if 'memberId' in data:
-                data['memberId'] = str(data['memberId'])
-            s = json.dumps(data, indent=4, ensure_ascii=False)
-            response = HttpResponse(s)
-            response['Content-Type'] = 'application/json'
-            return response
-        else:
-            print(pc)
+        pc = Character.get_by_id(request.GET['id'], force=True)
     elif 'ch' in request.GET:
-        pc = Character.get_by_name(request.GET['ch'])
-        if pc:
-            return JsonResponse(pc.data, safe=False, json_dumps_params={'ensure_ascii': False})
+        pc = Character.get_by_name(request.GET['ch'], force=True)
+    if pc:
+        data = pc.get_data(False)
+        if 'memberId' in data:
+            data['memberId'] = str(data['memberId'])
+        s = json.dumps(data, indent=4, ensure_ascii=False)
+        response = HttpResponse(s)
+        response['Content-Type'] = 'application/json'
+        return response
     names = {}
     for ch in CharacterTable().list():
         names[ch[0]] = ch[4]
