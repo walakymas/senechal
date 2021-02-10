@@ -10,7 +10,7 @@
      $.getJSON( "../json", function( data ) {
        var items = [];
        $.each( data, function( key, value ) {
-         items.push( "<option value='"+key+"'>" + value + "</option>" );
+         items.push( "<option value='"+value+"'>" + key + "</option>" );
        });
        $("#char").append(items.join(""))
        $( "#char" ).selectmenu({

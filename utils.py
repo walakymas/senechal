@@ -80,18 +80,18 @@ def get_checkable(data, spec):
     for n, sg in data['skills'].items():
         for sn, sv in sg.items():
             if sn.lower().startswith(spec):
-                yield ['skill', sn, sv]
+                yield ['skill', sn, int(sv)]
     for t in Config.senechalConfig['traits']:
         if t[0].lower().startswith(spec):
-            yield ['trait', t[0], data['traits'][t[0].lower()[:3]], t[1]]
+            yield ['trait', t[0], int(data['traits'][t[0].lower()[:3]]), t[1]]
         if t[1].lower().startswith(spec.lower()):
-            yield ['trait', t[1], 20 - data['traits'][t[0].lower()[:3]], t[0]]
+            yield ['trait', t[1], 20 - int(data['traits'][t[0].lower()[:3]]), t[0]]
     for t in Config.senechalConfig['stats']:
         if t.lower().startswith(spec):
-            yield ['stat', t, data['stats'][t.lower()[:3]]]
+            yield ['stat', t, int(data['stats'][t.lower()[:3]])]
     for pn, pv in data['passions'].items():
         if pn.lower().startswith(spec):
-            yield ['pass', pn, pv]
+            yield ['pass', pn, int(pv)]
 
 
 def tr(a):

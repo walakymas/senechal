@@ -51,7 +51,7 @@ class Character:
     def get_by_memberid(mid, force=False):
         if not force:
             Character.check_cache()
-        if force or mid in Character.cache:
+        if not force and mid in Character.cache:
             return Character.cache[mid]
         else:
             record = CharacterTable().get_by_memberid(mid)
@@ -64,7 +64,7 @@ class Character:
     def get_by_id(mid, force=False):
         if not force:
             Character.check_cache()
-        if force or mid in Character.cache:
+        if not force and mid in Character.cache:
             return Character.cache[mid]
         else:
             record = CharacterTable().get_by_id(mid)
@@ -77,7 +77,7 @@ class Character:
     def get_by_name(name, force=False):
         if not force:
             Character.check_cache()
-        if force or name in Character.cache:
+        if not force and name in Character.cache:
             return Character.cache[name]
         else:
             record = CharacterTable().get_by_name(name)

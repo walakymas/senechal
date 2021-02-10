@@ -28,14 +28,32 @@ def get_character(request):
         return response
     names = {}
     for ch in CharacterTable().list():
-        names[ch[0]] = ch[4]
+        names[ch[4]] = ch[0]
     print(names)
     return JsonResponse(names, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
 def modify(request):
+    def set(data, name, value):
+        i = name.find('.')
+        if name in data or i<0:
+            data[name] = value
+        else:
+            dn = name[0:i]
+            if dn not in data:
+                data[dn] = {}
+            set(data[dn], name[i+1:], value)
     print(request.POST.keys())
-    CharacterTable().set_json(request.POST['id'], request.POST['json'])
+    if 'json' in request.POST:
+        CharacterTable().set_json(request.POST['id'], request.POST['json'])
+    else:
+        j = CharacterTable().get_by_id(request.POST['id'])[6]
+        data = json.loads(j)
+        for name, value in request.POST.items():
+            if "id" != name:
+                set(data, name, value)
+        j = json.dumps(data, ensure_ascii=False, indent=2)
+        CharacterTable().set_json(request.POST['id'], j)
     return HttpResponse(request.method)
 
 
