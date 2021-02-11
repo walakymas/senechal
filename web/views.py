@@ -58,19 +58,18 @@ def modify(request):
 
 
 def pdf(request):
-    if 'ch' in request.GET:
-        from config import Config
-        pc = Config.get_character(request.GET['ch'])
+    if 'id' in request.GET:
+        pc = Character.get_by_id(request.GET['id'])
         if pc:
             from pdf.sheet import Sheet
-            pdf = Sheet(pc)
+            sheet = Sheet(pc)
             import tempfile
             fp = next(tempfile._get_candidate_names())
-            pdf.output(fp, 'F')
-            response = FileResponse(open(fp, 'rb'), filename=f"{pc['name']}.pdf")
+            sheet.output(fp, 'F')
+            response = FileResponse(open(fp, 'rb'), filename=f"{pc.name}.pdf")
             response['Content-Type'] = 'application/pdf'
             return response
         else:
-            return HttpResponse(f"Nem találom: '{request.GET['ch']}' <br/>{Config.characters.keys()}")
+            return HttpResponse(f"Nem találom: '{request.GET['id']}")
     else:
         return HttpResponse(f"hiányzó paraméter: 'ch'")

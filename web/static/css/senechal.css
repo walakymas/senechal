@@ -1,0 +1,108 @@
+#char-button {
+    width: 170px;
+}
+
+select {
+    width: 180px;
+}
+
+body {
+    background-color: black;
+    color: grey;
+
+}
+
+#json {
+    width: 800px;
+    height: 300px;
+}
+
+#main {
+    width: 100%;
+    position: relative;
+}
+
+#main > nav {
+  position: absolute;
+  left: 0px;
+  width: 200px;
+  text-align:center;
+}
+
+#main > section {
+  margin-left: 200px;
+  text-align: center;
+}
+
+#sheet > nav {
+  position: relative;
+  left: 0px;
+  width: 190px;
+  text-align: left;
+  float: left;
+}
+
+#sheet > section {
+  margin-left: 200px;
+  text-align:justify;
+}
+
+
+#charimg {
+    height: 200px;
+    width: 200px;
+}
+
+#charimg img {
+    object-fit: contain;
+    width:100%;
+    height:100%;
+}
+
+#name {
+    text-align:center;
+    color: white;
+    font-family:fantasy;
+    font-size: xx-large;
+}
+
+.ui-widget {
+    font-size: 14px
+}
+
+.skillgroup {
+  width: 200px;
+  margin-top: 10px;
+  margin-left: 5px
+}
+
+.skillgroup:first-child {
+  margin-top: 0px;
+}
+
+.skillgroup > div {
+  width: 190px;
+  display:flex;
+}
+
+.skillgroup > div:first-child  {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.skillgroup > div> div{
+  width: 100%
+}
+
+.skillgroup > div> div:last-child{
+  float: right;
+  width: 40px;
+  text-align:right;
+  margin-right:5px;
+}
+
+.skillgroup > div> div > div{
+  width: 50%;
+  float: left;
+}

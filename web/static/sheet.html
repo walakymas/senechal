@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>Senechal</title>
+    <script src="jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.css">
+    <link rel="stylesheet" href="css/senechal.css">
+    <script src="jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script>
+
+skills = []
+
+function refreshdata(id) {
+    $('#pdf').attr('href','../pdf?id='+id)
+    $.get( "../json?id="+id, function( char ) {
+      $( "#cid" ).val(id)
+      $( "#json" ).val(JSON.stringify(char, null, 2))
+
+      $('#name').text(char['name'])
+      if  ('url' in char) {
+        $('#charimg').html('<img src="'+char['url']+'"/>')
+      } else {
+        $('#charimg').html('')
+      }
+
+      $('#skills').html('')
+      if ('skills' in char) {
+          skillcount = 0;
+          skills = []
+          for (const [sgn, sgv] of Object.entries(char['skills'])) {
+              $('#skills').append('<div class="skillgroup"><div>'+sgn+'</div></div>');
+              for (const [sn, sv] of Object.entries(sgv)) {
+                  $('#skills > div').last().append('<div class="skill" id="skill_'+skillcount+'"><div>'+sn+'</div><div><div>'+sv+'</div><div>o</div></div></div>');
+                  skills[skillcount++]='skills.'+sgn+'.'+sn;
+              }
+          }
+      }
+      $('#description').html('')
+      if ('description' in char) {
+        $('#description').html(char['description'].replace("\n", "<br/>"))
+      }
+      $('#longdescription').html('')
+      if ('longdescription' in char) {
+        $('#longdescription').html(char['longdescription'].replace("\n", "<br/>"))
+      }
+    });
+}
+  $( function() {
+
+     $.getJSON( "../json", function( data ) {
+       var items = [];
+       $.each( data, function( key, value ) {
+         items.push( "<option value='"+value+"'>" + key + "</option>" );
+       });
+       $("#char").append(items.join(""))
+       $( "#char" ).selectmenu({
+           change: function( event, data ) {
+                refreshdata(data.item.value)
+           }
+         });
+       $("#char").eq(0).prop('selected',true);
+       refreshdata($("#char").val())
+     });
+     $("button").button()
+     $("#modify").click( function( event ) {
+        $.post( "../modify", {id:$( "#cid" ).val(), json:$( "#json" ).val()},function( data ) {
+            console.log('modified')
+        });
+     } );
+     $("a").button()
+  } );
+  </script>
+</head>
+<body>
+    <div id="main">
+        <nav>
+            <select name="char" id="char" style="width: 800px;">
+            </select>
+            <div id="charimg"></div>
+            <a id="pdf" href="" target="pdf" >PDF</a>
+        </nav>
+        <section><div id="name"></div></section>
+        <section id="sheet">
+            <nav id="skills">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</nav>
+            <section id="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</section>
+            <section id="longdescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</section>
+        </section>
+        <section>
+            <form action="../modify" method="POST">
+                <input name="id" id="cid" type="hidden"/>
+                <textarea name="json" id="json"></textarea>
+            </form>
+            <button name="modify" id="modify">Modify</button>
+        </section>
+    </div>
+</body>
+</html>
