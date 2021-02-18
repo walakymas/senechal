@@ -17,5 +17,6 @@ class MarksTable(BaseTableHandler):
         return BaseTableHandler.execute("SELECT * FROM marks WHERE lord=%s, year=%s", [lord, year], fetch='all')
 
     def list(self, lord=-1, year=-1):
+        print(f"marks {lord} {year}")
         return BaseTableHandler.execute('SELECT * FROM marks WHERE (-1=%(lord)s::bigint OR lord=%(lord)s::bigint) AND (-1=%(year)s OR year=%(year)s) ORDER BY lord, year, spec', {'lord': lord, 'year': year}, fetch='all')
 

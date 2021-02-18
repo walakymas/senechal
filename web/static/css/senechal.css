@@ -203,7 +203,7 @@ passion {
   margin-right:5px;
 }
 
-#passions > div > div{
+.passion > div > div{
   width: 50%;
   float: left;
 }
