@@ -25,6 +25,7 @@ traits = [
 
 
 skills = []
+passions = []
 
 function refreshdata(id) {
     $('#pdf').attr('href','../pdf?id='+id)
@@ -73,6 +74,16 @@ function refreshdata(id) {
               }
           }
       }
+      $('#passions').html('')
+      if ('passions' in char) {
+          $('#passions').append('<div>Passions</div><div></div>');
+          count = 0;
+          passions = []
+          for (const [pn, pv] of Object.entries(char['passions'])) {
+              $('#passions').last().append('<div class="passion" id="passion_'+count+'"><div>'+pn+'</div><div><div>'+pv+'</div><div><span class="ui-icon ui-icon-check"></span></div></div></div>');
+              passions[count++]='passions.'+pn;
+          }
+      }
       if ('traits' in char) {
        $('#traits').show();
          for (const [tn, tv] of Object.entries(char['traits'])) {
@@ -93,15 +104,19 @@ function refreshdata(id) {
      $('div.skill .ui-icon').hide()
      $('#traits .ui-icon').hide()
      $('#passions .ui-icon').hide()
-     console.log(data['marks'].includes("Energetic"))
      if ('marks' in data) {
          for (i in skills) {
-            console.log(i+":"+skills[i].replace(/.*\./g, ""))
             if (data['marks'].includes(skills[i].replace(/.*\./g, ""))) {
                 console.log(skills[i])
                 $('#skill_'+i+' .ui-icon').show()
             }
-          }
+         }
+         for (i in passions) {
+            if (data['marks'].includes(passions[i].replace(/.*\./g, ""))) {
+                console.log(passions[i])
+                $('#passion_'+i+' .ui-icon').show()
+            }
+         }
          for (i in traits) {
             if (data['marks'].includes(traits[i][0])) {
               $('#trait_'+traits[i][0].toLowerCase().substring(0,3)+' div.div-table-col:nth-child(1) .ui-icon').show()
@@ -163,7 +178,7 @@ function refreshdata(id) {
                                 <div class="div-table-col pagan">Lustful</div>
                                 <div class="div-table-col" >10</div>
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
-                            </div> 
+                            </div>
                             <div class="div-table-row" id="trait_ene">
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                                 <div class="div-table-col" >10</div>
@@ -173,7 +188,16 @@ function refreshdata(id) {
                                 <div class="div-table-col" >10</div>
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                             </div>
-                            <div class="div-table-row" id="trait_ger">
+                            <div class="div-table-row" id="trait_for">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry pagan">Forgiving</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Vengeful</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_gen">
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                                 <div class="div-table-col" >10</div>
                                 <div class="div-table-col chivalry pagan">Generous</div>
@@ -191,7 +215,7 @@ function refreshdata(id) {
                                 <div class="div-table-col" >10</div>
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                             </div>
-                            <div class="div-table-row" id="trait_just">
+                            <div class="div-table-row" id="trait_jus">
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                                 <div class="div-table-col" >10</div>
                                 <div class="div-table-col chivalry">Just</div>

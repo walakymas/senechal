@@ -26,6 +26,7 @@ def get_character(request):
             data['marks'] = []
             for r in MarksTable().list(data['char']['memberId'], MarksTable().year()):
                 data['marks'].append(r[5])
+        print(data)
         s = json.dumps(data, indent=4, ensure_ascii=False)
         response = HttpResponse(s)
         response['Content-Type'] = 'application/json'

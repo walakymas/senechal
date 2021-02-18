@@ -178,3 +178,32 @@ body {
 #traits.pagan div.pagan {
   text-decoration:underline;
 }
+
+#passions {
+  width: 100%;
+}
+
+#passions > div:first-child  {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+passion {
+  width: 100%;
+  text-align: left;
+}
+
+#passions > div > div:last-child{
+  float: right;
+  width: 40px;
+  text-align:right;
+  margin-right:5px;
+}
+
+#passions > div > div{
+  width: 50%;
+  float: left;
+}
