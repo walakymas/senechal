@@ -31,26 +31,27 @@ class Sheet(FPDF):
 
     def stats(self):
         x = self.get_x()
-        self.parchment('Skills', 30)
+        self.parchment('Stats', 30)
 
         self.set_font('Times', '', 8)
-        print(self.data)
-        for s in self.data['stats']:
+        if not Config.senechalConfig:
+            Config.reload()
+        for s in Config.senechalConfig['stats']:
             self.cell(20, 3, s)
             self.cell(5, 3, str(self.data['stats'][s.lower()[:3]]), 0, 2, align='R')
             self.set_x(x)
 
         self.cell(20, 1, "", 0, 2)
         self.cell(20, 3, "Damage")
-        self.cell(5, 3, str(round((int(self.data['stats']['str']) + int(self.data['stats']['siz']) / 6))) + 'd6', 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['str']) + int(self.data['stats']['siz'])) / 6)) + 'd6', 0, 2, align='R')
         self.set_x(x)
 
         self.cell(20, 3, "Healing Rate")
-        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz']) / 10))), 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz'])) / 10)), 0, 2, align='R')
         self.set_x(x)
 
         self.cell(20, 3, "Move Rate")
-        self.cell(5, 3, str(round((int(self.data['stats']['dex']) + int(self.data['stats']['siz']) / 10))), 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['dex']) + int(self.data['stats']['siz'])) / 10)), 0, 2, align='R')
         self.set_x(x)
 
         self.cell(20, 3, "HP")

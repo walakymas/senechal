@@ -107,3 +107,4 @@ venv.bak/
 /config.yml
 /senechal.db
 /db.sqlite3
+/*_tmp.pdf

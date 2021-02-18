@@ -7,11 +7,32 @@
     <script src="jquery-ui-1.12.1.custom/jquery-ui.js"></script>
     <script>
 
+traits = [
+    [ 'Chaste', 'Lustful' ],
+    [ 'Energetic', 'Lazy' ],
+    [ 'Forgiving', 'Vengeful' ],
+    [ 'Generous', 'Selfish' ],
+    [ 'Honest', 'Deceitful' ],
+    [ 'Just', 'Arbitrary' ],
+    [ 'Merciful', 'Cruel' ],
+    [ 'Modest', 'Proud' ],
+    [ 'Prudent', 'Reckless' ],
+    [ 'Spiritual', 'Worldly' ],
+    [ 'Temperate', 'Indulgent' ],
+    [ 'Trusting', 'Suspicious' ],
+    [ 'Valorous', 'Cowardly' ],
+    ]
+
+
 skills = []
 
 function refreshdata(id) {
     $('#pdf').attr('href','../pdf?id='+id)
-    $.get( "../json?id="+id, function( char ) {
+    $.get( "../json?id="+id, function( data ) {
+      $('.skill .ui-icon').hide()
+      $('#traits .ui-icon').hide()
+      $('#passions .ui-icon').hide()
+      char = data.char
       $( "#cid" ).val(id)
       $( "#json" ).val(JSON.stringify(char, null, 2))
 
@@ -22,17 +43,44 @@ function refreshdata(id) {
         $('#charimg').html('')
       }
 
-      $('#skills').html('')
+      $('#left').html('')
+      if ('stats' in char) {
+          $('#left').html('<div class="stats" id="stats"><div>Stats</div>'
+          +'<div>'
+          +'<div><div>Size</div><div>'+char['stats']['siz']+'</div></div>'
+          +'<div><div>Dexterity</div><div>'+char['stats']['dex']+'</div></div>'
+          +'<div><div>Strength</div><div>'+char['stats']['str']+'</div></div>'
+          +'<div><div>Constitution</div><div>'+char['stats']['con']+'</div></div>'
+          +'<div><div>Appearence</div><div>'+char['stats']['app']+'</div></div>'
+          +'</div>'
+          +'<div>'
+          +'<div><div>Damage</div><div>'+Math.round((char['stats']['str']*1+char['stats']['siz']*1)/6)+'d6</div></div>'
+          +'<div><div>Healing Rate</div><div>'+Math.round((char['stats']['con']*1+char['stats']['siz']*1)/10)+'</div></div>'
+          +'<div><div>Move Rate</div><div>'+Math.round((char['stats']['dex']*1+char['stats']['siz']*1)/10)+'</div></div>'
+          +'<div><div>HP</div><div>'+Math.round((char['stats']['con']*1+char['stats']['siz']*1)/6)+'</div></div>'
+          +'<div><div>Unconscious</div><div>'+Math.round((char['stats']['con']*1+char['stats']['siz']*1))+'</div></div>'
+          +'</div>'
+          +'</div>');
+      }
       if ('skills' in char) {
           skillcount = 0;
           skills = []
           for (const [sgn, sgv] of Object.entries(char['skills'])) {
-              $('#skills').append('<div class="skillgroup"><div>'+sgn+'</div></div>');
+              $('#left').append('<div class="skillgroup"><div>'+sgn+'</div></div>');
               for (const [sn, sv] of Object.entries(sgv)) {
-                  $('#skills > div').last().append('<div class="skill" id="skill_'+skillcount+'"><div>'+sn+'</div><div><div>'+sv+'</div><div>o</div></div></div>');
+                  $('#left > div').last().append('<div class="skill" id="skill_'+skillcount+'"><div>'+sn+'</div><div><div>'+sv+'</div><div><span class="ui-icon ui-icon-check"></span></div></div></div>');
                   skills[skillcount++]='skills.'+sgn+'.'+sn;
               }
           }
+      }
+      if ('traits' in char) {
+       $('#traits').show();
+         for (const [tn, tv] of Object.entries(char['traits'])) {
+            $('#trait_'+tn+' div:nth-child(2)').text(tv)
+            $('#trait_'+tn+' div:nth-child(6)').text(20-tv*1)
+         }
+      } else {
+       $('#traits').hide();
       }
       $('#description').html('')
       if ('description' in char) {
@@ -42,10 +90,33 @@ function refreshdata(id) {
       if ('longdescription' in char) {
         $('#longdescription').html(char['longdescription'].replace("\n", "<br/>"))
       }
+     $('div.skill .ui-icon').hide()
+     $('#traits .ui-icon').hide()
+     $('#passions .ui-icon').hide()
+     console.log(data['marks'].includes("Energetic"))
+     if ('marks' in data) {
+         for (i in skills) {
+            console.log(i+":"+skills[i].replace(/.*\./g, ""))
+            if (data['marks'].includes(skills[i].replace(/.*\./g, ""))) {
+                console.log(skills[i])
+                $('#skill_'+i+' .ui-icon').show()
+            }
+          }
+         for (i in traits) {
+            if (data['marks'].includes(traits[i][0])) {
+              $('#trait_'+traits[i][0].toLowerCase().substring(0,3)+' div.div-table-col:nth-child(1) .ui-icon').show()
+            }
+            if (data['marks'].includes(traits[i][1])) {
+              $('#trait_'+traits[i][0].toLowerCase().substring(0,3)+' div.div-table-col:nth-child(7) .ui-icon:last-child').show()
+            }
+         }
+     }
     });
 }
   $( function() {
-
+     $('div.skill .ui-icon').hide()
+     $('#traits .ui-icon').hide()
+     $('#passions .ui-icon').hide()
      $.getJSON( "../json", function( data ) {
        var items = [];
        $.each( data, function( key, value ) {
@@ -77,20 +148,138 @@ function refreshdata(id) {
             </select>
             <div id="charimg"></div>
             <a id="pdf" href="" target="pdf" >PDF</a>
+            <div id="left"></div>
         </nav>
         <section><div id="name"></div></section>
-        <section id="sheet">
-            <nav id="skills">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</nav>
-            <section id="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</section>
-            <section id="longdescription">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel posuere augue. Phasellus in efficitur lacus, a rhoncus urna. Nulla pharetra felis eu porta rhoncus. Quisque nec venenatis nibh. Mauris sapien dui, luctus sit amet accumsan at, rutrum et tortor. Mauris consectetur sem vitae tincidunt pulvinar. Donec vulputate dignissim molestie. Curabitur varius lorem eget eros lacinia lobortis. Phasellus et ultricies nunc, a consequat justo.</section>
-        </section>
-        <section>
-            <form action="../modify" method="POST">
-                <input name="id" id="cid" type="hidden"/>
-                <textarea name="json" id="json"></textarea>
-            </form>
-            <button name="modify" id="modify">Modify</button>
-        </section>
+            <section id="mainstat">
+                <div>
+                    <div id="traits">
+                        <div class="div-table">
+                            <div class="div-table-row" id="trait_cha">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" >Chaste</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col pagan">Lustful</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div> 
+                            <div class="div-table-row" id="trait_ene">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry pagan">Energetic</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Lazy</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_ger">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry pagan">Generous</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Selfish</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_hon">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col pagan">Honest</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Deceitful</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_just">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry">Just</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Arbitrary</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_mer">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry">Merciful</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Cruel</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_mod">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry">Modest</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col pagan">Proud</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_pru">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" >Prudent</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Reckless</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_spi">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" >Spiritual</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Worldly</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_tem">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" >Temperate</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Indulgent</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_tru">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" >Trusting</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Suspicious</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                            <div class="div-table-row" id="trait_val">
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col chivalry">Valorous</div>
+                                <div class="div-table-col" >/</div>
+                                <div class="div-table-col" >Cowardly</div>
+                                <div class="div-table-col" >10</div>
+                                <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="passions"></div>
+                </div>
+                <div>
+                    <div id="kinght"></div>
+                </div>
+            </section>
+            <section id="description"></section>
+            <section id="longdescription"></section>
+            <section>
+                <form action="../modify" method="POST">
+                    <input name="id" id="cid" type="hidden"/>
+                    <textarea name="json" id="json"></textarea>
+                </form>
+                <button name="modify" id="modify">Modify</button>
+            </section>
     </div>
 </body>
 </html>

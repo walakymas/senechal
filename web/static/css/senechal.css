@@ -8,17 +8,18 @@ select {
 
 body {
     background-color: black;
-    color: grey;
-
+    color: lightsteelblue;
+    font-size: 14px;
 }
 
 #json {
-    width: 800px;
+    width: 100%;
     height: 300px;
 }
 
 #main {
-    width: 100%;
+    /* width: 100%; */
+    max-width: 800px;
     position: relative;
 }
 
@@ -31,20 +32,7 @@ body {
 
 #main > section {
   margin-left: 200px;
-  text-align: center;
-}
-
-#sheet > nav {
-  position: relative;
-  left: 0px;
-  width: 190px;
-  text-align: left;
-  float: left;
-}
-
-#sheet > section {
-  margin-left: 200px;
-  text-align:justify;
+  text-align: justify;
 }
 
 
@@ -70,14 +58,44 @@ body {
     font-size: 14px
 }
 
+
+#stats > div{
+  width: 190px;
+  /* margin-left: 5px */
+}
+
+#stats > div:first-child{
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+}
+
+#stats > div > div{
+  display:flex;
+  width: 100%;
+}
+
+#stats > div:last-child{
+  margin-top: 5px;
+}
+
+#stats > div> div > div{
+  width: 100%;
+  text-align: left;
+}
+
+#stats > div> div > div:last-child{
+  float: right;
+  width: 40px;
+  text-align:right;
+  margin-right:5px;
+}
+
 .skillgroup {
   width: 200px;
   margin-top: 10px;
-  margin-left: 5px
-}
-
-.skillgroup:first-child {
-  margin-top: 0px;
+  /* margin-left: 5px */
 }
 
 .skillgroup > div {
@@ -89,10 +107,13 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: white;
+  text-align: center;
+  width: 100%;
 }
 
 .skillgroup > div> div{
-  width: 100%
+  width: 100%;
+  text-align: left;
 }
 
 .skillgroup > div> div:last-child{
@@ -105,4 +126,55 @@ body {
 .skillgroup > div> div > div{
   width: 50%;
   float: left;
+}
+
+.div-table {
+  display: table;
+  width: auto;
+#
+  border: 1px solid #ffd1d1;
+  border-spacing: 2px; /* cellspacing:poor IE support for  this */
+}
+.div-table-row {
+  display: table-row;
+  width: auto;
+  clear: both;
+}
+.div-table-col {
+        display: table-cell;
+}
+
+#mainstat {
+  /* width: 100%; */
+  display:flex;
+}
+
+#mainstat > div {
+  width:50%;
+  float:left;
+}
+
+#mainstat .div-table{
+  width: 100%;
+}
+
+#mainstat .div-table-row .div-table-col:nth-child(5){
+  text-align:right
+}
+
+#mainstat .div-table-row .div-table-col:nth-child(4){
+  display:none
+}
+
+#mainstat .div-table-row .div-table-col:nth-child(2),
+#mainstat .div-table-row .div-table-col:nth-child(6){
+  text-align:right
+}
+
+.chivalry {
+  font-weight: bold;
+}
+
+#traits.pagan div.pagan {
+  text-decoration:underline;
 }

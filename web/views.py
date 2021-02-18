@@ -5,6 +5,7 @@ from django.views.decorators.cache import never_cache
 
 from character import Character
 from database.charactertable import CharacterTable
+from database.markstable import MarksTable
 
 
 def index(request):
@@ -19,9 +20,12 @@ def get_character(request):
     elif 'ch' in request.GET:
         pc = Character.get_by_name(request.GET['ch'], force=True)
     if pc:
-        data = pc.get_data(False)
-        if 'memberId' in data:
-            data['memberId'] = str(data['memberId'])
+        data = {'char': pc.get_data(False)}
+        if 'memberId' in data['char']:
+            data['char']['memberId'] = str(data['char']['memberId'])
+            data['marks'] = []
+            for r in MarksTable().list(data['char']['memberId'], MarksTable().year()):
+                data['marks'].append(r[5])
         s = json.dumps(data, indent=4, ensure_ascii=False)
         response = HttpResponse(s)
         response['Content-Type'] = 'application/json'
@@ -64,7 +68,8 @@ def pdf(request):
             from pdf.sheet import Sheet
             sheet = Sheet(pc)
             import tempfile
-            fp = next(tempfile._get_candidate_names())
+
+            fp = next(tempfile._get_candidate_names())+"_tmp.pdf"
             sheet.output(fp, 'F')
             response = FileResponse(open(fp, 'rb'), filename=f"{pc.name}.pdf")
             response['Content-Type'] = 'application/pdf'
