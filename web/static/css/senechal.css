@@ -183,27 +183,42 @@ body {
   width: 100%;
 }
 
+#passions > div {
+  width: 90%;
+  display:flex;
+  width: 100%;
+  /* text-align: left; */
+
+}
+
 #passions > div:first-child  {
   font-size: 18px;
   font-weight: bold;
   color: white;
   text-align: center;
   width: 100%;
+  display:block;
 }
 
-passion {
+.passion {
+  /* width: 100%; */
+  text-align: left;
+
+}
+
+.passion > div:first-child{
   width: 100%;
   text-align: left;
-}
-
-#passions > div > div:last-child{
-  float: right;
-  width: 40px;
-  text-align:right;
-  margin-right:5px;
+  display:block;
 }
 
 .passion > div > div{
   width: 50%;
   float: left;
+}
+.passion > div:last-child{
+  float: right;
+  width: 40px;
+  text-align:right;
+  margin-right:5px;
 }

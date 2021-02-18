@@ -31,7 +31,7 @@ function refreshdata(id) {
     $('#pdf').attr('href','../pdf?id='+id)
     $.get( "../json?id="+id, function( data ) {
       $('.skill .ui-icon').hide()
-      $('#traits .ui-icon').hide()
+      $('#traits .ui-icon-check').hide()
       $('#passions .ui-icon').hide()
       char = data.char
       $( "#cid" ).val(id)
@@ -102,7 +102,7 @@ function refreshdata(id) {
         $('#longdescription').html(char['longdescription'].replace("\n", "<br/>"))
       }
      $('div.skill .ui-icon').hide()
-     $('#traits .ui-icon').hide()
+     $('#traits .ui-icon-check').hide()
      $('#passions .ui-icon').hide()
      if ('marks' in data) {
          for (i in skills) {
@@ -130,7 +130,7 @@ function refreshdata(id) {
 }
   $( function() {
      $('div.skill .ui-icon').hide()
-     $('#traits .ui-icon').hide()
+     $('#traits .ui-icon-check').hide()
      $('#passions .ui-icon').hide()
      $.getJSON( "../json", function( data ) {
        var items = [];
@@ -170,6 +170,15 @@ function refreshdata(id) {
                 <div>
                     <div id="traits">
                         <div class="div-table">
+                            <div class="div-table-row">
+                                <div class="div-table-col" ><span class="ui-icon"></span></div>
+                                <div class="div-table-col" > </div>
+                                <div class="div-table-col" ></div>
+                                <div class="div-table-col" ></div>
+                                <div class="div-table-col "></div>
+                                <div class="div-table-col" ></div>
+                                <div class="div-table-col" ><span class="ui-icon"></span></div>
+                            </div>
                             <div class="div-table-row" id="trait_cha">
                                 <div class="div-table-col" ><span class="ui-icon ui-icon-check"></span></div>
                                 <div class="div-table-col" >10</div>
