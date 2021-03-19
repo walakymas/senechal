@@ -1,16 +1,9 @@
-import sys
-
-import settings
 import discord
 import message_handler
 import datetime
-import os
 import sys
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from events.base_event              import BaseEvent
-from events                         import *
-from multiprocessing                import Process
 from config                         import Config
 from database.database              import Database
 
@@ -65,6 +58,7 @@ def main():
     # The message handler for both new message and edits
     async def common_handle_message(message):
         text = message.content
+        print(text)
         if text.startswith(Config.prefix) and text != Config.prefix:
             cmd_split = text[len(Config.prefix):].split()
             try:

@@ -12,8 +12,3 @@ websockets
 pyyaml
 psycopg2-binary
 fpdf2
-django
-gunicorn
-django-heroku
-whitenoise
-dj-database-url

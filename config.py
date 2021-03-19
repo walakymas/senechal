@@ -30,9 +30,6 @@ class Config:
         with open(r'senechal.yml') as file:
             Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
 
-        with open(r'characters.yml') as file:
-            Config.charactersOrig = yaml.load(file, Loader=yaml.FullLoader)
-
 
     @staticmethod
     def pcs(name=None):

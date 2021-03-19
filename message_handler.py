@@ -4,7 +4,6 @@ from commands.base_command import BaseCommand
 # imports all classes inside the commands package.
 from commands import *
 
-import settings
 import re
 from utils import dice
 from config import Config

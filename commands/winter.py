@@ -1,6 +1,5 @@
 from commands.base_command import BaseCommand
 from config import Config
-from database.markstable import MarksTable
 from utils import *
 
 
