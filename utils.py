@@ -110,8 +110,15 @@ def overwrite(cname, orig):
 
 
 def get_me(message):
-    i = int(overwrite('debugme', message.author.id))
-    return Character.get_by_memberid(i)
+    cmd_split = message.content[len(Config.prefix):].split()
+    me = None
+    if cmd_split[-1].startswith('<@!'):
+        me = Character.get_by_memberid(cmd_split[-1][3:-1])
+    if me:
+        return me
+    else:
+        i = int(overwrite('debugme', message.author.id))
+        return Character.get_by_memberid(i)
 
 
 def get_embed(char, description=0):

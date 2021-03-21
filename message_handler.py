@@ -23,7 +23,7 @@ COMMAND_ALIASES.update(COMMAND_HANDLERS)
 ###############################################################################
 
 
-async def handle_command(command, args, message, bot_client):
+async def handle_command(command, args, message, bot_client, mid=0):
     # Check whether the command is supported, stop silently if it's not
     # (to prevent unnecesary spam if our bot shares the same command prefix 
     # with some other bot)
