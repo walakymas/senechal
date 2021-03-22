@@ -76,7 +76,7 @@ async def try_upload_file(client, channel, file_path, content=None,
 
 
 def get_checkable(data, spec):
-    spec = spec.lower()
+    spec = spec.lower().replace("_", " ")
     for n, sg in data['skills'].items():
         for sn, sv in sg.items():
             if sn.lower().startswith(spec):
@@ -317,12 +317,19 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     embed.add_field(name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
     if damage >= 0 and success <= 2:
+        if damage == 0:
+            damage = round((data['stats']['str'] + data['stats']['siz']) / 6)
         sum = 0;
         if success == 2:
             damage += 4
+        s = '';
         for x in range(damage):
-            sum += dice(6)
-        embed.add_field(name="Sebzés", value=str(sum));
+            d = dice(6);
+            if sum>0 :
+                s += '+'
+            s += str(d)
+            sum += d
+        embed.add_field(name="Sebzés", value=s+' = '+str(sum));
     if obase > 0:
         (ocolor, otext, oro, osuccess) = check(obase, 0)
         embed.add_field(name="Opposer", value=otext + " (" + str(oro) + " vs " + str(obase) + ")", inline=False);

@@ -23,7 +23,7 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
             elif 'modify' == params[0].lower():
                 id = int(params[1])
                 glory = int(params[2])
-                EventsTable().update(id, message.content[message.content.index(" ")+len(params[0])+len(params[1])+len(params[2])+3:].strip(), glory)
+                EventsTable().update_wo_year(id, message.content[message.content.index(" ")+len(params[0])+len(params[1])+len(params[2])+3:].strip(), glory)
                 await message.channel.send("Updated")
             elif 'remove' == params[0].lower():
                 EventsTable().remove(int(params[1]))

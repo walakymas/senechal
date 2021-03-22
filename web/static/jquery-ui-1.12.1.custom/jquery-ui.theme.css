@@ -8,15 +8,15 @@
  *
  * http://api.jqueryui.com/category/theming/
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=dot-luv&cornerRadiusShadow=8px&offsetLeftShadow=-8px&offsetTopShadow=-8px&thicknessShadow=8px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=aaaaaa&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=aaaaaa&iconColorError=ffffff&fcError=ffffff&borderColorError=cd0a0a&bgImgOpacityError=30&bgTextureError=dots_small&bgColorError=a32d00&iconColorHighlight=ffffff&fcHighlight=ffffff&borderColorHighlight=052f57&bgImgOpacityHighlight=30&bgTextureHighlight=dots_medium&bgColorHighlight=0b58a2&iconColorActive=00498f&fcActive=75abff&borderColorActive=096ac8&bgImgOpacityActive=40&bgTextureActive=flat&bgColorActive=292929&iconColorHover=ffffff&fcHover=ffffff&borderColorHover=222222&bgImgOpacityHover=40&bgTextureHover=dots_small&bgColorHover=00498f&iconColorDefault=9ccdfc&fcDefault=ffffff&borderColorDefault=333333&bgImgOpacityDefault=20&bgTextureDefault=dots_small&bgColorDefault=333333&iconColorContent=9ccdfc&fcContent=d9d9d9&borderColorContent=000000&bgImgOpacityContent=20&bgTextureContent=gloss_wave&bgColorContent=111111&iconColorHeader=98d2fb&fcHeader=f6f6f6&borderColorHeader=0b3e6f&bgImgOpacityHeader=15&bgTextureHeader=diagonals_thick&bgColorHeader=0b3e6f&cornerRadius=4px&fsDefault=1.3em&fwDefault=bold&ffDefault=Arial%2Csans-serif
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=custom-theme&bgImgOpacityError=40&bgImgOpacityHighlight=80&bgImgOpacityActive=30&bgImgOpacityHover=33&bgImgOpacityDefault=35&bgImgOpacityContent=25&bgImgOpacityHeader=44&cornerRadiusShadow=8px&offsetLeftShadow=-7px&offsetTopShadow=-7px&thicknessShadow=7px&opacityShadow=60&bgImgOpacityShadow=30&bgTextureShadow=flat&bgColorShadow=%23a28c68&opacityOverlay=80&bgImgOpacityOverlay=50&bgTextureOverlay=flat&bgColorOverlay=%231c1c1c&iconColorError=%23a83300&fcError=%23111111&borderColorError=%23958061&bgTextureError=flat&bgColorError=%239B8565&iconColorHighlight=%23446c1e&fcHighlight=%231c1c1c&borderColorHighlight=%23cccccc&bgTextureHighlight=flat&bgColorHighlight=%23e5df95&iconColorActive=%23222222&fcActive=%23ffffff&borderColorActive=%23b9a78e&bgTextureActive=flat&bgColorActive=%239B8565&iconColorHover=%23ffffff&fcHover=%23ffffff&borderColorHover=%239B8565&bgTextureHover=flat&bgColorHover=%23003147&iconColorDefault=%23cccccc&fcDefault=%23eeeeee&borderColorDefault=%23444444&bgTextureDefault=flat&bgColorDefault=%23222222&iconColorContent=%23cccccc&fcContent=%23ffffff&borderColorContent=%23555555&bgTextureContent=flat&bgColorContent=%23000000&iconColorHeader=%23ffffff&fcHeader=%23ffffff&borderColorHeader=%23333333&bgTextureHeader=flat&bgColorHeader=%23444444&cornerRadius=6px&fwDefault=normal&fsDefault=1.1em&ffDefault='Overlock'%2C%20serif%20
  */
 
 
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Arial,sans-serif;
-	font-size: 1.3em;
+	font-family: 'Overlock', serif;
+	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
 	font-size: 1em;
@@ -25,28 +25,28 @@
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Arial,sans-serif;
+	font-family: 'Overlock', serif;
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #333333;
+	border: 1px solid #444444;
 }
 .ui-widget-content {
-	border: 1px solid #000000;
-	background: #111111 url("images/ui-bg_gloss-wave_20_111111_500x100.png") 50% top repeat-x;
-	color: #d9d9d9;
+	border: 1px solid #555555;
+	background: #000000;
+	color: #ffffff;
 }
 .ui-widget-content a {
-	color: #d9d9d9;
+	color: #ffffff;
 }
 .ui-widget-header {
-	border: 1px solid #0b3e6f;
-	background: #0b3e6f url("images/ui-bg_diagonals-thick_15_0b3e6f_40x40.png") 50% 50% repeat;
-	color: #f6f6f6;
+	border: 1px solid #333333;
+	background: #444444;
+	color: #ffffff;
 	font-weight: bold;
 }
 .ui-widget-header a {
-	color: #f6f6f6;
+	color: #ffffff;
 }
 
 /* Interaction states
@@ -60,10 +60,10 @@
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #333333;
-	background: #333333 url("images/ui-bg_dots-small_20_333333_2x2.png") 50% 50% repeat;
-	font-weight: bold;
-	color: #ffffff;
+	border: 1px solid #444444;
+	background: #222222;
+	font-weight: normal;
+	color: #eeeeee;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -72,7 +72,7 @@ a.ui-button,
 a:link.ui-button,
 a:visited.ui-button,
 .ui-button {
-	color: #ffffff;
+	color: #eeeeee;
 	text-decoration: none;
 }
 .ui-state-hover,
@@ -83,9 +83,9 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #222222;
-	background: #00498f url("images/ui-bg_dots-small_40_00498f_2x2.png") 50% 50% repeat;
-	font-weight: bold;
+	border: 1px solid #9B8565;
+	background: #003147;
+	font-weight: normal;
 	color: #ffffff;
 }
 .ui-state-hover a,
@@ -111,20 +111,20 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #096ac8;
-	background: #292929;
-	font-weight: bold;
-	color: #75abff;
+	border: 1px solid #b9a78e;
+	background: #9B8565;
+	font-weight: normal;
+	color: #ffffff;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #096ac8;
-	background-color: #75abff;
+	border: #b9a78e;
+	background-color: #ffffff;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #75abff;
+	color: #ffffff;
 	text-decoration: none;
 }
 
@@ -133,35 +133,35 @@ a.ui-button:active,
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-	border: 1px solid #052f57;
-	background: #0b58a2 url("images/ui-bg_dots-medium_30_0b58a2_4x4.png") 50% 50% repeat;
-	color: #ffffff;
+	border: 1px solid #cccccc;
+	background: #e5df95;
+	color: #1c1c1c;
 }
 .ui-state-checked {
-	border: 1px solid #052f57;
-	background: #0b58a2;
+	border: 1px solid #cccccc;
+	background: #e5df95;
 }
 .ui-state-highlight a,
 .ui-widget-content .ui-state-highlight a,
 .ui-widget-header .ui-state-highlight a {
-	color: #ffffff;
+	color: #1c1c1c;
 }
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-	border: 1px solid #cd0a0a;
-	background: #a32d00 url("images/ui-bg_dots-small_30_a32d00_2x2.png") 50% 50% repeat;
-	color: #ffffff;
+	border: 1px solid #958061;
+	background: #9B8565;
+	color: #111111;
 }
 .ui-state-error a,
 .ui-widget-content .ui-state-error a,
 .ui-widget-header .ui-state-error a {
-	color: #ffffff;
+	color: #111111;
 }
 .ui-state-error-text,
 .ui-widget-content .ui-state-error-text,
 .ui-widget-header .ui-state-error-text {
-	color: #ffffff;
+	color: #111111;
 }
 .ui-priority-primary,
 .ui-widget-content .ui-priority-primary,
@@ -196,10 +196,10 @@ a.ui-button:active,
 }
 .ui-icon,
 .ui-widget-content .ui-icon {
-	background-image: url("images/ui-icons_9ccdfc_256x240.png");
+	background-image: url("images/ui-icons_cccccc_256x240.png");
 }
 .ui-widget-header .ui-icon {
-	background-image: url("images/ui-icons_98d2fb_256x240.png");
+	background-image: url("images/ui-icons_ffffff_256x240.png");
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon,
@@ -209,18 +209,18 @@ a.ui-button:active,
 }
 .ui-state-active .ui-icon,
 .ui-button:active .ui-icon {
-	background-image: url("images/ui-icons_00498f_256x240.png");
+	background-image: url("images/ui-icons_222222_256x240.png");
 }
 .ui-state-highlight .ui-icon,
 .ui-button .ui-state-highlight.ui-icon {
-	background-image: url("images/ui-icons_ffffff_256x240.png");
+	background-image: url("images/ui-icons_446c1e_256x240.png");
 }
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-	background-image: url("images/ui-icons_ffffff_256x240.png");
+	background-image: url("images/ui-icons_a83300_256x240.png");
 }
 .ui-button .ui-icon {
-	background-image: url("images/ui-icons_9ccdfc_256x240.png");
+	background-image: url("images/ui-icons_cccccc_256x240.png");
 }
 
 /* positioning */
@@ -410,34 +410,34 @@ a.ui-button:active,
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 4px;
+	border-top-left-radius: 6px;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 4px;
+	border-top-right-radius: 6px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 6px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 4px;
+	border-bottom-right-radius: 6px;
 }
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #aaaaaa;
-	opacity: .3;
-	filter: Alpha(Opacity=30); /* support: IE8 */
+	background: #1c1c1c;
+	opacity: .8;
+	filter: Alpha(Opacity=80); /* support: IE8 */
 }
 .ui-widget-shadow {
-	-webkit-box-shadow: -8px -8px 8px #aaaaaa;
-	box-shadow: -8px -8px 8px #aaaaaa;
+	-webkit-box-shadow: -7px -7px 7px #a28c68;
+	box-shadow: -7px -7px 7px #a28c68;
 }
