@@ -61,7 +61,31 @@ function redraw() {
         $('#dam').append('<td added="dam">'+Math.round((pcs[i]['stats']['str']*1+pcs[i]['stats']['siz']*1)/6)+'</td>')
         $('#hr').append('<td added="hr">'+Math.round((pcs[i]['stats']['str']*1+pcs[i]['stats']['con']*1)/10)+'</td>')
         $('#mr').append('<td added="mr">'+Math.round((pcs[i]['stats']['dex']*1+pcs[i]['stats']['siz']*1)/10)+'</td>')
-        $('#hp').append('<td added="hp">'+Math.round((pcs[i]['stats']['con']*1+pcs[i]['stats']['siz']*1))+'</td>')
+        mhp = Math.round((pcs[i]['stats']['con']*1+pcs[i]['stats']['siz']*1));
+        $('#mhp').append('<td added="hp">'+mhp+'</td>')
+        ahp = mhp;
+        s='Changes: '
+        if (pcs[i]['health'] && pcs[i]['health']['changes']) {
+            for(ii in  pcs[i]['health']['changes']) {
+                console.log(i)
+                if (ii>0) {
+                  s+=', '
+                }
+                s+=pcs[i]['health']['changes'][ii];
+                ahp += pcs[i]['health']['changes'][ii];
+            }
+        }
+        if (ahp==mhp) {
+            $('#ahp').append('<td added="ahp"><span style="color:green">'+ahp+'</span></td>')
+            $('#chi').append('<td added="chi"><span style="color:green">-</span></td>')
+        } else  {
+            $('#ahp').append('<td added="ahp" title="'+s+'"><span style="color:red">'+ahp+'</span></td>')
+            if (pcs[i]['health']['chirurgery']) {
+                $('#chi').append('<td added="chi"><span style="color:red">Yes</span></td>')
+            } else {
+                $('#chi').append('<td added="chi"><span style="color:green">No</span></td>')
+            }
+        }
         $('#unc').append('<td added="unc">'+Math.round((pcs[i]['stats']['con']*1+pcs[i]['stats']['siz']*1)/4)+'</td>')
         $('#mw').append('<td added="mw">'+pcs[i]['stats']['con']+'</td>')
         $('#kno').append('<td added="kno">'+pcs[i]['stats']['siz']+'</td>')
@@ -87,7 +111,7 @@ function redraw() {
         $.post('https://discord.com/api/webhooks/822974917816483870/J5FB3eGrDP1xJ9FYeZaVIISz8YEHEl2b7rLZN8i0sc1OE4NQ-DVh41e_DUH3Saw7LabU',
          {username: 'WebHook', content:$(this).attr('bot')})
     })
-
+    $('[title]').tooltip()
 }
 
   $( function() {
