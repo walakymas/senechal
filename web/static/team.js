@@ -13,7 +13,7 @@ traits = [
     [ 'Trusting', 'Suspicious' ],
     [ 'Valorous', 'Cowardly' ],
     ];
-var surl = 'https://senechalweb.herokuapp.com'
+var surl = 'https://senechal.herokuapp.com'
 if (window.location.href.indexOf('localhost')>0) {
     surl = '..';
     cid = 63;

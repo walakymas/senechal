@@ -37,7 +37,7 @@ modes: ['code', 'form', 'text', 'tree', 'view', 'preview']
 }
 editor = {}
 
-var surl = 'https://senechalweb.herokuapp.com'
+var surl = 'https://senechal.herokuapp.com'
 if (window.location.href.indexOf('localhost')>0) {
     surl = '..';
     cid = 63;
