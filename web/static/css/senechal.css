@@ -264,3 +264,5 @@ table.team {
   overflow_: auto;
 }
 
+#health label, #health input { display: initial; }
+#health input[type="number"] { width: 50px }

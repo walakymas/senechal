@@ -146,19 +146,19 @@ function redrawStat() {
                 }
                 s+=char['health']['changes'][i]
                 hp += char['health']['changes'][i]
+                if (hp>maxhp) {
+                    hp = maxhp;
+                }
             }
           }
-          if (hp==maxhp) {
-            $('#hp').html(hp)
-            $('#hp').attr('title', 'Healthy')
+          if (hp>=maxhp) {
+              $('#hp').html(maxhp)
+              $('#hp').attr('title', 'Healthy')
           } else {
-            $('#hp').html(hp+"/"+maxhp)
-            if (char['health']['chirurgery']) {
-              s+='. Chirurgery needed!'
-              $('#hp').append('<span style="color:red">!!!</span>')
+              $('#hp').html(hp+"/"+maxhp)
               $('#hp').attr('title', s)
-            }
           }
+          $('#chineed').prop('checked', char['health']['chirurgery'])
           $('#hp').tooltip()
       }
 
@@ -431,10 +431,77 @@ function refreshdata(id) {
 }
 
   $( function() {
+      $.fn.inputFilter = function(inputFilter) {
+        return this.on("input keydown keyup mousedown mouseup select contextmenu drop", function() {
+          if (inputFilter(this.value)) {
+            this.oldValue = this.value;
+            this.oldSelectionStart = this.selectionStart;
+            this.oldSelectionEnd = this.selectionEnd;
+          } else if (this.hasOwnProperty("oldValue")) {
+            this.value = this.oldValue;
+            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+          } else {
+            this.value = "";
+          }
+        });
+      };
+
     const container = document.getElementById('jsoneditor')
     editor = new JSONEditor(container, options)
     $('#accordion').accordion();
     $('#events').accordion();
+    $("button" ).button();
+    $(".controlgroup" ).controlgroup()
+    $('#wound').click(function( event ) {
+        mod = $('#healthmod').val()*1;
+        if (mod>0) {
+            char['health']['changes'].push(mod*-1)
+            if (mod > char['stats']['con']) {
+                char['health']['chirurgery'] = 1;
+            }
+            $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+                console.log('modified')
+            });
+            redrawStat()
+        }
+        event.preventDefault();
+    } )
+    $('#heal').click(function( event ) {
+        mod = $('#healthmod').val()*1;
+        if (mod>0) {
+            char['health']['changes'].push(mod)
+            $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+                console.log('modified')
+            });
+            redrawStat()
+        }
+        event.preventDefault();
+    } )
+    $('#completeheal').click(function( event ) {
+        char['health'] = {changes:[],chirurgery:0}
+        $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+            console.log('modified')
+        });
+        redrawStat()
+    })
+    $('#sunday').click(function( event ) {
+        char['health']['changes'].push(Math.round((char['stats']['con']*1+char['stats']['str']*1)/10))
+        $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+            console.log('modified')
+        });
+        redrawStat()
+    })
+    $("#healthmod").inputFilter(function(value) {
+        return /^\d*$/.test(value);    // Allow digits only, using a RegExp
+    });
+    $('#chineed').change(function(event) {
+        console.log( this.checked)
+        char['health']['chirurgery']= this.checked ? 1 : 0;
+        $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+            console.log('modified')
+        });
+        redrawStat()
+    })
     $.get( surl+"/json",function( list ) {
       for (const [n, v] of Object.entries(list)) {
          $('#character').append('<option value="'+v+'" '+(v==cid?' selected="selected"':"")+'>'+n+'</option>>');
@@ -567,7 +634,6 @@ function refreshdata(id) {
         jsondialog.dialog( "open" );
     });
     $('#passionhead').on( "click", function() {
-        $( "#json" ).val(JSON.stringify(char, null, 2))
         editor.set(char['passions'])
         jsondialog.dialog("option", "buttons", [ {
              text: "Modify",
@@ -583,7 +649,6 @@ function refreshdata(id) {
         jsondialog.dialog( "open" );
     });
     $('#mainhead').on( "click", function() {
-        $( "#json" ).val(JSON.stringify(char, null, 2))
         editor.set(char['main'])
         jsondialog.dialog("option", "buttons", [ {
              text: "Modify",
@@ -599,29 +664,12 @@ function refreshdata(id) {
         jsondialog.dialog( "open" );
     });
     $('#stathead').on( "click", function() {
-        $( "#json" ).val(JSON.stringify(char, null, 2))
         editor.set(char['stats'])
         jsondialog.dialog("option", "buttons", [ {
              text: "Modify",
              click: function() {
                jsondialog.dialog( "close" );
                char['stats']= editor.get()
-               $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
-                 console.log('modified')
-                 redraw(data)
-               });
-             }
-           } ] )
-        jsondialog.dialog( "open" );
-    });
-    $('#hp').on( "click", function() {
-        $( "#json" ).val(JSON.stringify(char, null, 2))
-        editor.set(char['health'])
-        jsondialog.dialog("option", "buttons", [ {
-             text: "Modify",
-             click: function() {
-               jsondialog.dialog( "close" );
-               char['health']= editor.get()
                $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
                  console.log('modified')
                  redraw(data)
@@ -653,7 +701,8 @@ function refreshdata(id) {
               mark(traits[i][$(this).hasClass('left')?0:1])
            }
         }
-     });
+    });
+
     $( document ).tooltip({
       items: "#hp"
     });
