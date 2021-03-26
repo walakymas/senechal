@@ -1,27 +1,4 @@
-traits = [
-    [ 'Chaste', 'Lustful' ],
-    [ 'Energetic', 'Lazy' ],
-    [ 'Forgiving', 'Vengeful' ],
-    [ 'Generous', 'Selfish' ],
-    [ 'Honest', 'Deceitful' ],
-    [ 'Just', 'Arbitrary' ],
-    [ 'Merciful', 'Cruel' ],
-    [ 'Modest', 'Proud' ],
-    [ 'Prudent', 'Reckless' ],
-    [ 'Spiritual', 'Worldly' ],
-    [ 'Temperate', 'Indulgent' ],
-    [ 'Trusting', 'Suspicious' ],
-    [ 'Valorous', 'Cowardly' ],
-    ];
-
-horsetypes = {
-    'charger': {'arm': 5, 'siz': 34, 'con':12 , 'dex':17, 'str':30, 'dam':'6d6', mov:8},
-    'rouncy': {'arm': 4, 'siz': 26, 'con':14 , 'dex':10, 'str':18, 'dam':'4d6', mov:6},
-    'sumpter': {'arm': 3, 'siz': 22, 'con':16 , 'dex':12, 'str':15, 'dam':'3d6', mov:5},
-    'stumper': {'arm': 3, 'siz': 22, 'con':16 , 'dex':12, 'str':15, 'dam':'3d6', mov:5},
-    'courser': {'arm': 5, 'siz': 30, 'con':15 , 'dex':25, 'str':24, 'dam':'4d6', mov:9},
-    'palfrey': {'arm': 3, 'siz': 26, 'con':8 , 'dex':10, 'str':16, 'dam':'3d6', mov:6}
-}
+senechalConfig = {}
 
 skills = []
 passions = []
@@ -234,7 +211,9 @@ function redrawTrait() {
 
 function redrawNpc(npc) {
     id = npc['char']['dbid']
+    console.log(id+":"+npc)
     if (npc['char']['description']) {
+        console.log(npc['char']['description'])
         console.log(npc['char']['description'])
         $('#npc_'+npc['char']['dbid']).append('<p>'+npc['char']['description']+'</p>')
     }
@@ -288,6 +267,19 @@ function npc(npc) {
 }
 
 
+function getweapon(spec) {
+    w = {}
+    for (const [n, v] of Object.entries(senechalConfig['weapons']['default'])) {
+        w[n] = v
+    }
+    if (senechalConfig['weapons'][spec]) {
+        for (const [n, v] of Object.entries(senechalConfig['weapons'][spec])) {
+             w[n] = v
+        }
+    }
+    return w
+}
+
 function redrawAccordion() {
       $('#army').html('')
       if ('army' in char) {
@@ -302,12 +294,8 @@ function redrawAccordion() {
           }
       }
 
-
-     horses = ['charger', 'rouncy', 'rouncy', 'sumpter', 'sumpter'];
-     if ('winter' in char && 'horses' in char['winter']) {
-        horses = char['winter']['horses'];
-     }
-     htype = horsetypes[horses[0]];
+     horses = char['winter']['horses']
+     htype = senechalConfig['horsetypes'][horses[0]];
      $('#htyp').html(horses[0]);
      $('#harm').html(htype['arm'])
      $('#hsiz').html(htype['siz'])
@@ -324,14 +312,36 @@ function redrawAccordion() {
      for(i in horses) {
         if (i>0) {
             mov = '???'
-            if (horses[i] in horsetypes) {
-                htype = horsetypes[horses[i]]
+            if (horses[i] in senechalConfig['horsetypes']) {
+                htype = senechalConfig['horsetypes'][horses[i]]
                 mov = htype['mov']
             }
             $('#hother').append('<tr><th>Type</th><td>'+horses[i]+'</td><th>Move</th><td>'+mov+'</td></tr>')
         }
      }
-     $('#accordion').accordion("refresh")
+    $('#accordion').accordion("refresh");
+
+     $('#weapon option[value="'+char['combat']['weapon']+'"]').prop('selected', true)
+     $('#armor option[value="'+char['combat']['armor']+'"]').prop('selected', true)
+     $('#shield option[value="'+char['combat']['shield']+'"]').prop('selected', true)
+     $('#shield, #weapon, #armor').selectmenu( "refresh" );
+     w = getweapon(char['combat']['weapon'])
+     $('#combatgear').html('')
+     $('#combatgear').append('<tr><th>Skill</th><td>'+w['skill']+'</td></tr>')
+     $('#combatgear').append('<tr><th>Damage</th><td>'+(Math.round((char['stats']['str']*1+char['stats']['siz']*1)/6)+w.damage)+'d6</td></tr>')
+
+     $('#combatgear').append('<tr><th>Damage reduction</th><td>'
+        +senechalConfig['armors'][char['combat']['armor']]['red']
+        +' + '
+        +senechalConfig['shields'][char['combat']['shield']]['red']
+        +'</td></tr>')
+     $('#combatgear').append('<tr><th>Dex modifier</th><td>'
+        +senechalConfig['armors'][char['combat']['armor']]['dex']
+        +'</td></tr>')
+     $('#combatgear').append('<tr><th>Effective Dex</th><td>'
+        +(char['stats']['dex'] + senechalConfig['armors'][char['combat']['armor']]['dex'])
+        +'</td></tr>');
+
 }
 
 function redraw(newdata) {
@@ -363,6 +373,7 @@ function redraw(newdata) {
                  $('#passion_'+i+' .ui-icon').removeClass('ui-icon-radio-off').addClass('ui-icon-bullet')
             }
          }
+         traits = senechalConfig['traits']
          for (i in traits) {
             if (data['marks'].includes(traits[i][0])) {
               $('#trait_'+traits[i][0].toLowerCase().substring(0,3)+' .left').removeClass('ui-icon-radio-off').addClass('ui-icon-bullet')
@@ -381,51 +392,6 @@ function refreshdata(id) {
     localStorage.setItem('cid', id)
     $('#pdf').attr('href', surl + '/pdf?id='+id)
     $.get( surl + "/json?id="+id,function( data ) {
-      if (!data['char']['stats']) {
-        data['char']['stats'] = {"siz": 10, "dex": 10, "str": 10, "con": 10, "app": 10}
-      }
-      if (!data['char']['traits']) {
-        data['char']['traits'] = { "cha": 10, "ene": 10, "for": 10, "gen": 10, "hon": 10, "jus": 10, "mer": 10, "mod": 10, "pru": 10, "spi": 10, "tem": 10, "tru": 10, "val": 10 }
-      }
-      if (!data['char']['passions']) {
-        data['char']['passions'] = { }
-      }
-      if (!data['char']['skills']) {
-        data['char']['skills'] = { "Other":{} }
-      }
-      if (!data['char']['main']) {
-        data['char']['main'] = { }
-      }
-      if (!data['char']['description']) {
-        data['char']['description'] = "???"
-      }
-      if (!data['char']['army']) {
-        data['char']['army'] = {
-          "Old Knights": 0,
-          "Middle-aged Knights": 0,
-          "Young Knights": 0,
-          "Other Lineage Men": 0,
-          "Levy": 0
-        }
-      }
-      if (!data['char']['winter']) {
-        data['char']['winter'] = {
-          "stewardship_": 13,
-          "horses": [
-            "charger",
-            "rouncy",
-            "rouncy",
-            "sumpter",
-            "sumpter"
-          ]
-        }
-      }
-      if (!data['char']['health']) {
-        data['char']['health'] = {
-          "chirurgery": 0,
-          "changes": []
-        }
-      }
       redraw(data)
     });
 }
@@ -502,16 +468,54 @@ function refreshdata(id) {
         });
         redrawStat()
     })
-    $.get( surl+"/json",function( list ) {
-      for (const [n, v] of Object.entries(list)) {
-         $('#character').append('<option value="'+v+'" '+(v==cid?' selected="selected"':"")+'>'+n+'</option>>');
-      }
-      $( "#character" ).selectmenu({
-        change: function( event, data ) {
-            console.log(data.item.value)
-            refreshdata(data.item.value);
+    $.get( surl+"/base",function( base ) {
+        senechalConfig = base
+        for (const [n, v] of Object.entries(senechalConfig ['weapons'])) {
+            if ('default'!=n) {
+                $('#weapon').append('<option value="'+n+'">'+n+'</option>')
+            }
         }
-      })
+        for (const [n, v] of Object.entries(senechalConfig ['armors'])) {
+            $('#armor').append('<option value="'+n+'">'+n+'</option>')
+        }
+        for (const [n, v] of Object.entries(senechalConfig ['shields'])) {
+            $('#shield').append('<option value="'+n+'">'+n+'</option>')
+        }
+        $( "#weapon" ).selectmenu({
+            change: function( event, data ) {
+               char['combat']['weapon'] = data.item.value
+               $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+                 redraw(data)
+               });
+            }
+          })
+        $( "#armor" ).selectmenu({
+            change: function( event, data ) {
+               char['combat']['armor'] = data.item.value
+               $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+                 redraw(data)
+               });
+            }
+          })
+        $( "#shield" ).selectmenu({
+            change: function( event, data ) {
+               char['combat']['shield'] = data.item.value
+               $.post( surl+"/modify", {'id':cid, 'json':JSON.stringify(char)},function( data ) {
+                 redraw(data)
+               });
+            }
+          })
+        $.get( surl+"/json",function( list ) {
+          for (const [n, v] of Object.entries(list)) {
+             $('#character').append('<option value="'+v+'" '+(v==cid?' selected="selected"':"")+'>'+n+'</option>>');
+          }
+          $( "#character" ).selectmenu({
+            change: function( event, data ) {
+                console.log(data.item.value)
+                refreshdata(data.item.value);
+            }
+          })
+        });
     });
 
      $('.ui-icon-bullet').hide();

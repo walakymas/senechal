@@ -49,9 +49,7 @@ class Sheet(FPDF):
         self.parchment('Stats', 30)
 
         self.set_font('Lora', '', 8)
-        if not Config.senechalConfig:
-            Config.reload()
-        for s in Config.senechalConfig['stats']:
+        for s in Config.senechal()['stats']:
             self.cell(20, 3, s)
             self.cell(5, 3, str(self.data['stats'][s.lower()[:3]]), 0, 2, align='R')
             self.set_x(x)
@@ -149,9 +147,7 @@ class Sheet(FPDF):
         traits = self.data['traits']
         virtues = []
         if 'Culture' in self.data['main']:
-            if not Config.senechalConfig:
-                Config.reload()
-            for name, value in Config.senechalConfig['virtues'].items():
+            for name, value in Config.senechal()['virtues'].items():
                 if name in self.data['main']['Culture']:
                     virtues = value
         print(virtues)

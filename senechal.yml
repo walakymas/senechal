@@ -20,6 +20,115 @@ stats:
   - Constitution
   - Appearance
 
+horsetypes:
+    'charger': {'arm': 5, 'siz': 34, 'con':12 , 'dex':17, 'str':30, 'dam':'6d6', mov: 8}
+    'rouncy': {'arm': 4, 'siz': 26, 'con':14 , 'dex':10, 'str':18, 'dam':'4d6', mov: 6}
+    'sumpter': {'arm': 3, 'siz': 22, 'con':16 , 'dex':12, 'str':15, 'dam':'3d6', mov: 5}
+    'courser': {'arm': 5, 'siz': 30, 'con':15 , 'dex':25, 'str':24, 'dam':'4d6', mov: 9}
+    'palfrey': {'arm': 3, 'siz': 26, 'con':8 , 'dex':10, 'str':16, 'dam':'3d6', mov: 6}
+    'destier': {'arm': 5, 'siz': 42, 'con':10 , 'dex':10, 'str':38, 'dam':'8d6', mov: 7}
+    'andalusian': {'arm': 5, 'siz': 36, 'con':12 , 'dex':17, 'str':32, 'dam':'7d6', mov: 8}
+
+shields:
+  None:
+    red: 0
+    dex: 0
+  Shield:
+    red: 6
+    dex: 0
+
+armors:
+  Clothing:
+    red: 0
+    dex: 0
+    heavy: N
+  Heavy Clothing:
+    red: 1
+    dex: 0
+    heavy: N
+  Padded armor:
+    red: 2
+    dex: 0
+    heavy: N
+  Leather armor:
+    red: 4
+    dex: -5
+    heavy: N
+  Hard leather:
+    red: 6
+    dex: -5
+    heavy: Y
+  Chain mail:
+    red: 10
+    dex: -10
+    heavy: Y
+    extra: [chain]
+  Reinforced chainmail:
+    red: 10
+    dex: -10
+    heavy: Y
+  Partial plate:
+    red: 14
+    dex: -10
+    heavy: Y
+  Full plate:
+    red: 16
+    dex: -16
+    heavy: Y
+  Gothic plate:
+    red: 18
+    dex: -18
+    heavy: Y
+
+weapons:
+    default:
+      damage: 0
+      fumble: Broken
+      extra: []
+    None:
+      damage: 0
+      fumble: ???
+    Flail:
+      skill: Sword
+      damage: 0
+      fumble: ???
+      description: On natural 1 hits himself
+      one: Hits himself
+      extra: [flail]
+    Sword:
+      skill: Sword
+      tie: If a tie occurs in any opposed resolution against a different weapon, a sword always breaks a non-sword.
+      fumble: Dropped, can recover
+    GreatSword:
+      skill: Sword
+      damage: +1
+      fumble: Dropped, can recover
+      extra: [2hd]
+    Dagger:
+      skill: Dagger
+      damage: -1
+    Axe:
+      skill: Axe
+    Mace:
+      skill: Mace
+    Javelin:
+      skill: Javelin
+      damage: -2
+    Spear:
+      skill: Spear
+      damage: -2
+    GreatSpear:
+      skill: Great Spear
+      extra: [2hd]
+    Lance:
+      skill: Lance
+
+fallbacks:
+    'SpearExpertise': ['Spear', 'Lance', 'Great Spear']
+    'Law': ['Courtesy', 'Folklore', 'Intrigue']
+    'Music': ['Play (Instrument)', 'Signing', 'Compose']
+    'Distaff': ['Stewardship', 'Industry']
+
 virtues:
   Roman: [Chaste, Forgiving, Merciful, Modest, Temperate]
   British: [Chaste, Energetic, Generous, Modest, Temperate]

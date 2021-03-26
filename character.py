@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 
+from config import Config
 from database.charactertable import CharacterTable
 
 
@@ -21,6 +22,73 @@ class Character:
         self.url = record[5]
         self.json = record[6]
         self.data = json.loads(self.json)
+        self.data['dbid'] = self.id
+        if not 'stats' in self.data:
+            self.data['stats'] = {"siz": 10, "dex": 10, "str": 10, "con": 10, "app": 10}
+        if not 'traits' in self.data:
+            self.data['traits'] = { "cha": 10, "ene": 10, "for": 10, "gen": 10, "hon": 10, "jus": 10, "mer": 10, "mod": 10, "pru": 10, "spi": 10, "tem": 10, "tru": 10, "val": 10 }
+        if not 'passions' in self.data:
+            self.data['passions'] = { }
+        if not 'skills' in self.data:
+            self.data['skills'] = { "Other":{} }
+        if not 'main' in self.data:
+            self.data['main'] = { }
+        if not 'description' in self.data:
+            self.data['description'] =  "???"
+        if not 'army' in self.data:
+            self.data['army'] =  {
+                "Old Knights": 0,
+                "Middle-aged Knights": 0,
+                "Young Knights": 0,
+                "Other Lineage Men": 0,
+                "Levy": 0
+            }
+        if not 'winter' in self.data:
+            self.data['winter'] = {
+                "stewardship_": 13,
+                "horses": [
+                    "charger",
+                    "rouncy",
+                    "rouncy",
+                    "sumpter",
+                    "sumpter"
+                ]
+            }
+        if not 'combat' in self.data:
+            print('overwrite combat')
+            self.data['combat'] = {
+                "weapon": "None",
+                "shield": "None",
+                "armor": "Clothing",
+                "spec": []
+            }
+        if not 'health' in self.data:
+            self.data['health'] = {"chirurgery": 0, "changes": []}
+        self.weapon = self.get_weapon(self.data['combat']['weapon'])
+        if not '2hd' in self.weapon['extra']:
+            self.shield = Config.shield(self.data['combat']['shield'])
+        else:
+            self.shield = Config.shield('None')
+        self.armor = Config.armor(self.data['combat']['armor'])
+
+    def get_weapon(self, spec):
+        if not spec:
+            if self.data['combat']['weapon'] == 'empty':
+                spec = 'sword'
+            else:
+                spec = self.data['combat']['weapon']
+        weapon = Config.weapon(spec)
+        weapon['damage'] += round((self.data['stats']['str'] + self.data['stats']['siz']) / 6)
+        return weapon
+
+    def get_armor(self):
+        print(self.data['combat'])
+        if self.data['combat']['armor'] == 'Cloth':
+            spec = 'sword'
+        else:
+            spec = self.data['combat']['armor']
+        armor = Config.weapon(spec)
+        return armor
 
     def get_memberid(self):
         return self.memberid
@@ -42,7 +110,6 @@ class Character:
     @staticmethod
     def check_cache():
         now = datetime.timestamp(datetime.now())
-        print("timestamp =", now)
         if now > Character.cache_timeline:
             Character.cache = {}
             Character.cache_timeline = 60+now ## Egy perc cache

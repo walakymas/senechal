@@ -13,4 +13,5 @@ class Set(BaseCommand):
 
     async def handle(self, params, message, client):
         Config.config[params[0]] = params[1]
+        print(f"{Config.config}")
         await message.author.send(f"Set '{params[0]}' to '{params[1]}'")

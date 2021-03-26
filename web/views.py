@@ -9,8 +9,16 @@ from database.markstable import MarksTable
 from database.eventstable import EventsTable
 from datetime import datetime
 
+
 def index(request):
     return HttpResponse("Hello, world. You're at the senechal index.")
+
+
+def base(request):
+    from config import Config
+    result = Config.senechal()
+    return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def pcresponse(pc):
     data = {'char': pc.get_data(False), 'modified':datetime.timestamp(pc.modified)}

@@ -59,7 +59,6 @@ async def try_upload_file(client, channel, file_path, content=None,
                           delete_after_send=False, retries=3, filename=None):
     used_retries = 0
     sent_msg = None
-    print(client)
     while not sent_msg and used_retries < retries:
         try:
             sent_msg = await channel.send(file=discord.File(file_path, filename=filename), content=content)
@@ -109,16 +108,15 @@ def overwrite(cname, orig):
         return orig
 
 
-def get_me(message):
+def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
     me = None
     if cmd_split[-1].startswith('<@!'):
-        me = Character.get_by_memberid(cmd_split[-1][3:-1])
+        me = Character.get_by_memberid(cmd_split[-1][3:-1],force=force)
     if me:
         return me
     else:
-        i = int(overwrite('debugme', message.author.id))
-        return Character.get_by_memberid(i)
+        return Character.get_by_memberid(message.author.id, force=force)
 
 
 def get_embed(char, description=0):
@@ -263,9 +261,9 @@ def check(base, modifier=0, emoji=True):
     r = ro;
     c = base + int(modifier)
     if c > 20:
-        r -= c - 20
+        r += c - 20
         c = 20
-    if ro == c:
+    if ro == c or r > 20:
         color = discord.Color.gold()
         success = 2
     elif ro == 20:
@@ -278,9 +276,9 @@ def check(base, modifier=0, emoji=True):
         color = discord.Color.blue()
         success = 1
     if emoji:
-        return [color, success_emojis[success] + " " + successes[success], ro, success]
+        return [color, success_emojis[success] + " " + successes[success], r, success]
     else:
-        return [color, successes[success], ro, success]
+        return [color, successes[success], r, success]
 
 
 async def embed_check(ctx, data, name, base, modifier):
@@ -313,7 +311,7 @@ async def embed_trait(ctx, data, name, base, modifier, name2):
 async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1, odamage=-1):
     (color, text, ro, success) = check(base, modifier)
 
-    data = character.get_data(False)
+    data = character.get_data(True)
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     embed.add_field(name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
     if damage >= 0 and success <= 2:
@@ -325,7 +323,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
         s = '';
         for x in range(damage):
             d = dice(6);
-            if sum>0 :
+            if sum > 0:
                 s += '+'
             s += str(d)
             sum += d
