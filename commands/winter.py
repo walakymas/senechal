@@ -7,7 +7,7 @@ class Winter(BaseCommand):
 
     def __init__(self):
         description = 'Aktuális játékosra a winter phase fontosabb infóit megadja'
-        super().__init__(description, None, ['tel','w'],
+        super().__init__(description, None, ['tel'],
                          longdescription='''
 Egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
 Ha nincs megadva a blokk, akkor saját stewarshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
