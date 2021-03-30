@@ -11,7 +11,7 @@ class Me(BaseCommand):
     def __init__(self):
         description = "Saját karakter adatai"
         super().__init__(description, None, ['m', 'en', 'én'],
-                         longdescription='''**!me [*|_base_|stats|events|traits|skills|mark|winter|combat] ** információs blokkok a characters.yaml illetve az addatbázisban tárolt eventek alapján
+                         longdescription='''**!me [*|_base_|events|traits|passions|skills|mark|winter|combat] ** információs blokkok a characters.yaml illetve az addatbázisban tárolt eventek alapján
 Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
 **!me download** a karakterre vonatkozó yaml blokk küldése magán üzenetben 
 **!me set stewardship {szám}** a tél fázisra vonatkozó steward dobás

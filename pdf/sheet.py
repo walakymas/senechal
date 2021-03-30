@@ -210,8 +210,6 @@ class Sheet(FPDF):
         self.set_font('Lora', '', 8)
         self.write(3, str(value) + "\n")
 
-    #        self.cell(42, 3, name, 0, 0)
-
     def event(self):
         x = self.get_x()
         self.parchment('Event', 80)

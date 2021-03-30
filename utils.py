@@ -135,8 +135,11 @@ def get_embed(char, description=False):
     return embed
 
 
-def add_field(embed, name=None, value=None, inline=False):
-    embed.description += f"\n**{name}** {value}"
+def add_field(embed, name=None, value=None, inline=False, formatted=False):
+    if formatted:
+        embed.description += f"{name} `{value}`   "
+    else:
+        embed.description += f"\n**{name}** {value}"
 
 
 async def embed_char(channel, char, task, param):
@@ -153,29 +156,47 @@ async def embed_char(channel, char, task, param):
             from database.eventstable import EventsTable
             if char.memberid:
                 data['main']['Glory'] = EventsTable().glory(char.memberid)
-            embed.description += "\n"
-            for name, value in data['main'].items():
-                embed.description += f"\n**{name}** `{value}`"
-        await channel.send(embed=embed)
-    if task == "*" or "stats".startswith(task.lower()):
+        embed.description += "\n"
+        skipp = ['Glory', 'Born', 'Squired', 'Knighted']
+
+        for name, value in data['main'].items():
+            if name not in skipp:
+                embed.description += f"{name} `{value}`  "
+        embed.description += "\n"
+        if 'Born' in data['main']:
+            embed.description += f"Born `{data['main']['Born']}` "
+            embed.description += f"Year `{year}` "
+            embed.description += f"Age `{year - int(data['main']['Born'])}` "
+        if 'Squired' in data['main']:
+            embed.description += f"Squired `{data['main']['Squired']}` "
+        if 'Knighted' in data['main']:
+            embed.description += f"Knighted `{data['main']['Knighted']}` "
         if 'stats' in data:
-            embed = get_embed(char, 0)
+            embed.description += "\n\n"
             for s in Config.senechalConfig['stats']:
-                add_field(embed, name=s, value=data['stats'][s.lower()[:3]])
-            add_field(embed,name="Damage", value=str(round((data['stats']['str'] + data['stats']['siz']) / 6)) + 'd6');
-            add_field(embed,name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)));
-            add_field(embed,name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)));
-            add_field(embed,name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))));
-            add_field(embed,name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)));
-            await channel.send(embed=embed)
+                add_field(embed, name=s, value=data['stats'][s.lower()[:3]], formatted=True)
+            add_field(embed,name="Damage", value=str(char.get_damage()) + 'd6', formatted=True);
+            add_field(embed,name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)), formatted=True);
+            add_field(embed,name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)), formatted=True);
+            add_field(embed,name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))), formatted=True);
+            add_field(embed,name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)), formatted=True);
+        await channel.send(embed=embed)
     if task == "*" or "traits".startswith(task.lower()):
         if 'traits' in data:
-            embed = get_embed(char, 0)
+            embed = get_embed(char)
             traits = data['traits']
-            result = ""
+            embed.description = f"**Traits**"
             for row in Config.senechalConfig['traits']:
-                result += f"{row[0]:10} {traits[row[0].lower()[:3]]:2} / {row[1]:10} {20-traits[row[0].lower()[:3]]:2}\n"
-            embed.description = f"**Traits**\n```{result}```"
+                if row[0] in marks:
+                    embed.description += f"\n__{row[0]:10}__"
+                else:
+                    embed.description += f"\n{row[0]:10}"
+                embed.description += f" `{traits[row[0].lower()[:3]]:2}` / "
+                if row[1] in marks:
+                    embed.description += f"__{row[1]:10}__"
+                else:
+                    embed.description += f"{row[1]:10}"
+                embed.description += f" `{20-traits[row[0].lower()[:3]]:2}`"
             await channel.send(embed=embed)
     if task == "*" or "events".startswith(task.lower()):
         if char.memberid:
@@ -194,10 +215,12 @@ async def embed_char(channel, char, task, param):
     if task == "*" or "passions".startswith(task.lower()):
         if 'passions' in data:
             embed = get_embed(char, 0)
-            s = ""
+            embed.description = ":crossed_swords:  **Passions**\n"
             for name, value in sorted(data['passions'].items()):
-                s += name + ": " + str(value) + "\n"
-            add_field(embed,name=":crossed_swords:  Passions", value=f"```{s}```", inline=False)
+                if name in marks:
+                    embed.description += f"__{name}__: `{value}`  "
+                else:
+                    embed.description += f"{name}: `{value}`  "
             await channel.send(embed=embed)
         else:
             print("no passions")
@@ -206,12 +229,12 @@ async def embed_char(channel, char, task, param):
             embed = get_embed(char, 0)
             for sn, sg in data['skills'].items():
                 s = ""
-                embed.description += f"\n:crossed_swords: **{sn}**"
+                embed.description += f"\n:crossed_swords: **{sn}**\n"
                 for name, value in sorted(sg.items()):
-                    if (name in marks):
-                        embed.description += f"\n**__{name}__**: {value}"
+                    if name in marks:
+                        embed.description += f"__{name}__: `{value}`  "
                     else:
-                        embed.description += f"\n**{name}**: {value}"
+                        embed.description += f"{name}: `{value}`  "
             await channel.send(embed=embed)
     if task == "*" or "marks".startswith(task.lower()):
         if char.memberid:
