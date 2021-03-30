@@ -19,7 +19,7 @@ class BaseCommand:
         if longdescription:
             alias = ""
             if self.aliases:
-                alias = "**Aliasok:**" + ", ".join(f"{p}" for p in aliases)
+                alias = "**Aliasok:** " + ", ".join(f"{p}" for p in aliases)
             self.longdescription =  f"{self.description}\n\n{longdescription.strip()}\n\n{alias}"
 
 

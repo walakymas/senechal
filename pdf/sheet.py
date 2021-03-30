@@ -4,17 +4,10 @@ from database.markstable import MarksTable
 from database.eventstable import EventsTable
 import unicodedata
 
-class Sheet(FPDF):
-    horsetypes = {
-        'charger': {'arm': 5, 'siz': 34, 'con':12 , 'dex':17, 'str':30, 'dam':'6d6', 'mov':8},
-        'rouncy': {'arm': 4, 'siz': 26, 'con':14 , 'dex':10, 'str':18, 'dam':'4d6', 'mov':6},
-        'sumpter': {'arm': 3, 'siz': 22, 'con':16 , 'dex':12, 'str':15, 'dam':'3d6', 'mov':5},
-        'stumper': {'arm': 3, 'siz': 22, 'con':16 , 'dex':12, 'str':15, 'dam':'3d6', 'mov':5},
-        'courser': {'arm': 5, 'siz': 30, 'con':15 , 'dex':25, 'str':24, 'dam':'4d6', 'mov':9},
-        'palfrey': {'arm': 3, 'siz': 26, 'con':8 , 'dex':10, 'str':16, 'dam':'3d6', 'mov':6}
-    }
 
+class Sheet(FPDF):
     def __init__(self, char):
+        self.char = char
         self.data = char.get_data()
         super().__init__()
         self.add_font('Sofia', '', 'pdf/GISMONDA.TTF', uni=True)
@@ -37,12 +30,12 @@ class Sheet(FPDF):
     def parchment(self, text, width):
         y = self.get_y()
         x = self.get_x()
-        self.set_xy(x, y+1)
+        self.set_xy(x, y + 1)
         self.image('images/pdfpart.png', w=width, h=10)
-        self.set_xy(x, y+2.5)
+        self.set_xy(x, y + 2.5)
         self.set_font('Sofia', '', 10)
         self.cell(width, 5, text, 0, 2, align='C')
-        self.set_xy(x, y+11)
+        self.set_xy(x, y + 11)
 
     def stats(self):
         x = self.get_x()
@@ -56,15 +49,18 @@ class Sheet(FPDF):
 
         self.cell(20, 1, "", 0, 2)
         self.cell(20, 3, "Damage")
-        self.cell(5, 3, str(round((int(self.data['stats']['str']) + int(self.data['stats']['siz'])) / 6)) + 'd6', 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['str']) + int(self.data['stats']['siz'])) / 6)) + 'd6', 0, 2,
+                  align='R')
         self.set_x(x)
 
         self.cell(20, 3, "Healing Rate")
-        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz'])) / 10)), 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz'])) / 10)), 0, 2,
+                  align='R')
         self.set_x(x)
 
         self.cell(20, 3, "Move Rate")
-        self.cell(5, 3, str(round((int(self.data['stats']['dex']) + int(self.data['stats']['siz'])) / 10)), 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['dex']) + int(self.data['stats']['siz'])) / 10)), 0, 2,
+                  align='R')
         self.set_x(x)
 
         self.cell(20, 3, "HP")
@@ -72,7 +68,8 @@ class Sheet(FPDF):
         self.set_x(x)
 
         self.cell(20, 3, "Unconscious")
-        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz'])) / 4)), 0, 2, align='R')
+        self.cell(5, 3, str(round((int(self.data['stats']['con']) + int(self.data['stats']['siz'])) / 4)), 0, 2,
+                  align='R')
         self.set_x(x)
 
     def skills(self):
@@ -100,18 +97,18 @@ class Sheet(FPDF):
         if ('winter' in self.data and 'horses' in self.data['winter']):
             self.parchment("Horse", 30)
 
-            horse = Sheet.horsetypes[self.data['winter']['horses'][0]]
+            horse = Config.senechal()['horsetypes'][self.data['winter']['horses'][0]]
 
-            h('Type' , self.data['winter']['horses'][0])
-            h('Size' , str(horse['siz']))
-            h('Constitution' , str(horse['con']))
-            h('Strength' , str(horse['str']))
-            h('Dexterity' , str(horse['dex']))
+            h('Type', self.data['winter']['horses'][0])
+            h('Size', str(horse['siz']))
+            h('Constitution', str(horse['con']))
+            h('Strength', str(horse['str']))
+            h('Dexterity', str(horse['dex']))
 
             self.cell(5, 2, '', 0, 2, align='R')
-            h('Move' , str(horse['mov']))
-            h('Armor' , str(horse['arm']))
-            h('Damage' , str(horse['dam']))
+            h('Move', str(horse['mov']))
+            h('Armor', str(horse['arm']))
+            h('Damage', str(horse['dam']))
             self.cell(5, 2, '', 0, 2, align='R')
 
             h('Healing Rate', str(round((horse['con'] + horse['siz']) / 10)))
@@ -127,8 +124,8 @@ class Sheet(FPDF):
 
             for h in self.data['winter']['horses'][1:]:
                 move = '??'
-                if (h in Sheet.horsetypes):
-                    move = str(Sheet.horsetypes[h]['mov'])
+                if h in Config.senechal()['horsetypes']:
+                    move = str(Config.senechal()['horsetypes'][h]['mov'])
                 self.cell(25, 3, str(h))
                 self.cell(5, 3, move, 0, 2, align='R')
                 self.set_x(x)
@@ -160,14 +157,14 @@ class Sheet(FPDF):
             self.set_font('Lora', '', 8)
             self.cell(5, 3, str(traits[row[0].lower()[:3]]), align='R')
             self.cell(3, 3, "/", 0, 0, align='C')
-            self.cell(5, 3, str(20-traits[row[0].lower()[:3]]), align='R')
+            self.cell(5, 3, str(20 - traits[row[0].lower()[:3]]), align='R')
             self.set_trait_font(row[1], virtues)
             self.cell(15, 3, row[1], 0, 0)
             self.set_font('ZapfDingbats', '', 8)
             self.cell(3, 3, "on"[row[1] in self.marks], 0, 2)
             self.set_x(x)
-        chivalry = int(traits['ene'])+int(traits['gen'])+int(traits['jus'])\
-                   +int(traits['mod'])+int(traits['mer'])+int(traits['val'])
+        chivalry = int(traits['ene']) + int(traits['gen']) + int(traits['jus']) \
+                   + int(traits['mod']) + int(traits['mer']) + int(traits['val'])
         self.set_font('Lora', '', 8)
         self.cell(50, 3, "Chivalry: " + str(chivalry) + "/80", 0, 2, align='C')
 
@@ -182,12 +179,38 @@ class Sheet(FPDF):
             self.cell(3, 3, "on"[name in self.marks], 0, 2)
             self.set_x(x)
 
-    def param(self,  name, value):
+    def combat(self):
+        x = self.get_x()
+        self.parchment('Combat', 50)
+        w = self.char.get_weapon()
+        x = self.get_x()
+        y = self.get_y()
+        self.param("Weapon", self.data['combat']['weapon'])
+        self.set_xy(x + 30, y)
+        self.param("Skill", w['skill'])
+        y += 4
+        self.set_xy(x, y)
+        self.param("Armor", self.data['combat']['armor'])
+        self.set_xy(x + 30, y)
+        self.param("Shield", self.data['combat']['shield'])
+        y += 4
+        self.set_xy(x, y)
+        self.param("Damage", str(self.char.get_damage()) + "d6")
+        self.set_xy(x + 30, y)
+        self.param("Reduction", str(self.char.armor['red']) + "+" + str(self.char.shield['red']))
+        y += 4
+        self.set_xy(x, y)
+        self.param("Dex modifier", str(self.char.armor['dex']))
+        self.set_xy(x + 30, y)
+        self.param("Effective dex", self.data['stats']['dex'] + self.char.armor['dex'])
+
+    def param(self, name, value):
         self.set_font('LoraB', '', 8)
-        self.write(3, name+": ")
+        self.write(3, name + ": ")
         self.set_font('Lora', '', 8)
-        self.write(3, str(value)+"\n")
-#        self.cell(42, 3, name, 0, 0)
+        self.write(3, str(value) + "\n")
+
+    #        self.cell(42, 3, name, 0, 0)
 
     def event(self):
         x = self.get_x()
@@ -206,22 +229,22 @@ class Sheet(FPDF):
         x = self.get_x()
         y = self.get_y()
         self.param("Homeland", self.data['main']['Homeland'])
-        self.set_xy(x+40, y)
+        self.set_xy(x + 40, y)
         self.param("Lord", self.data['main']['Lord'])
         y += 4
         self.set_xy(x, y)
         self.param("Home", self.data['main']['Home'])
-        self.set_xy(x+40, y)
+        self.set_xy(x + 40, y)
         self.param("Culture", self.data['main']['Culture'])
 
         y += 4
         self.set_xy(x, y)
         self.param("Age", str(self.year - int(self.data['main']['Born'])))
-        self.set_xy(x+20, y)
+        self.set_xy(x + 20, y)
         self.param("Born", self.data['main']['Born'])
-        self.set_xy(x+40, y)
+        self.set_xy(x + 40, y)
         self.param("Squired", self.data['main']['Squired'])
-        self.set_xy(x+60, y)
+        self.set_xy(x + 60, y)
         self.param("Knighted", self.data['main']['Knighted'])
 
         skipp = ['Homeland', 'Lord', 'Home', 'Culture', 'Glory', 'Born', 'Squired', 'Knighted']
@@ -236,15 +259,16 @@ class Sheet(FPDF):
     def fill(self):
         y = self.get_y()
         x = self.get_x()
-        
+
         self.stats()
         self.skills()
         self.horses()
-        
-        self.set_xy(x+40, y)
+
+        self.set_xy(x + 40, y)
         self.traits()
         self.passions()
-        
-        self.set_xy(x+100, y)
+        self.combat()
+
+        self.set_xy(x + 100, y)
         self.main()
-        self.event()
+#        self.event()

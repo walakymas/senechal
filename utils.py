@@ -119,75 +119,85 @@ def get_me(message, force=False):
         return Character.get_by_memberid(message.author.id, force=force)
 
 
-def get_embed(char, description=0):
+def get_embed(char, description=False):
+    embed = discord.Embed(title=char.name,
+        color=discord.Color.blue(),
+        timestamp=datetime.datetime.now()
+    )
+
     if description:
-        embed = discord.Embed(title=char.name,
-                              description=char.get_data(False)['description'],
-                              timestamp=datetime.datetime.now(),
-                              color=discord.Color.blue())
+        embed.description = char.get_data(False)['description']
     else:
-        embed = discord.Embed(title=char.name, color=discord.Color.blue(),
-                              timestamp=datetime.datetime.now()
-                              )
+        embed.description = ''
     if char.url:
         embed.set_thumbnail(url=char.url)
     embed.set_footer(text=f"{Config.prefix}senechal")
     return embed
 
 
+def add_field(embed, name=None, value=None, inline=False):
+    embed.description += f"\n**{name}** {value}"
+
+
 async def embed_char(channel, char, task, param):
     data = char.get_data()
+    marks = []
+    year = MarksTable().year()
+    rows = MarksTable().list(lord=char.memberid, year=year)
+    for row in rows:
+        if row[5] not in marks:
+            marks.append(row[5])
     if task == "*" or task == "" or "base".startswith(task.lower()):
-        embed = get_embed(char, 1)
+        embed = get_embed(char, True)
         if 'main' in data:
             from database.eventstable import EventsTable
             if char.memberid:
                 data['main']['Glory'] = EventsTable().glory(char.memberid)
+            embed.description += "\n"
             for name, value in data['main'].items():
-                embed.add_field(name=name, value=value)
+                embed.description += f"\n**{name}** `{value}`"
         await channel.send(embed=embed)
     if task == "*" or "stats".startswith(task.lower()):
         if 'stats' in data:
             embed = get_embed(char, 0)
             for s in Config.senechalConfig['stats']:
-                embed.add_field(name=s, value=data['stats'][s.lower()[:3]])
-            embed.add_field(name="Damage", value=str(round((data['stats']['str'] + data['stats']['siz']) / 6)) + 'd6');
-            embed.add_field(name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)));
-            embed.add_field(name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)));
-            embed.add_field(name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))));
-            embed.add_field(name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)));
+                add_field(embed, name=s, value=data['stats'][s.lower()[:3]])
+            add_field(embed,name="Damage", value=str(round((data['stats']['str'] + data['stats']['siz']) / 6)) + 'd6');
+            add_field(embed,name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)));
+            add_field(embed,name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)));
+            add_field(embed,name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))));
+            add_field(embed,name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)));
             await channel.send(embed=embed)
     if task == "*" or "traits".startswith(task.lower()):
         if 'traits' in data:
             embed = get_embed(char, 0)
-            traits = data['traits'];
-            result = "";
+            traits = data['traits']
+            result = ""
             for row in Config.senechalConfig['traits']:
                 result += f"{row[0]:10} {traits[row[0].lower()[:3]]:2} / {row[1]:10} {20-traits[row[0].lower()[:3]]:2}\n"
-            embed.add_field(name="Traits", value=f"```{result}```", inline=False)
+            embed.description = f"**Traits**\n```{result}```"
             await channel.send(embed=embed)
     if task == "*" or "events".startswith(task.lower()):
         if char.memberid:
             embed = get_embed(char)
             from database.eventstable import EventsTable
-            embed.add_field(name="Összes Glory", value=f"{EventsTable().glory(char.memberid)}", inline=False)
+            embed.description += f"\n**Összes Glory**:  {EventsTable().glory(char.memberid)}"
             msg = f""
             count = 0
             for (id, created, modified, year, lord, desc, glory) in EventsTable().list(char.memberid):
-                count += 1
-                if count > 25:
-                    count = 1
+
+                if len(embed.description) + len(desc) > 2000:
                     await channel.send(embed=embed)
-                    embed = get_embed(char, 0)
-                embed.add_field(name=f"Year: {year}  Glory: {glory} Id:{id}", value=desc, inline=False)
+                    embed = get_embed(char)
+                embed.description += f"\n**Year: {year}  Glory: {glory} Id:{id}** {desc}"
             await channel.send(embed=embed)
     if task == "*" or "passions".startswith(task.lower()):
         if 'passions' in data:
             embed = get_embed(char, 0)
             s = ""
-            for name, value  in sorted(data['passions'].items()):
+            for name, value in sorted(data['passions'].items()):
                 s += name + ": " + str(value) + "\n"
-            embed.add_field(name=":crossed_swords:  Passions", value=f"```{s}```", inline=False)
+            add_field(embed,name=":crossed_swords:  Passions", value=f"```{s}```", inline=False)
             await channel.send(embed=embed)
         else:
             print("no passions")
@@ -196,34 +206,49 @@ async def embed_char(channel, char, task, param):
             embed = get_embed(char, 0)
             for sn, sg in data['skills'].items():
                 s = ""
+                embed.description += f"\n:crossed_swords: **{sn}**"
                 for name, value in sorted(sg.items()):
-                    s += name + ": " + str(value) + "\n"
-                embed.add_field(name=":crossed_swords:  " + sn, value=f"```{s}```", inline=False)
+                    if (name in marks):
+                        embed.description += f"\n**__{name}__**: {value}"
+                    else:
+                        embed.description += f"\n**{name}**: {value}"
             await channel.send(embed=embed)
     if task == "*" or "marks".startswith(task.lower()):
         if char.memberid:
             embed = get_embed(char, 0)
-            year = MarksTable().year()
-            rows = MarksTable().list(lord=char.memberid, year=year)
             msg = f"```ID  Modified   Spec\n"
             marks = []
             for row in rows:
                 if row[5] not in marks:
                     marks.append(row[5])
                     msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
-            embed.add_field(name=f"Év: {year} pipák", value=msg+"```", inline=False )
+            add_field(embed,name=f"Év: {year} pipák", value=msg+"```", inline=False )
+            await channel.send(embed=embed)
+    if task == "*" or "combat".startswith(task.lower()):
+        if char.memberid:
+            embed = get_embed(char)
+            embed.description =f"**Combat**\n"
+            w = char.get_weapon(data['combat']['weapon'])
+            embed.description +=f"\n **Weapon**: {data['combat']['weapon']}"
+            embed.description +=f" **Skill**: `{w['skill']}`"
+            embed.description +=f" **Damage**: `{round((data['stats']['str'] + data['stats']['siz']) / 6)}d6`"
+            embed.description +=f"\n**Armor**: {data['combat']['armor']}"
+            embed.description +=f" **Shield**: {data['combat']['shield']}"
+            a = Config.senechal()['armors'][data['combat']['armor']]
+            s = Config.senechal()['shields'][data['combat']['shield']]
+            embed.description +=f"\n**Damage reduction**: `{a['red']} + {s['red']}`"
+            embed.description +=f" **Dex modifier**: `{a['dex']}`"
+            embed.description +=f" **Effective Dex**: `{data['stats']['dex'] + a['dex']}`"
             await channel.send(embed=embed)
     if task == "*" or "winter".startswith(task.lower()):
         if char.memberid:
             winter = winterData(char)
             embed = get_embed(char)
-            year = MarksTable().year()
-            embed.add_field(name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
+            add_field(embed, name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
             msg = ""
             for h in winter['horses']:
                 msg += f"  {h}\n"
-            embed.add_field(name="Lovak", value=f"```{msg}```", inline=False)
-            rows = MarksTable().list(lord=char.memberid, year=year)
+            add_field(embed, name="Lovak", value=f"```{msg}```", inline=False)
             msg = f"\nModified   Spec\n"
             marks = []
             for row in rows:
@@ -231,7 +256,7 @@ async def embed_char(channel, char, task, param):
                     if name not in marks:
                         marks.append(name)
                         msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
-            embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
+            add_field(embed, name="Pipák", value=f"```{msg}```", inline=False)
 
             await channel.send(embed=embed)
 
@@ -285,11 +310,11 @@ async def embed_check(ctx, data, name, base, modifier):
     (color, text, ro, success) = check(base, modifier)
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
-    embed.add_field(name="Dobás", value=str(ro));
-    embed.add_field(name=name, value=str(base));
+    add_field(embed,name="Dobás", value=str(ro));
+    add_field(embed,name=name, value=str(base));
     if (modifier != 0):
-        embed.add_field(name="Módosító", value=str(modifier));
-    embed.add_field(name="Eredmény", value=text, inline=False);
+        add_field(embed,name="Módosító", value=str(modifier));
+    add_field(embed,name="Eredmény", value=text, inline=False);
 
     await ctx.send(embed=embed)
 
@@ -299,10 +324,10 @@ async def embed_trait(ctx, data, name, base, modifier, name2):
 
     embed = discord.Embed(title=data['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
                           color=color)
-    embed.add_field(name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")", inline=False);
+    add_field(embed,name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")", inline=False);
     if success > 2:
         (color, text, ro, success) = check(20 - base, 0)
-        embed.add_field(name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base)) + ")",
+        add_field(embed,name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base)) + ")",
                         inline=False);
 
     await ctx.send(embed=embed)
@@ -313,7 +338,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
 
     data = character.get_data(True)
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
-    embed.add_field(name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
+    add_field(embed,name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")", inline=False);
     if damage >= 0 and success <= 2:
         if damage == 0:
             damage = round((data['stats']['str'] + data['stats']['siz']) / 6)
@@ -327,17 +352,17 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
                 s += '+'
             s += str(d)
             sum += d
-        embed.add_field(name="Sebzés", value=s+' = '+str(sum));
+        add_field(embed,name="Sebzés", value=s+' = '+str(sum));
     if obase > 0:
         (ocolor, otext, oro, osuccess) = check(obase, 0)
-        embed.add_field(name="Opposer", value=otext + " (" + str(oro) + " vs " + str(obase) + ")", inline=False);
+        add_field(embed,name="Opposer", value=otext + " (" + str(oro) + " vs " + str(obase) + ")", inline=False);
         if odamage >= 0 and osuccess <= 2:
             sum = 0;
             if osuccess == 2:
                 odamage += 4
             for x in range(odamage):
                 sum += dice(6)
-            embed.add_field(name="Sebzés", value=str(sum));
+            add_field(embed,name="Sebzés", value=str(sum));
 
     await ctx.send(embed=embed)
 

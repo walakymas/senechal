@@ -6,13 +6,6 @@ from database.charactertable import CharacterTable
 
 
 class Character:
-    fallbacks = {
-        'SpearExpertise': ['Spear', 'Lance', 'Great Spear'],
-        'Law': ['Courtesy', 'Folklore', 'Intrigue'],
-        'Music': ['Play (Instrument)', 'Signing', 'Compose'],
-        'Distaff': ['Stewardship', 'Industry']
-    }
-
     def __init__(self, record):
         self.id = record[0]
         self.created = record[1]
@@ -70,24 +63,23 @@ class Character:
         else:
             self.shield = Config.shield('None')
         self.armor = Config.armor(self.data['combat']['armor'])
+        self.effective_dexterity = self.data['stats']['str'] + self.armor['red'] + self.shield['red']
 
-    def get_weapon(self, spec):
+    def get_damage(self):
+        return round((self.data['stats']['str'] + self.data['stats']['siz']) / 6)
+
+    def get_weapon(self, spec=None):
         if not spec:
             if self.data['combat']['weapon'] == 'empty':
-                spec = 'sword'
+                spec = 'Sword'
             else:
                 spec = self.data['combat']['weapon']
         weapon = Config.weapon(spec)
         weapon['damage'] += round((self.data['stats']['str'] + self.data['stats']['siz']) / 6)
         return weapon
 
-    def get_armor(self):
-        print(self.data['combat'])
-        if self.data['combat']['armor'] == 'Cloth':
-            spec = 'sword'
-        else:
-            spec = self.data['combat']['armor']
-        armor = Config.weapon(spec)
+    def get_armor(self, spec):
+        armor = Config.armor(spec)
         return armor
 
     def get_memberid(self):
@@ -98,8 +90,8 @@ class Character:
             for n, sg in self.data['skills'].items():
                 up = {}
                 for sn, sv in sg.items():
-                    if sn in Character.fallbacks:
-                        for f in Character.fallbacks[sn]:
+                    if sn in Config.senechal()['fallbacks']:
+                        for f in Config.senechal()['fallbacks'][sn]:
                             if f not in sg or str(sg[f])[:1] == '.' or sv > sg[f]:
                                 up[f] = sv
                 sg.update(up)

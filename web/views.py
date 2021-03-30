@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.cache import never_cache
@@ -8,6 +9,7 @@ from database.charactertable import CharacterTable
 from database.markstable import MarksTable
 from database.eventstable import EventsTable
 from datetime import datetime
+import tempfile
 
 
 def index(request):
@@ -124,9 +126,8 @@ def pdf(request):
         if pc:
             from pdf.sheet import Sheet
             sheet = Sheet(pc)
-            import tempfile
-
-            fp = next(tempfile._get_candidate_names())+"_tmp.pdf"
+            fp = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")
+            print(fp)
             sheet.output(fp, 'F')
             response = FileResponse(open(fp, 'rb'), filename=f"{pc.name}.pdf")
             response['Content-Type'] = 'application/pdf'

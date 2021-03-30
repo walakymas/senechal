@@ -62,7 +62,6 @@ def main():
             cmd_split = text[len(Config.prefix):].split()
             if cmd_split[-1].startswith('<@!'):
                 cmd_split = cmd_split[0:-1]
-                print(cmd_split)
             try:
                 await message_handler.handle_command(cmd_split[0].lower(), 
                                       cmd_split[1:], message, client)
