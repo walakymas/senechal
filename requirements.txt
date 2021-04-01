@@ -18,3 +18,4 @@ gunicorn
 django-heroku
 whitenoise
 dj-database-url
+disputils

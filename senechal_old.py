@@ -135,7 +135,7 @@ async def c(ctx, spec="", modifier=0):
     if ctx.author.id in characters:
         pc = characters[ctx.author.id]
         if (spec == ""):
-            embed = discord.Embed(title=pc['name'], timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
+            embed = discord.Embed(title=pc['name'], description="", timestamp=datetime.datetime.utcnow(), color=discord.Color.blue())
             s = ""
             for t in senechalConfig['traits']:
                 s += t[0] + ': ' + str(pc['traits'][t[0].lower()[:3]]) + "\n"

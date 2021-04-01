@@ -71,10 +71,12 @@ def main():
 
     @client.event
     async def on_message(message):
+        print(message.content)
         await common_handle_message(message)
 
     @client.event
     async def on_message_edit(before, after):
+        print(after.content)
         await common_handle_message(after)
 
     Config.reload()

@@ -48,7 +48,6 @@ class Character:
                 ]
             }
         if not 'combat' in self.data:
-            print('overwrite combat')
             self.data['combat'] = {
                 "weapon": "None",
                 "shield": "None",

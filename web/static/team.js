@@ -100,8 +100,8 @@ function redraw() {
             s0+='<td bot="!c '+traits[t][0].replace(' ','_')+' <@!'+pcs[i]['memberId']+'>">'+pcs[i]['traits'][tn]+'</td>'
             s1+='<td bot="!c '+traits[t][1].replace(' ','_')+' <@!'+pcs[i]['memberId']+'>">'+(20-pcs[i]['traits'][tn]*1)+'</td>'
         }
-        $('#traits').append('<tr added="trait_'+tn+'0" bot="!team '+traits[t][0].replace(' ','_')+'"    ><th>'+traits[t][0]+'</th>'+s0+'</tr>')
-        $('#traits').append('<tr added="trait_'+tn+'1" bot="!team '+traits[t][1].replace(' ','_')+'"><th>'+traits[t][1]+'</th>'+s1+'</tr>')
+        $('#traits').append('<tr added="trait_'+tn+'0"><th bot="!team '+traits[t][0].replace(' ','_')+'">'+traits[t][0]+'</th>'+s0+'</tr>')
+        $('#traits').append('<tr added="trait_'+tn+'1"><th bot="!team '+traits[t][1].replace(' ','_')+'">'+traits[t][1]+'</th>'+s1+'</tr>')
     }
     addBlock('combat', function(i) { return pcs[i]['skills']['Combat']},'--')
     addBlock('weapons', function(i) { return pcs[i]['skills']['Weapons']},'--')
