@@ -186,8 +186,9 @@ class Sheet(FPDF):
         x = self.get_x()
         y = self.get_y()
         self.param("Weapon", self.data['combat']['weapon'])
-        self.set_xy(x + 30, y)
-        self.param("Skill", w['skill'])
+        if 'skill' in w:
+            self.set_xy(x + 30, y)
+            self.param("Skill", w['skill'])
         y += 4
         self.set_xy(x, y)
         self.param("Armor", self.data['combat']['armor'])

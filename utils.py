@@ -260,8 +260,9 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             embed.description = f"**Combat**\n"
             w = char.get_weapon(data['combat']['weapon'])
             embed.description += f"\n **Weapon**: {data['combat']['weapon']}"
-            embed.description += f" **Skill**: `{w['skill']}`"
-            embed.description += f" **Damage**: `{round((data['stats']['str'] + data['stats']['siz']) / 6)}d6`"
+            if 'skill' in w:
+                embed.description += f" **Skill**: `{w['skill']}`"
+                embed.description += f" **Damage**: `{round((data['stats']['str'] + data['stats']['siz']) / 6)}d6`"
             embed.description += f"\n**Armor**: {data['combat']['armor']}"
             embed.description += f" **Shield**: {data['combat']['shield']}"
             a = Config.senechal()['armors'][data['combat']['armor']]
@@ -290,7 +291,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
 
             embeds.append(embed)
     paginator = EmbedPaginator(ctx, embeds)
-    await paginator.run([message.author], channel=message.channel)
+    await paginator.run([], channel=message.channel)
 
 
 def winterData(char):

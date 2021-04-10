@@ -14,9 +14,13 @@ traits = [
     [ 'Valorous', 'Cowardly' ],
     ];
 var surl = 'https://senechal.herokuapp.com'
+var hurl = 'https://discord.com/api/webhooks/822974917816483870/J5FB3eGrDP1xJ9FYeZaVIISz8YEHEl2b7rLZN8i0sc1OE4NQ-DVh41e_DUH3Saw7LabU'
+var prefix = "!"
 if (window.location.href.indexOf('localhost')>0) {
     surl = '..';
+    hurl = 'https://discord.com/api/webhooks/824616310029418498/wFNAgUSKl22K69U4fai1k5exyeqnXx9XbCTDa9xVk2CBb36n0cItFF_KF1CUhbNWejBz'
     cid = 63;
+    prefix = "?"
 }
 pcs = []
 
@@ -51,12 +55,12 @@ function addBlock (id, func, def) {
 function redraw() {
     for (i in pcs ) {
         console.log(i+':'+pcs[i]['shortName'])
-        $('.name').append('<th added="name">'+pcs[i]['shortName']+'</th>')
-        $('#siz').append('<td added="siz">'+pcs[i]['stats']['siz']+'</td>')
-        $('#dex').append('<td added="dex">'+pcs[i]['stats']['dex']+'</td>')
-        $('#con').append('<td added="con">'+pcs[i]['stats']['con']+'</td>')
-        $('#str').append('<td added="str">'+pcs[i]['stats']['str']+'</td>')
-        $('#app').append('<td added="app">'+pcs[i]['stats']['app']+'</td>')
+        $('.name').append('<th added="name" bot="!me * <@!'+pcs[i]['memberId']+'>">'+pcs[i]['shortName']+'</th>')
+        $('#siz').append('<td added="siz" bot="!c siz <@!'+pcs[i]['memberId']+'>">'+pcs[i]['stats']['siz']+'</td>')
+        $('#dex').append('<td added="dex" bot="!c dex <@!'+pcs[i]['memberId']+'>">'+pcs[i]['stats']['dex']+'</td>')
+        $('#con').append('<td added="con" bot="!c con <@!'+pcs[i]['memberId']+'>">'+pcs[i]['stats']['con']+'</td>')
+        $('#str').append('<td added="str" bot="!c str <@!'+pcs[i]['memberId']+'>">'+pcs[i]['stats']['str']+'</td>')
+        $('#app').append('<td added="app" bot="!c app <@!'+pcs[i]['memberId']+'>">'+pcs[i]['stats']['app']+'</td>')
         
         $('#dam').append('<td added="dam">'+Math.round((pcs[i]['stats']['str']*1+pcs[i]['stats']['siz']*1)/6)+'</td>')
         $('#hr').append('<td added="hr">'+Math.round((pcs[i]['stats']['str']*1+pcs[i]['stats']['con']*1)/10)+'</td>')
@@ -108,8 +112,7 @@ function redraw() {
     addBlock('other', function(i) { return pcs[i]['skills']['Other']},'--')
     addBlock('passions', function(i) { return pcs[i]['passions']},'--')
     $('[bot]').click(function(){
-        $.post('https://discord.com/api/webhooks/822974917816483870/J5FB3eGrDP1xJ9FYeZaVIISz8YEHEl2b7rLZN8i0sc1OE4NQ-DVh41e_DUH3Saw7LabU',
-         {username: 'WebHook', content:$(this).attr('bot')})
+        $.post(hurl, {username: 'WebHook', content:$(this).attr('bot').replace(/^./,prefix)})
     })
     $('[title]').tooltip()
 }
