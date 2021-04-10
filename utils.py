@@ -291,15 +291,14 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
 
             embeds.append(embed)
     paginator = EmbedPaginator(ctx, embeds)
-    await paginator.run([], channel=message.channel)
-
+    await paginator.run([], channel=channel)
 
 def winterData(char):
     ss = 0
     data = char.get_data()
     for s in get_checkable(data, 'stewardship'):
         ss = s[2]
-    winter = {'stewardship': ss, 'horses': ['charger', 'rouncy', 'rouncy', 'stumper', 'stumper']}
+    winter = {'stewardship': ss, 'horses': ['charger', 'rouncy', 'rouncy', 'sumpter', 'sumpter']}
     if 'winter' in data:
         if 'stewardship' in data['winter']:
             winter['stewardship'] = data['winter']['stewardship']
