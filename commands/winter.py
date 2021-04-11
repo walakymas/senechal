@@ -53,5 +53,16 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                     (color, text, ro, success) = check(value, 0)
                     msg += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
         embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
+        xp = 0
+        for n, v in char.data['traits'].items():
+            if v >= 16:
+                xp += v
+            elif v <= 4:
+                xp += 20 - v
+        for n, v in char.data['passions'].items():
+            if v >= 16:
+                xp += v
+        if xp > 0:
+            embed.add_field(name="Extra xp", value=f"`{xp}`", inline=False)
 
         await message.channel.send(embed=embed)

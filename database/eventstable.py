@@ -30,5 +30,8 @@ class EventsTable(BaseTableHandler):
                                     'AND (-1=%(year)s OR year=%(year)s) ORDER BY lord, year, id', {'lord':lord, 'year':year}, fetch='all')
 
     def glory(self, lord=0):
-        return int(BaseTableHandler.execute('SELECT sum(glory) FROM events WHERE lord=%s::bigint', [lord], fetch='one')[0])
+        try:
+            return int(BaseTableHandler.execute('SELECT sum(glory) FROM events WHERE lord=%s::bigint', [lord], fetch='one')[0])
+        except TypeError:
+            return 0
 

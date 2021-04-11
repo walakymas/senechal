@@ -44,7 +44,9 @@ def pcs(request):
     result = []
     records = CharacterTable().get_pcs()
     for r in records:
-        result.append(Character(r).get_data())
+        c = Character(r)
+        if not ('role' in c.data and c.data['role'] == 'Lord'):
+            result.append(c.get_data())
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
@@ -135,4 +137,4 @@ def pdf(request):
         else:
             return HttpResponse(f"Nem találom: '{request.GET['id']}")
     else:
-        return HttpResponse(f"hiányzó paraméter: 'ch'")
+        return HttpResponse(f"Hiányzó paraméter: 'ch'")

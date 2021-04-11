@@ -23,7 +23,13 @@ class Character:
         if not 'passions' in self.data:
             self.data['passions'] = { }
         if not 'skills' in self.data:
-            self.data['skills'] = { "Other":{} }
+            self.data['skills'] = {}
+        if not 'Other' in self.data['skills']:
+            self.data['skills']['Other'] = {}
+        if not 'Combat' in self.data['skills']:
+            self.data['skills']['Combat'] = {}
+        if not 'Weapons' in self.data['skills']:
+            self.data['skills']['Weapons'] = {}
         if not 'main' in self.data:
             self.data['main'] = { }
         if not 'description' in self.data:
@@ -107,6 +113,7 @@ class Character:
 
     @staticmethod
     def get_by_memberid(mid, force=False):
+        print(f"get_by_memberid {mid} {force}")
         if not force:
             Character.check_cache()
         if not force and mid in Character.cache:
@@ -153,7 +160,7 @@ class Character:
     @staticmethod
     def pcs(name=None):
         for c in Character.list_by_name(name):
-            if c.memberid:
+            if c.memberid and not ('role' in c.data and c.data['role'] == 'Lord'):
                 yield c
 
     @staticmethod

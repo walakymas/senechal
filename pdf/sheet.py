@@ -27,6 +27,12 @@ class Sheet(FPDF):
             self.events = EventsTable().list(lord=char.memberid)
         self.fill()
 
+    def defa(self, data, field, default='???'):
+        if field in data:
+            return data[field]
+        else:
+            return default
+
     def parchment(self, text, width):
         y = self.get_y()
         x = self.get_x()
@@ -227,24 +233,26 @@ class Sheet(FPDF):
 
         x = self.get_x()
         y = self.get_y()
-        self.param("Homeland", self.data['main']['Homeland'])
+        s = "??"
+        self.param("Homeland", self.defa(self.data['main'],'Homeland'))
         self.set_xy(x + 40, y)
-        self.param("Lord", self.data['main']['Lord'])
+        self.param("Lord", self.defa(self.data['main'],'Lord'))
         y += 4
         self.set_xy(x, y)
-        self.param("Home", self.data['main']['Home'])
+        self.param("Home", self.defa(self.data['main'],'Home'))
         self.set_xy(x + 40, y)
-        self.param("Culture", self.data['main']['Culture'])
+        self.param("Culture", self.defa(self.data['main'],'Culture'))
 
-        y += 4
-        self.set_xy(x, y)
-        self.param("Age", str(self.year - int(self.data['main']['Born'])))
-        self.set_xy(x + 20, y)
-        self.param("Born", self.data['main']['Born'])
-        self.set_xy(x + 40, y)
-        self.param("Squired", self.data['main']['Squired'])
-        self.set_xy(x + 60, y)
-        self.param("Knighted", self.data['main']['Knighted'])
+        if 'Born' in self.data['main']:
+            y += 4
+            self.set_xy(x, y)
+            self.param("Age", str(self.year - int(self.data['main']['Born'])))
+            self.set_xy(x + 20, y)
+            self.param("Born", self.data['main']['Born'])
+            self.set_xy(x + 40, y)
+            self.param("Squired", self.data['main']['Squired'])
+            self.set_xy(x + 60, y)
+            self.param("Knighted", self.data['main']['Knighted'])
 
         skipp = ['Homeland', 'Lord', 'Home', 'Culture', 'Glory', 'Born', 'Squired', 'Knighted']
         for name, value in self.data['main'].items():
