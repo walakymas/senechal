@@ -69,6 +69,7 @@ class Character:
             self.shield = Config.shield('None')
         self.armor = Config.armor(self.data['combat']['armor'])
         self.effective_dexterity = self.data['stats']['str'] + self.armor['red'] + self.shield['red']
+        self.religion = None
 
     def get_damage(self):
         return round((self.data['stats']['str'] + self.data['stats']['siz']) / 6)
@@ -100,6 +101,7 @@ class Character:
                             if f not in sg or str(sg[f])[:1] == '.' or sv > sg[f]:
                                 up[f] = sv
                 sg.update(up)
+
         return self.data
 
     cache = {}

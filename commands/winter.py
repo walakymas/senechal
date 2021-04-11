@@ -64,5 +64,25 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                 xp += v
         if xp > 0:
             embed.add_field(name="Extra xp", value=f"`{xp}`", inline=False)
+        if 'npcs' in char.data:
+            for nf,  f in char.data['npcs'].items():
+                s = ""
+                if 'dbid' in f:
+                    npc = Character.get_by_id(f['dbid'])
+                    if npc and 'role' in npc.data and npc.data['role'].lower() == 'follower':
+                        for ng, vg in npc.data['skills'].items():
+                            for n, v in vg.items():
+                                if v < 15 or (v <= 20 and randint(1, 6) == 6) or (v > 20 and randint(1, 20) == 20):
+                                    s += f"{n} `{v}` -> `{v+1}`\n"
+                    if s != "":
+                        embed.add_field(name=f"{npc.data['name']} ({f['connection']})", value=s, inline=False)
+                else:
+                    if 'skills' in f:
+                        for n, v in f['skills'].items():
+                            if v < 15 or (v <= 20 and randint(1, 6) == 6) or (v > 20 and randint(1, 20) == 20):
+                                s += f"{n} `{v}` -> `{v+1}`\n"
+                    if s != "":
+                        embed.add_field(name=f"{nf} ({f['connection']})", value=s, inline=False)
+
 
         await message.channel.send(embed=embed)

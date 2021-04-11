@@ -262,6 +262,11 @@ function npc(npc) {
             }
         }
     }
+    if ('skills' in npc) {
+       for (const [n2, v2] of Object.entries(npc['skills'])) {
+            s += '<tr><th>'+n2+'</th><td>'+v2+'</td></tr>';
+        }
+    }
     s+='</table>'
     return s
 }

@@ -234,14 +234,14 @@ class Sheet(FPDF):
         x = self.get_x()
         y = self.get_y()
         s = "??"
-        self.param("Homeland", self.defa(self.data['main'],'Homeland'))
+        self.param("Homeland", self.defa(self.data['main'], 'Homeland'))
         self.set_xy(x + 40, y)
-        self.param("Lord", self.defa(self.data['main'],'Lord'))
+        self.param("Lord", self.defa(self.data['main'], 'Lord'))
         y += 4
         self.set_xy(x, y)
-        self.param("Home", self.defa(self.data['main'],'Home'))
+        self.param("Home", self.defa(self.data['main'], 'Home'))
         self.set_xy(x + 40, y)
-        self.param("Culture", self.defa(self.data['main'],'Culture'))
+        self.param("Culture", self.defa(self.data['main'], 'Culture'))
 
         if 'Born' in self.data['main']:
             y += 4
