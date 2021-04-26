@@ -50,6 +50,15 @@ def pcs(request):
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 
+def list(request):
+    chars = []
+    for ch in CharacterTable().list():
+        type = 'npc'
+        if ch[3]:
+            type = 'pc'
+        chars.append({'id': ch[0], 'modified': ch[2], 'name': ch[4], 'type': type, 'role': ch[7]})
+    return JsonResponse(chars, safe=False, json_dumps_params={'ensure_ascii': False})
+
 @never_cache
 def get_character(request):
     pc = None
@@ -73,7 +82,10 @@ def npc(request):
 def mark(request):
     mid = request.POST['id']
     year = int(MarksTable.year())
-    MarksTable().set(mid, year, request.POST['mark'])
+    if 'set' in request.POST and request.POST['set']=='false':
+        MarksTable().remove_by_name(mid, year, request.POST['mark'])
+    else:
+        MarksTable().set(mid, year, request.POST['mark'])
     return pcresponse(Character.get_by_memberid(mid, True))
 
 

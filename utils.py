@@ -290,8 +290,13 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             add_field(embed, name="Pipák", value=f"```{msg}```", inline=False)
 
             embeds.append(embed)
-    paginator = EmbedPaginator(ctx, embeds)
-    await paginator.run([], channel=channel)
+    if len(embeds) == 0:
+        return;
+    elif len(embeds) == 1:
+        await ctx.send(embed=embeds[0])
+    else:
+        paginator = EmbedPaginator(ctx, embeds)
+        await paginator.run([], channel=channel)
 
 def winterData(char):
     ss = 0

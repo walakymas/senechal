@@ -131,6 +131,9 @@ class Database:
                         VALUES(now(), now(), %s, %s, %s, %s)""",
                                          [mid, ch['name'], url, json.dumps(ch, ensure_ascii=False)])
                 v = 8
+            if v == 8:
+                cur.execute("ALTER TABLE characters ADD role varchar")
+                v = 9
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

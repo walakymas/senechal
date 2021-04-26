@@ -63,7 +63,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
             if v >= 16:
                 xp += v
         if xp > 0:
-            embed.add_field(name="Extra xp", value=f"`{xp}`", inline=False)
+            embed.add_field(name="Extra Glory", value=f"`{xp}`", inline=False)
         if 'npcs' in char.data:
             for nf,  f in char.data['npcs'].items():
                 s = ""
@@ -83,6 +83,4 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                                 s += f"{n} `{v}` -> `{v+1}`\n"
                     if s != "":
                         embed.add_field(name=f"{nf} ({f['connection']})", value=s, inline=False)
-
-
         await message.channel.send(embed=embed)

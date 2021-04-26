@@ -13,6 +13,9 @@ class MarksTable(BaseTableHandler):
     def remove(self, key):
         BaseTableHandler.execute("DELETE FROM marks WHERE id=%s", [int(key)])
 
+    def remove_by_name(self, lord, year, value):
+        BaseTableHandler.execute("DELETE FROM marks WHERE lord=%(lord)s AND year=%(year)s AND spec=%(spec)s", {'lord':lord, 'year':year, 'spec':value})
+
     def get(self, lord, year):
         return BaseTableHandler.execute("SELECT * FROM marks WHERE lord=%s, year=%s", [lord, year], fetch='all')
 

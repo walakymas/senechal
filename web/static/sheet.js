@@ -214,7 +214,6 @@ function redrawNpc(npc) {
     console.log(id+":"+npc)
     if (npc['char']['description']) {
         console.log(npc['char']['description'])
-        console.log(npc['char']['description'])
         $('#npc_'+npc['char']['dbid']).append('<p>'+npc['char']['description']+'</p>')
     }
     if (npc['char']['url']) {
@@ -346,6 +345,14 @@ function redrawAccordion() {
      $('#combatgear').append('<tr><th>Effective Dex</th><td>'
         +(char['stats']['dex'] + senechalConfig['armors'][char['combat']['armor']]['dex'])
         +'</td></tr>');
+
+/*
+                        <tr><th>Damage reduction</th><td>{{base.armors[char.char['combat']['armor']]['red']}}
+                            + {{base.armors[char.char['combat']['shield']]['red']}} </td></tr>
+                         <tr><th>Dex modifier</th><td>{{base.armors[char.char['combat']['armor']]['red']}}</td></tr>
+                         <tr><th>Effective Dex</th><td>{{char.char['stats']['dex'] + base.armors[char.char['combat']['armor']]['red']}}</td></tr>
+
+*/
 
 }
 

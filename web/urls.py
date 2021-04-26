@@ -34,4 +34,5 @@ urlpatterns = [
     path('players', views.pcs, name='players'),
     path('newchar', views.newchar, name='newchar'),
     path('base', views.base, name='base'),
+    path('list', views.list, name='list'),
 ]
