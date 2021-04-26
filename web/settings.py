@@ -61,7 +61,7 @@ ROOT_URLCONF = 'web.urls'
 
 CORS_ALLOWED_ORIGINS = [
     "https://cdpn.io",
-    "https://senechalweb.heroku.com",
+    "https://senechalweb.herokuapp.com",
     "http://localhost:8000",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
