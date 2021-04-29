@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from json import JSONDecodeError
 
 from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.cache import never_cache
@@ -46,7 +47,7 @@ def pcs(request):
     records = CharacterTable().get_pcs()
     for r in records:
         c = Character(r)
-        if not ('role' in c.data and c.data['role'] == 'Lord'):
+        if not ('role' in c.data and (c.data['role'] == 'Lord' or c.data['role'] == 'King' or c.data['role'] == 'Retired' )):
             result.append(c.get_data())
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
@@ -118,7 +119,11 @@ def modify(request):
     def set(data, name, value):
         i = name.find('.')
         if name in data or i < 0:
-            data[name] = json.loads(value)
+            print(f'{name} : {value}')
+            try:
+                data[name] = json.loads(value)
+            except JSONDecodeError:
+                data[name] = value
         else:
             dn = name[0:i]
             if dn not in data:
