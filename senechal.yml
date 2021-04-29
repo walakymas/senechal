@@ -126,7 +126,7 @@ weapons:
 fallbacks:
     'SpearExpertise': ['Spear', 'Lance', 'Great Spear']
     'Law': ['Courtesy', 'Folklore', 'Intrigue']
-    'Music': ['Play (Instrument)', 'Signing', 'Compose']
+    'Music': ['Play (Instrument)', 'Singing', 'Compose']
     'Distaff': ['Stewardship', 'Industry']
 
 virtues:

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 from django.http import HttpResponse, JsonResponse, FileResponse
 from django.views.decorators.cache import never_cache
@@ -97,6 +98,8 @@ def event(request):
         EventsTable().remove(eid)
     else:
         year = int(request.POST['year'])
+        if year <= 0:
+            year = int(MarksTable.year())
         description = request.POST['description']
         if eid > 0:
             EventsTable().update(eid, description, glory, year)
@@ -115,7 +118,7 @@ def modify(request):
     def set(data, name, value):
         i = name.find('.')
         if name in data or i < 0:
-            data[name] = value
+            data[name] = json.loads(value)
         else:
             dn = name[0:i]
             if dn not in data:

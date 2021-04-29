@@ -81,7 +81,7 @@ class Character:
             else:
                 spec = self.data['combat']['weapon']
         weapon = Config.weapon(spec)
-        weapon['damage'] += round((self.data['stats']['str'] + self.data['stats']['siz']) / 6)
+        weapon['damage'] += round((int(self.data['stats']['str']) + int(self.data['stats']['siz'])) / 6)
         return weapon
 
     def get_armor(self, spec):
@@ -160,9 +160,16 @@ class Character:
                 yield Character(row)
 
     @staticmethod
-    def pcs(name=None):
+    def pcs(name=None, extra=None):
         for c in Character.list_by_name(name):
-            if c.memberid and not ('role' in c.data and c.data['role'] == 'Lord'):
+            if c.memberid and (extra or not (
+                    'role' in c.data
+                    and (
+                           c.data['role'] == 'Lord'
+                        or c.data['role'] == 'King'
+                        or c.data['role'] == 'Retired'
+                    )
+            )):
                 yield c
 
     @staticmethod
