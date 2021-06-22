@@ -22,6 +22,6 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
         count = 0
         for char in Character.npcs(name):
             count += 1
-            await embed_char(message.channel, char, task, params)
+            await embed_char(message.channel, char, task, params, client, message)
         if count == 0:
             await message.channel.send(name + '? Sajnos nem ismerek ilyen lovagot')

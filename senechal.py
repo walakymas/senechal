@@ -2,6 +2,7 @@ import discord
 import message_handler
 import datetime
 import sys
+import os
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config                         import Config
@@ -20,8 +21,10 @@ sched = AsyncIOScheduler()
 
 
 def main():
-    print("Starting up bot...")
-    client = discord.Client()
+    print("Starting up bot..."+os.environ['token'])
+    intents = discord.Intents.default()
+#    intents.members = True
+    client = discord.Client(intents=intents)
 
     # Define event handlers for the client
     # on_ready may be called multiple times in the event of a reconnect,
@@ -80,6 +83,7 @@ def main():
         await common_handle_message(after)
 
     Config.reload()
+    print(Config.config['token'])
     client.run(Config.config['token'])
 
 ###############################################################################

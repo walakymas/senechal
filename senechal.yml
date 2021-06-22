@@ -136,6 +136,115 @@ virtues:
 
 chivalry: [Energetic, Generous, Just, Merciful, Modest, Valorous]
 
+newchar:
+  skills:
+    cymic:
+      male:
+        Other:
+          Awareness: 7
+          Boating: 1
+          Compose: 1
+          Courtesy: 5
+          Dancing: 2
+          Faerie Lore: 1
+          Falconry: 3
+          First Aid: 10
+          Flirting: 3
+          Folklore: 2
+          Gaming: 3
+          Heraldry: 1
+          Hunting: 6
+          Intrigue: 3
+          Orate: 5
+          Play (harp): 3
+          Read (Latin): 0
+          Recognize: 3
+          Religion (varies): 2
+          Romance: 0
+          Singing: 4
+          Stewardship: 2
+          Swimming: 2
+          Tourney: 0
+        Combat: 
+          Battle: 10
+          Siege: 2
+          Horsemanship: 10
+        Weapons:
+          Sword: 10
+          Dagger: 5
+          Spear Expertise: 10
+      female:
+        Other:
+          Awareness: 5
+          Boating: 0
+          Chirurgery: 8
+          Compose: 1
+          Courtesy: 5
+          Dancing: 5
+          Faerie Lore: 3
+          Falconry: 2
+          Fashion: 2
+          First Aid: 8
+          Flirting: 5
+          Folklore: 2
+          Gaming: 3
+          Heraldry: 1
+          Hunting: 2
+          Intrigue: 5
+          Orate: 2
+          Play (harp): 5
+          Read (Latin): 1
+          Recognize: 5
+          Religion (varies): 5
+          Romance: 0
+          Singing: 5
+          Swimming: 1
+          Tourney: 0
+          Distaff: 10
+        Combat:
+          Battle: 1
+          Siege: 5
+          Horsemanship: 3
+        Weapons:
+          Dagger: 5
+  passions:
+    cymryc:
+      Loyalty (lord): 15
+      Love (family): 15
+      Hospitality: 15
+      Honor: 15
+    homeland:
+      Anglia: All Periods―Hate Angles.
+      Cambenet (Cumbria): Uther/Anarchy―Hate Irish.
+      Cameliard (Cambria): Uther/Anarchy―Hate Norgales.
+      Clarence (Logres): Uther/ Anarchy/ Boy King/ Conquest/Romance―Hate Gloucestermen.
+      Devon (Cornwall): All Periods―Hate Irish.
+      Domnonie (Brittany): Uther/Anarchy―Hate Vannetais.
+      Dublin: Boy King onward―Hate Irish.
+      Garloth (Cumbria): Uther/Anarchy―Hate Danes.
+      Gorre (Cumbria): Uther/Anarchy―Hate Irish.
+      Gloucester (Cambria): Uther/Anarchy/Boy King/Conquest/Romance―Hate Clarence.
+      Hampshire (Logres): Uther/Anarchy―Hate Saxons.
+      Hertford (Logres): Uther/Anarchy―Hate Saxons.
+      Huntington (Logres): Uther/Anarchy―Hate Saxons.
+      Jagent (Logres): Uther/Anarchy―Hate Cornwall.
+      London: Uther/Anarchy―Hate Saxons.
+      Lothian (Cumbria): Tournament/Grail/Twilight―Hate Pendragon.
+      Lyonesse (Cornwall): Uther/Anarchy/Boy King/Conquest/Romance―Hate Irish.
+      Malahaut (Cumbria): Uther/Anarchy―Hate Saxons.
+      Maris (Logres): Uther/Anarchy―Hate Saxons.
+      Nohaut (Cumbria): Uther/Anarchy/Boy King/Conquest―Hate Malahaut.
+      Out Isles: All Periods―Hate everyone else.
+      Salisbury (Logres): Uther/Anarchy/Boy King―Hate Saxons.
+      Somerset (Logres): Uther/Anarchy―Hate Irish.
+      Strangorre (Cumbria): All Periods―Hate Irish and Picts.
+      Surrey (Logres): Uther/Anarchy/Boy King—Hate (other) Saxons.
+      Thamesmouth: Uther/Anarchy―Hate Saxons.
+      Tintagel (Cornwall): Uther/Anarchy―Hate Irish.
+      Totnes (Cornwall): All Periods―Hate Giants; Uther/Anarchy―Hate Irish.
+      Tribruit (Logres): Boy King onward―Fear Faeries.
+      Vannetais (Brittany): All Periods―Hate French; Tournament/Grail/Twilight―Hate Brittany.
+      Wuerensis (Logres): Uther/Anarchy―Hate Cambrians.
 intro: |
   Jóuraim a következő fontosabb utasításokat értem:
 

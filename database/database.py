@@ -134,6 +134,17 @@ class Database:
             if v == 8:
                 cur.execute("ALTER TABLE characters ADD role varchar")
                 v = 9
+            if v == 9:
+                cur.execute("""CREATE TABLE IF NOT EXISTS tokens (
+                        id SERIAL PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        expires timestamp without time zone NOT NULL, 
+                        cid bigint, 
+                        token varchar not null
+                        )
+                        """)
+                v = 10
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

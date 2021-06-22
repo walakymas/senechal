@@ -293,7 +293,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
     if len(embeds) == 0:
         return;
     elif len(embeds) == 1:
-        await ctx.send(embed=embeds[0])
+        await channel.send(embed=embeds[0])
     else:
         paginator = EmbedPaginator(ctx, embeds)
         await paginator.run([], channel=channel)

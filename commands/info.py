@@ -17,6 +17,8 @@ class Info(BaseCommand):
                 s += "PC: " + str(pc.id) + ":" + pc.recipient.name + "\n"
         for guild in client.guilds:
             s += "Guild: " + guild.name + "\n"
+            for m in guild.members:
+                s += str(m.id) + ":" + m.name + "\n"
             for m in guild.channels:
                 s += str(m.id) + ":" + m.name + "\n"
         await message.author.send(s);

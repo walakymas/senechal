@@ -23,14 +23,13 @@ def base(request):
     result = Config.senechal()
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
-
 def pcresponse(pc):
     data = {'char': pc.get_data(False), 'modified':datetime.timestamp(pc.modified)}
+    year = MarksTable().year()
+    data['year'] = year
     if 'memberId' in data['char']:
         data['char']['memberId'] = str(data['char']['memberId'])
         data['marks'] = []
-        year = MarksTable().year()
-        data['year'] = year
         for r in MarksTable().list(data['char']['memberId'], year):
             data['marks'].append(r[5])
         data['events'] = []
