@@ -130,16 +130,44 @@ fallbacks:
     'Distaff': ['Stewardship', 'Industry']
 
 virtues:
-  Roman: [Chaste, Forgiving, Merciful, Modest, Temperate]
-  British: [Chaste, Energetic, Generous, Modest, Temperate]
-  Pagan: [Generous, Energetic, Honest, Lustful, Proud]
+  Arian Christianity: [Chaste, Honest, Just, Merciful, Temperate]
+  Roman Christian: [Chaste, Forgiving, Merciful, Modest, Temperate]
+  British Christian: [Chaste, Energetic, Generous, Modest, Temperate]
+  British Pagan: [Generous, Energetic, Honest, Lustful, Proud]
+  Germanic Pagan: [Generous, Proud, Worldly, Reckless, Indulgent]
+  Heathenism: [Vengeful, Honest, Arbitrary, Proud, Worldly]
 
 chivalry: [Energetic, Generous, Just, Merciful, Modest, Valorous]
 
+default:
+  traits: { "cha": 10, "ene": 10, "for": 10, "gen": 10, "hon": 10, "jus": 10, "mer": 10, "mod": 10, "pru": 10, "spi": 10, "tem": 10, "tru": 10, "val": 15 }
+
+periods:
+  - [Uther, 0]
+  - [Anarchy, 496]
+  - [Boy King, 510]
+  - [Conquest, 519]
+  - [Romance, 531]
+  - [Tournament, 540]
+  - [Grail Quest, 554]
+  - [Twilight, 558]
+
 newchar:
-  skills:
-    cymic:
-      male:
+  Cymric:
+    passions:
+      Loyalty (lord): 15
+      Love (family): 15
+      Hospitality: 15
+      Honor: 15
+    attributes:
+      con: 3 
+    traits: 
+      British Christian: { cha: 13, ene: 13, for: 10, gen: 13, hon: 10, jus: 10, mer: 10, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
+      Roman Christian: { cha: 13, ene: 10, for: 13, gen: 10, hon: 10, jus: 10, mer: 13, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
+      British Pagan: { cha: 7, ene: 13, for: 10, gen: 13, hon: 13, jus: 10, mer: 13, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15 }
+    male:
+      names: [Addonwy, Aeron, Afan, Aneirin, Aeddan, Amig, Amlyn, Athrwys, Arddur, Buddfannan, Blaen, Bledri, Bradwen, Bleddig, Cadfannan, Cadfael, Cadwallon, Cilydd, Cynon, Cynfan, Cyfulch, Cynrain, Cunvelyn, Caradoc, Cibno, Ceredig, Cadlew, Cynwal, Clydno, Cynhafal, Dafydd, Defi, Dwyai, Edar, Edern, Eiddef, Erthgi, Elad, Eudaf, Biffin, Gwefrfawr, Gwegon, Gwion, Gwyn, Gwarddur, Gwern, Gwyleged, Gwrien, Gwraid, Gorthyn, Gwaednerth, Gwengad, Brugyn, Gwenabwy, Gwrfelling, Gwair, Graid, Geriant, Gwanon, Hyfaidd, Hywel, Ieuan, Llywel, Marchlew, Moried, Morien, Madog, Morial, Mynyddog, Merin, Neilyn, Nwython, Nai, Nerthaid, Neddig, Nidian, Owain, Padern, Pedrog, Ricerch, Rhodri, Rhufon, Rhun, Sawel, Seriol, Sywno, Tathal, Tathan, Tudfwlch, Tyngyr, Uren, Uwain, Ysgarran]
+      skills:
         Other:
           Awareness: 7
           Boating: 1
@@ -173,7 +201,9 @@ newchar:
           Sword: 10
           Dagger: 5
           Spear Expertise: 10
-      female:
+    female:
+      names: [Adwen, Annest, Angarad, Arianwen, Briant, Duddug, Collwen, Dwynwen, Eleri, Ffraid, Glesig, Glesni, Gwen, Heledd, Indeg, Leri, Lleucu, Llio, Melangell, Meleri, Nest, Nia, Tydfil]
+      skills:
         Other:
           Awareness: 5
           Boating: 0
@@ -207,44 +237,162 @@ newchar:
           Horsemanship: 3
         Weapons:
           Dagger: 5
-  passions:
-    cymryc:
+    passions:
       Loyalty (lord): 15
       Love (family): 15
       Hospitality: 15
       Honor: 15
     homeland:
-      Anglia: All Periods―Hate Angles.
-      Cambenet (Cumbria): Uther/Anarchy―Hate Irish.
-      Cameliard (Cambria): Uther/Anarchy―Hate Norgales.
-      Clarence (Logres): Uther/ Anarchy/ Boy King/ Conquest/Romance―Hate Gloucestermen.
-      Devon (Cornwall): All Periods―Hate Irish.
-      Domnonie (Brittany): Uther/Anarchy―Hate Vannetais.
-      Dublin: Boy King onward―Hate Irish.
-      Garloth (Cumbria): Uther/Anarchy―Hate Danes.
-      Gorre (Cumbria): Uther/Anarchy―Hate Irish.
-      Gloucester (Cambria): Uther/Anarchy/Boy King/Conquest/Romance―Hate Clarence.
-      Hampshire (Logres): Uther/Anarchy―Hate Saxons.
-      Hertford (Logres): Uther/Anarchy―Hate Saxons.
-      Huntington (Logres): Uther/Anarchy―Hate Saxons.
-      Jagent (Logres): Uther/Anarchy―Hate Cornwall.
-      London: Uther/Anarchy―Hate Saxons.
-      Lothian (Cumbria): Tournament/Grail/Twilight―Hate Pendragon.
-      Lyonesse (Cornwall): Uther/Anarchy/Boy King/Conquest/Romance―Hate Irish.
-      Malahaut (Cumbria): Uther/Anarchy―Hate Saxons.
-      Maris (Logres): Uther/Anarchy―Hate Saxons.
-      Nohaut (Cumbria): Uther/Anarchy/Boy King/Conquest―Hate Malahaut.
-      Out Isles: All Periods―Hate everyone else.
-      Salisbury (Logres): Uther/Anarchy/Boy King―Hate Saxons.
-      Somerset (Logres): Uther/Anarchy―Hate Irish.
-      Strangorre (Cumbria): All Periods―Hate Irish and Picts.
-      Surrey (Logres): Uther/Anarchy/Boy King—Hate (other) Saxons.
-      Thamesmouth: Uther/Anarchy―Hate Saxons.
-      Tintagel (Cornwall): Uther/Anarchy―Hate Irish.
-      Totnes (Cornwall): All Periods―Hate Giants; Uther/Anarchy―Hate Irish.
-      Tribruit (Logres): Boy King onward―Fear Faeries.
-      Vannetais (Brittany): All Periods―Hate French; Tournament/Grail/Twilight―Hate Brittany.
-      Wuerensis (Logres): Uther/Anarchy―Hate Cambrians.
+      Anglia: All Periods―Hate Angles
+      Cambenet (Cumbria): Uther/Anarchy―Hate Irish
+      Cameliard (Cambria): Uther/Anarchy―Hate Norgales
+      Clarence (Logres): Uther/ Anarchy/ Boy King/ Conquest/Romance―Hate Gloucestermen
+      Devon (Cornwall): All Periods―Hate Irish
+      Domnonie (Brittany): Uther/Anarchy―Hate Vannetais
+      Dublin: Boy King onward―Hate Irish
+      Garloth (Cumbria): Uther/Anarchy―Hate Danes
+      Gorre (Cumbria): Uther/Anarchy―Hate Irish
+      Gloucester (Cambria): Uther/Anarchy/Boy King/Conquest/Romance―Hate Clarence
+      Hampshire (Logres): Uther/Anarchy―Hate Saxons
+      Hertford (Logres): Uther/Anarchy―Hate Saxons
+      Huntington (Logres): Uther/Anarchy―Hate Saxons
+      Jagent (Logres): Uther/Anarchy―Hate Cornwall
+      London: Uther/Anarchy―Hate Saxons
+      Lothian (Cumbria): Tournament/Grail/Twilight―Hate Pendragon
+      Lyonesse (Cornwall): Uther/Anarchy/Boy King/Conquest/Romance―Hate Irish
+      Malahaut (Cumbria): Uther/Anarchy―Hate Saxons
+      Maris (Logres): Uther/Anarchy―Hate Saxons
+      Nohaut (Cumbria): Uther/Anarchy/Boy King/Conquest―Hate Malahaut
+      Out Isles: All Periods―Hate everyone else
+      Salisbury (Logres): Uther/Anarchy/Boy King―Hate Saxons
+      Somerset (Logres): Uther/Anarchy―Hate Irish
+      Strangorre (Cumbria): All Periods―Hate Irish and Picts
+      Surrey (Logres): Uther/Anarchy/Boy King—Hate (other) Saxons
+      Thamesmouth: Uther/Anarchy―Hate Saxons
+      Tintagel (Cornwall): Uther/Anarchy―Hate Irish
+      Totnes (Cornwall): All Periods―Hate Giants; Uther/Anarchy―Hate Irish
+      Tribruit (Logres): Boy King onward―Fear Faeries
+      Vannetais (Brittany): All Periods―Hate French; Tournament/Grail/Twilight―Hate Brittany
+      Wuerensis (Logres): Uther/Anarchy―Hate Cambrians
+  Irish:
+    passions:
+      Loyalty (lord): 15
+      Love (family): 15
+      Hospitality: 15
+      Honor: 15
+    attributes:
+      con: 3 
+    traits: 
+      British Christian: { cha: 13, ene: 13, for: 10, gen: 13, hon: 10, jus: 10, mer: 10, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
+      Roman Christian: { cha: 13, ene: 10, for: 13, gen: 10, hon: 10, jus: 10, mer: 13, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
+      British Pagan: { cha: 7, ene: 13, for: 10, gen: 13, hon: 13, jus: 10, mer: 13, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15 }
+    male:
+      names: [Addonwy, Aeron, Afan, Aneirin, Aeddan, Amig, Amlyn, Athrwys, Arddur, Buddfannan, Blaen, Bledri, Bradwen, Bleddig, Cadfannan, Cadfael, Cadwallon, Cilydd, Cynon, Cynfan, Cyfulch, Cynrain, Cunvelyn, Caradoc, Cibno, Ceredig, Cadlew, Cynwal, Clydno, Cynhafal, Dafydd, Defi, Dwyai, Edar, Edern, Eiddef, Erthgi, Elad, Eudaf, Biffin, Gwefrfawr, Gwegon, Gwion, Gwyn, Gwarddur, Gwern, Gwyleged, Gwrien, Gwraid, Gorthyn, Gwaednerth, Gwengad, Brugyn, Gwenabwy, Gwrfelling, Gwair, Graid, Geriant, Gwanon, Hyfaidd, Hywel, Ieuan, Llywel, Marchlew, Moried, Morien, Madog, Morial, Mynyddog, Merin, Neilyn, Nwython, Nai, Nerthaid, Neddig, Nidian, Owain, Padern, Pedrog, Ricerch, Rhodri, Rhufon, Rhun, Sawel, Seriol, Sywno, Tathal, Tathan, Tudfwlch, Tyngyr, Uren, Uwain, Ysgarran]
+      skills:
+        Other:
+          Awareness: 8
+          Boating: 5
+          Courtesy: 2
+          Dancing: 2
+          Faerie Lore: 2
+          Falconry: 1
+          First Aid: 10
+          Flirting: 3
+          Folklore: 5
+          Gaming: 4
+          Heraldry: 1
+          Hunting: 10
+          Intrigue: 2
+          Music: 10
+          Orate: 5
+          Read (varies): 0
+          Recognize: 2
+          Religion (varies): 2
+          Romance: 0
+          Stewardship: 2
+          Swimming: 2
+          Tourney: 0
+        Combat: 
+          Battle: 5
+          Siege: 2
+          Horsemanship: 7
+        Weapons:
+          Sword: 10
+          Dagger: 3
+          Spear: 5
+          Lance: 5
+    female:
+      names: [Adwen, Annest, Angarad, Arianwen, Briant, Duddug, Collwen, Dwynwen, Eleri, Ffraid, Glesig, Glesni, Gwen, Heledd, Indeg, Leri, Lleucu, Llio, Melangell, Meleri, Nest, Nia, Tydfil]
+      skills:
+        Other:
+          Awareness: 4
+          Boating: 0
+          Chirurgery: 10
+          Courtesy: 4
+          Dancing: 4
+          Faerie Lore: 4
+          Falconry: 1
+          Fashion: 5
+          First Aid: 10
+          Flirting: 4
+          Folklore: 4
+          Gaming: 2
+          Heraldry: 1
+          Hunting: 1
+          Intrigue: 8
+          Music: 10
+          Orate: 2
+          Read (varies): 0
+          Recognize: 5
+          Religion (varies): 5
+          Romance: 0
+          Swimming: 2
+          Tourney: 0
+          Stewardship: 5
+        Combat:
+          Battle: 2
+          Siege: 2
+          Horsemanship: 1
+        Weapons:
+          Dagger: 3
+    passions:
+      Loyalty (lord): 15
+      Love (family): 15
+      Hospitality: 15
+      Honor: 15
+    homeland:
+      Anglia: All Periods―Hate Angles
+      Cambenet (Cumbria): Uther/Anarchy―Hate Irish
+      Cameliard (Cambria): Uther/Anarchy―Hate Norgales
+      Clarence (Logres): Uther/ Anarchy/ Boy King/ Conquest/Romance―Hate Gloucestermen
+      Devon (Cornwall): All Periods―Hate Irish
+      Domnonie (Brittany): Uther/Anarchy―Hate Vannetais
+      Dublin: Boy King onward―Hate Irish
+      Garloth (Cumbria): Uther/Anarchy―Hate Danes
+      Gorre (Cumbria): Uther/Anarchy―Hate Irish
+      Gloucester (Cambria): Uther/Anarchy/Boy King/Conquest/Romance―Hate Clarence
+      Hampshire (Logres): Uther/Anarchy―Hate Saxons
+      Hertford (Logres): Uther/Anarchy―Hate Saxons
+      Huntington (Logres): Uther/Anarchy―Hate Saxons
+      Jagent (Logres): Uther/Anarchy―Hate Cornwall
+      London: Uther/Anarchy―Hate Saxons
+      Lothian (Cumbria): Tournament/Grail/Twilight―Hate Pendragon
+      Lyonesse (Cornwall): Uther/Anarchy/Boy King/Conquest/Romance―Hate Irish
+      Malahaut (Cumbria): Uther/Anarchy―Hate Saxons
+      Maris (Logres): Uther/Anarchy―Hate Saxons
+      Nohaut (Cumbria): Uther/Anarchy/Boy King/Conquest―Hate Malahaut
+      Out Isles: All Periods―Hate everyone else
+      Salisbury (Logres): Uther/Anarchy/Boy King―Hate Saxons
+      Somerset (Logres): Uther/Anarchy―Hate Irish
+      Strangorre (Cumbria): All Periods―Hate Irish and Picts
+      Surrey (Logres): Uther/Anarchy/Boy King—Hate (other) Saxons
+      Thamesmouth: Uther/Anarchy―Hate Saxons
+      Tintagel (Cornwall): Uther/Anarchy―Hate Irish
+      Totnes (Cornwall): All Periods―Hate Giants; Uther/Anarchy―Hate Irish
+      Tribruit (Logres): Boy King onward―Fear Faeries
+      Vannetais (Brittany): All Periods―Hate French; Tournament/Grail/Twilight―Hate Brittany
+      Wuerensis (Logres): Uther/Anarchy―Hate Cambrians
+
 intro: |
   Jóuraim a következő fontosabb utasításokat értem:
 

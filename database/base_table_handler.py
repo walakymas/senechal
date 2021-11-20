@@ -1,6 +1,6 @@
 from database.database import Database
 import datetime
-
+import psycopg2 
 
 class BaseTableHandler:
 
@@ -40,13 +40,17 @@ class BaseTableHandler:
 
     @staticmethod
     def execute(sql, param=None, commit=None, fetch=None, many=0):
-        with Database.db.cursor() as cur:
-            cur.execute(sql, vars=param)
-            if fetch == 'all':
-                return cur.fetchall()
-            elif fetch == 'one':
-                return cur.fetchone()
-            elif many:
-                return cur.fetchmany(many)
-        Database.db.commit()
+        try:
+            with Database.db.cursor() as cur:
+                cur.execute(sql, vars=param)
+                if fetch == 'all':
+                    return cur.fetchall()
+                elif fetch == 'one':
+                    return cur.fetchone()
+                elif many:
+                    return cur.fetchmany(many)
+            Database.db.commit()
+        except psycopg2.Error:
+            Database.db.rollback();
+            
 

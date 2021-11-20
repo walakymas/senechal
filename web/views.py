@@ -12,14 +12,14 @@ from database.markstable import MarksTable
 from database.eventstable import EventsTable
 from datetime import datetime
 import tempfile
-
+from config import Config
 
 def index(request):
     return HttpResponse("Hello, world. You're at the senechal index.")
 
 
 def base(request):
-    from config import Config
+
     result = Config.senechal()
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
@@ -29,12 +29,25 @@ def pcresponse(pc):
     data['year'] = year
     if 'memberId' in data['char']:
         data['char']['memberId'] = str(data['char']['memberId'])
-        data['marks'] = []
-        for r in MarksTable().list(data['char']['memberId'], year):
-            data['marks'].append(r[5])
         data['events'] = []
         for r in EventsTable().list(data['char']['memberId']):
             data['events'].append({'year': r[3], 'description': r[5], 'glory': r[6], 'id': r[0]})
+    data['marks'] = []
+    for r in MarksTable().list(data['char']['dbid'], year):
+        data['marks'].append(r[5])
+    senechal = Config.senechal()
+    data['virtues'] = senechal['virtues']['British Christian']
+    if 'main' in data['char']:
+        if 'Religion' in data['char']['main']:
+            data['virtues'] = senechal['virtues'][data['char']['main']['Religion']]
+        elif 'Culture' in data['char']['main']:
+            found = False 
+            for r in  senechal['virtues'].keys():
+                if r in data['char']['main']['Culture']:
+                    data['virtues'] = senechal['virtues'][r]
+                    found = True
+            if not found and 'Pagan' in  data['char']['main']['Culture']:
+                data['virtues'] = senechal['virtues']['British Pagan']
     s = json.dumps(data, indent=4, ensure_ascii=False)
     response = HttpResponse(s)
     response['Content-Type'] = 'application/json'
@@ -81,14 +94,13 @@ def npc(request):
 
 
 def mark(request):
-    mid = request.POST['id']
+    id = request.POST['id']
     year = int(MarksTable.year())
     if 'set' in request.POST and request.POST['set']=='false':
-        MarksTable().remove_by_name(mid, year, request.POST['mark'])
+        MarksTable().remove_by_name(id, year, request.POST['mark'])
     else:
-        MarksTable().set(mid, year, request.POST['mark'])
-    return pcresponse(Character.get_by_memberid(mid, True))
-
+        MarksTable().set(id, year, request.POST['mark'])
+    return pcresponse(Character.get_by_id(id, True))
 
 def event(request):
     eid = int(request.POST['eid'])

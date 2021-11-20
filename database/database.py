@@ -145,6 +145,11 @@ class Database:
                         )
                         """)
                 v = 10
+            if v == 10:
+                cur.execute("""ALTER TABLE  marks ADD dbid integer""")
+                cur.execute("""UPDATE marks SET dbid = (SELECT id FROM characters WHERE characters.memberid = marks.lord);""")
+                cur.execute("CREATE UNIQUE INDEX idx_marks_iys ON marks (dbid, year, spec);")
+                v = 11
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

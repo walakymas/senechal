@@ -36,7 +36,7 @@ class Mark(BaseCommand):
                 msg = f"Year:{year}\n"
                 for t, name, value, *name2 in get_checkable(char.get_data(), params[0]):
                     if 'stat' != t:
-                        MarksTable().set(char.memberid, year, name)
+                        MarksTable().set(char.id, year, name)
                         msg += f"{name} marked"
                 await message.channel.send(msg)
         else:
