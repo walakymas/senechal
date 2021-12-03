@@ -18,10 +18,9 @@ class Sheet(FPDF):
         self.set_font('Sofia', '', 22)
         self.cell(180, 10, self.data['name'], 0, 1, align='C')
         self.marks = []
-        if char.memberid:
-            mark_list = MarksTable().list(lord=char.memberid, year=self.year)
-            for row in mark_list:
-                self.marks.append(row[5])
+        mark_list = MarksTable().list(dbid=char.id, year=self.year)
+        for row in mark_list:
+            self.marks.append(row[5])
         self.events = []
         if char.memberid:
             self.events = EventsTable().list(lord=char.memberid)
