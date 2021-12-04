@@ -41,7 +41,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         for h in winter['horses']:
             msg += f"  {h}: {('Egészséges','Megdöglött vagy tönkrement')[dice(20)<3]}\n"
         embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
-        i = int(char.memberid)
+        i = int(char.id)
         msg = ""
         rows = MarksTable().list(lord=i, year=year)
         msg += f"Modified   Spec              Dobás   Hatás\n";

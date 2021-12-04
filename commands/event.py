@@ -36,5 +36,5 @@ amennyiben a leírás y{év} kezdetű, akkor azt is levágja és a megadott évh
                 if result:
                     year = int(params[1][1:])
                     msg = msg[len(params[1])+1:]
-                EventsTable().insert(me.memberid, msg, glory, year)
+                EventsTable().insert(me.id, msg, glory, year)
                 await message.channel.send("inserted")

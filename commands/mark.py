@@ -20,7 +20,7 @@ class Mark(BaseCommand):
         if char:
             if len(params) == 0 or 'list' == params[0].lower():
                 embed = get_embed(char)
-                rows = MarksTable().list(lord=char.memberid, year=year)
+                rows = MarksTable().list(dbid=char.id, year=year)
                 msg = f"```ID  Modified   Spec\n";
                 marks = []
                 for row in rows:

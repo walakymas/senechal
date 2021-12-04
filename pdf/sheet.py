@@ -23,7 +23,7 @@ class Sheet(FPDF):
             self.marks.append(row[5])
         self.events = []
         if char.memberid:
-            self.events = EventsTable().list(lord=char.memberid)
+            self.events = EventsTable().list(dbid=char.id)
         self.fill()
 
     def defa(self, data, field, default='???'):
@@ -227,8 +227,7 @@ class Sheet(FPDF):
     def main(self):
         self.parchment('Knight', 80)
         from database.eventstable import EventsTable
-        if 'memberId' in self.data:
-            self.data['main']['Glory'] = EventsTable().glory(self.data['memberId'])
+        self.data['main']['Glory'] = EventsTable().glory(self.data['id'])
 
         x = self.get_x()
         y = self.get_y()

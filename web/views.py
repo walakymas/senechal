@@ -29,9 +29,9 @@ def pcresponse(pc):
     data['year'] = year
     if 'memberId' in data['char']:
         data['char']['memberId'] = str(data['char']['memberId'])
-        data['events'] = []
-        for r in EventsTable().list(data['char']['memberId']):
-            data['events'].append({'year': r[3], 'description': r[5], 'glory': r[6], 'id': r[0]})
+    data['events'] = []
+    for r in EventsTable().list(data['char']['dbid']):
+        data['events'].append({'year': r[3], 'description': r[5], 'glory': r[6], 'id': r[0]})
     data['marks'] = []
     for r in MarksTable().list(data['char']['dbid'], year):
         data['marks'].append(r[5])
@@ -92,6 +92,14 @@ def get_character(request):
 def npc(request):
     return pcresponse(Character.get_by_id(request.GET['id'], force=True))
 
+@never_cache
+def login(request):
+    data = {}    
+    s = json.dumps(data, indent=4, ensure_ascii=False)
+    response = HttpResponse(s)
+    response['Content-Type'] = 'application/json'
+    return response
+    
 
 def mark(request):
     id = request.POST['id']
@@ -105,7 +113,7 @@ def mark(request):
 def event(request):
     eid = int(request.POST['eid'])
     glory = int(request.POST['glory'])
-    mid = int(request.POST['mid'])
+    id = int(request.POST['dbid'])
     if eid > 0 and glory < 0:
         EventsTable().remove(eid)
     else:
@@ -116,8 +124,8 @@ def event(request):
         if eid > 0:
             EventsTable().update(eid, description, glory, year)
         else:
-            EventsTable().insert(mid, description, glory, year)
-    return pcresponse(Character.get_by_memberid(mid, True))
+            EventsTable().insert(id, description, glory, year)
+    return pcresponse(Character.get_by_id(id, True))
 
 
 def newchar(request):

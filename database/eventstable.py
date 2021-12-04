@@ -5,10 +5,10 @@ class EventsTable(BaseTableHandler):
     def __init__(self):
         super().__init__('events')
 
-    def insert(self, lord, description, glory, year=-1):
-        return BaseTableHandler.execute('INSERT INTO events (created, modified, year, lord, description, glory) '
+    def insert(self, dbid, description, glory, year=-1):
+        return BaseTableHandler.execute('INSERT INTO events (created, modified, year, dbid, description, glory) '
                                         'VALUES(now(), now(),%s,%s,%s,%s);',
-            [(self.year(), year)[year > 0], lord, description, glory], commit=True)
+            [(self.year(), year)[year > 0], dbid, description, glory], commit=True)
 
     def update(self, id, description, glory, year):
         return BaseTableHandler.execute('UPDATE events SET modified=now(), description=%s, glory=%s, year=%s WHERE id=%s',
@@ -25,13 +25,13 @@ class EventsTable(BaseTableHandler):
     def get(self, id):
         return BaseTableHandler.execute('SELECT * FROM events WHERE id=%s', [id], commit=True, fetch='one')
 
-    def list(self, lord=-1, year=-1):
-        return BaseTableHandler.execute('SELECT * FROM events WHERE (-1=%(lord)s::bigint OR lord=%(lord)s::bigint) '
-                                    'AND (-1=%(year)s OR year=%(year)s) ORDER BY lord, year, id', {'lord':lord, 'year':year}, fetch='all')
+    def list(self, dbid=-1, year=-1):
+        return BaseTableHandler.execute('SELECT * FROM events WHERE (-1=%(dbid)s::bigint OR dbid=%(dbid)s::bigint) '
+                                    'AND (-1=%(year)s OR year=%(year)s) ORDER BY dbid, year, id', {'dbid':dbid, 'year':year}, fetch='all')
 
-    def glory(self, lord=0):
+    def glory(self, dbid=0):
         try:
-            return int(BaseTableHandler.execute('SELECT sum(glory) FROM events WHERE lord=%s::bigint', [lord], fetch='one')[0])
+            return int(BaseTableHandler.execute('SELECT sum(glory) FROM events WHERE dbid=%s::bigint', [dbid], fetch='one')[0])
         except TypeError:
             return 0
 

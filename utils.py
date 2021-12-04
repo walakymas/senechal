@@ -158,8 +158,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
         embed = get_embed(char, True)
         if 'main' in data:
             from database.eventstable import EventsTable
-            if char.memberid:
-                data['main']['Glory'] = EventsTable().glory(char.memberid)
+            data['main']['Glory'] = EventsTable().glory(char.id)
         embed.description += "\n"
         skipp = ['Glory', 'Born', 'Squired', 'Knighted']
 
@@ -210,8 +209,8 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
         if char.memberid:
             embed = get_embed(char)
             from database.eventstable import EventsTable
-            embed.description += f"\n**Összes Glory**:  {EventsTable().glory(char.memberid)}"
-            for (id, created, modified, year, lord, desc, glory) in EventsTable().list(char.memberid):
+            embed.description += f"\n**Összes Glory**:  {EventsTable().glory(char.id)}"
+            for (id, created, modified, year, lord, desc, glory) in EventsTable().list(char.id):
 
                 if len(embed.description) + len(desc) > 2000:
                     embeds.append(embed)
@@ -244,52 +243,48 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
                         embed.description += f"{name}: `{value}`  "
             embeds.append(embed)
     if task == "*" or "marks".startswith(task.lower()):
-        if char.memberid:
-            embed = get_embed(char, 0)
-            msg = f"```ID  Modified   Spec\n"
-            marks = []
-            for row in rows:
-                if row[5] not in marks:
-                    marks.append(row[5])
-                    msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
-            add_field(embed, name=f"Év: {year} pipák", value=msg + "```", inline=False)
-            embeds.append(embed)
+        embed = get_embed(char, 0)
+        msg = f"```ID  Modified   Spec\n"
+        marks = []
+        for row in rows:
+            if row[5] not in marks:
+                marks.append(row[5])
+                msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
+        add_field(embed, name=f"Év: {year} pipák", value=msg + "```", inline=False)
+        embeds.append(embed)
     if task == "*" or "combat".startswith(task.lower()):
-        if char.memberid:
-            embed = get_embed(char)
-            embed.description = f"**Combat**\n"
-            w = char.get_weapon(data['combat']['weapon'])
-            embed.description += f"\n **Weapon**: {data['combat']['weapon']}"
-            if 'skill' in w:
-                embed.description += f" **Skill**: `{w['skill']}`"
-                embed.description += f" **Damage**: `{round((data['stats']['str'] + data['stats']['siz']) / 6)}d6`"
-            embed.description += f"\n**Armor**: {data['combat']['armor']}"
-            embed.description += f" **Shield**: {data['combat']['shield']}"
-            a = Config.senechal()['armors'][data['combat']['armor']]
-            s = Config.senechal()['shields'][data['combat']['shield']]
-            embed.description += f"\n**Damage reduction**: `{a['red']} + {s['red']}`"
-            embed.description += f" **Dex modifier**: `{a['dex']}`"
-            embed.description += f" **Effective Dex**: `{data['stats']['dex'] + a['dex']}`"
-            embeds.append(embed)
+        embed = get_embed(char)
+        embed.description = f"**Combat**\n"
+        w = char.get_weapon(data['combat']['weapon'])
+        embed.description += f"\n **Weapon**: {data['combat']['weapon']}"
+        if 'skill' in w:
+            embed.description += f" **Skill**: `{w['skill']}`"
+            embed.description += f" **Damage**: `{round((data['stats']['str'] + data['stats']['siz']) / 6)}d6`"
+        embed.description += f"\n**Armor**: {data['combat']['armor']}"
+        embed.description += f" **Shield**: {data['combat']['shield']}"
+        a = Config.senechal()['armors'][data['combat']['armor']]
+        s = Config.senechal()['shields'][data['combat']['shield']]
+        embed.description += f"\n**Damage reduction**: `{a['red']} + {s['red']}`"
+        embed.description += f" **Dex modifier**: `{a['dex']}`"
+        embed.description += f" **Effective Dex**: `{data['stats']['dex'] + a['dex']}`"
+        embeds.append(embed)
     if task == "*" or "winter".startswith(task.lower()):
-        if char.memberid:
-            winter = winterData(char)
-            embed = get_embed(char)
-            add_field(embed, name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
-            msg = ""
-            for h in winter['horses']:
-                msg += f"  {h}\n"
-            add_field(embed, name="Lovak", value=f"```{msg}```", inline=False)
-            msg = f"\nModified   Spec\n"
-            marks = []
-            for row in rows:
-                for t, name, value, *name2 in get_checkable(data, row[5]):
-                    if name not in marks:
-                        marks.append(name)
-                        msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
-            add_field(embed, name="Pipák", value=f"```{msg}```", inline=False)
-
-            embeds.append(embed)
+        winter = winterData(char)
+        embed = get_embed(char)
+        add_field(embed, name=f"{year} tele", value=f"```Stewardship: {winter['stewardship']}```", inline=False)
+        msg = ""
+        for h in winter['horses']:
+            msg += f"  {h}\n"
+        add_field(embed, name="Lovak", value=f"```{msg}```", inline=False)
+        msg = f"\nModified   Spec\n"
+        marks = []
+        for row in rows:
+            for t, name, value, *name2 in get_checkable(data, row[5]):
+                if name not in marks:
+                    marks.append(name)
+                    msg += f"{str(row[2])[:10]} {name:15} {value:2} \n"
+        add_field(embed, name="Pipák", value=f"```{msg}```", inline=False)
+        embeds.append(embed)
     if len(embeds) == 0:
         return;
     elif len(embeds) == 1:
