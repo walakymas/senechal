@@ -83,7 +83,6 @@ def main():
         await common_handle_message(after)
 
     Config.reload()
-    print(Config.config['token'])
     client.run(Config.config['token'])
 
 ###############################################################################

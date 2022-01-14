@@ -150,7 +150,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
     data = char.get_data()
     marks = []
     year = MarksTable().year()
-    rows = MarksTable().list(lord=char.memberid, year=year)
+    rows = MarksTable().list(dbid=data['dbid'], year=year)
     for row in rows:
         if row[5] not in marks:
             marks.append(row[5])

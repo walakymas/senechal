@@ -43,7 +43,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
         i = int(char.id)
         msg = ""
-        rows = MarksTable().list(lord=i, year=year)
+        rows = MarksTable().list(dbid=i, year=year)
         msg += f"Modified   Spec              Dobás   Hatás\n";
         marks = []
         for row in rows:
