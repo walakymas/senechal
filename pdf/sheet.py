@@ -227,7 +227,7 @@ class Sheet(FPDF):
     def main(self):
         self.parchment('Knight', 80)
         from database.eventstable import EventsTable
-        self.data['main']['Glory'] = EventsTable().glory(self.data['id'])
+        self.data['main']['Glory'] = EventsTable().glory(self.data['dbid'])
 
         x = self.get_x()
         y = self.get_y()
