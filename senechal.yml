@@ -128,6 +128,7 @@ fallbacks:
     'Law': ['Courtesy', 'Folklore', 'Intrigue']
     'Music': ['Play (Instrument)', 'Singing', 'Compose']
     'Distaff': ['Stewardship', 'Industry']
+    'Venery': ['Romance', 'Flirting']
 
 virtues:
   Arian Christianity: [Chaste, Honest, Just, Merciful, Temperate]
@@ -283,11 +284,10 @@ newchar:
     attributes:
       con: 3 
     traits: 
-      British Christian: { cha: 13, ene: 13, for: 10, gen: 13, hon: 10, jus: 10, mer: 10, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
-      Roman Christian: { cha: 13, ene: 10, for: 13, gen: 10, hon: 10, jus: 10, mer: 13, mod: 13, pru: 10, spi: 10, tem: 13, tru: 10, val: 15 }
-      British Pagan: { cha: 7, ene: 13, for: 10, gen: 13, hon: 13, jus: 10, mer: 13, mod: 7, pru: 10, spi: 10, tem: 10, tru: 10, val: 15 }
+      British Christian: { cha: 13, ene: 13, for: 8, gen: 13, hon: 10, jus: 10, mer: 10, mod: 13, pru: 9, spi: 10, tem: 11, tru: 10, val: 15 }
+      British Pagan: { cha: 7, ene: 13, for: 8, gen: 13, hon: 13, jus: 10, mer: 10, mod: 7, pru: 9, spi: 10, tem: 8, tru: 10, val: 15 }
     male:
-      names: [Addonwy, Aeron, Afan, Aneirin, Aeddan, Amig, Amlyn, Athrwys, Arddur, Buddfannan, Blaen, Bledri, Bradwen, Bleddig, Cadfannan, Cadfael, Cadwallon, Cilydd, Cynon, Cynfan, Cyfulch, Cynrain, Cunvelyn, Caradoc, Cibno, Ceredig, Cadlew, Cynwal, Clydno, Cynhafal, Dafydd, Defi, Dwyai, Edar, Edern, Eiddef, Erthgi, Elad, Eudaf, Biffin, Gwefrfawr, Gwegon, Gwion, Gwyn, Gwarddur, Gwern, Gwyleged, Gwrien, Gwraid, Gorthyn, Gwaednerth, Gwengad, Brugyn, Gwenabwy, Gwrfelling, Gwair, Graid, Geriant, Gwanon, Hyfaidd, Hywel, Ieuan, Llywel, Marchlew, Moried, Morien, Madog, Morial, Mynyddog, Merin, Neilyn, Nwython, Nai, Nerthaid, Neddig, Nidian, Owain, Padern, Pedrog, Ricerch, Rhodri, Rhufon, Rhun, Sawel, Seriol, Sywno, Tathal, Tathan, Tudfwlch, Tyngyr, Uren, Uwain, Ysgarran]
+      names: [Aed, Aedan, Aeducan, Ailgel, Ailill, Airechtach, Amalgaid, Art, Baetan, Baeth, Berach, Berchan, Brion, Bruatur, Carthach, Cathal, Cenn, Cerball, Colcu, Comman, Congal, Cormace, Daig, Diarmait, Donngal, Dunchad, Echen, Elodach, Eogan, Fachtna, Fedelmid, Finnchad, Flann, Guaire, Imchad, Laegaire, Lorccan, Maine, Murchad, Nathi, Ronan, Russ, Senach, Tadc, Tuathal, Ultan]
       skills:
         Other:
           Awareness: 8
@@ -322,7 +322,7 @@ newchar:
           Spear: 5
           Lance: 5
     female:
-      names: [Adwen, Annest, Angarad, Arianwen, Briant, Duddug, Collwen, Dwynwen, Eleri, Ffraid, Glesig, Glesni, Gwen, Heledd, Indeg, Leri, Lleucu, Llio, Melangell, Meleri, Nest, Nia, Tydfil]
+      names: [Bebinn, Cron, Derbail, Dunlaith, Eithne, Finnguala, Flann, Gormlaith, Grainne, Lassar, Mor, Orlaith, Sadb, Sorcha, Una]
       skills:
         Other:
           Awareness: 4
@@ -360,6 +360,126 @@ newchar:
       Love (family): 15
       Hospitality: 15
       Honor: 15
+    homeland:
+      Anglia: All Periods―Hate Angles
+      Cambenet (Cumbria): Uther/Anarchy―Hate Irish
+      Cameliard (Cambria): Uther/Anarchy―Hate Norgales
+      Clarence (Logres): Uther/ Anarchy/ Boy King/ Conquest/Romance―Hate Gloucestermen
+      Devon (Cornwall): All Periods―Hate Irish
+      Domnonie (Brittany): Uther/Anarchy―Hate Vannetais
+      Dublin: Boy King onward―Hate Irish
+      Garloth (Cumbria): Uther/Anarchy―Hate Danes
+      Gorre (Cumbria): Uther/Anarchy―Hate Irish
+      Gloucester (Cambria): Uther/Anarchy/Boy King/Conquest/Romance―Hate Clarence
+      Hampshire (Logres): Uther/Anarchy―Hate Saxons
+      Hertford (Logres): Uther/Anarchy―Hate Saxons
+      Huntington (Logres): Uther/Anarchy―Hate Saxons
+      Jagent (Logres): Uther/Anarchy―Hate Cornwall
+      London: Uther/Anarchy―Hate Saxons
+      Lothian (Cumbria): Tournament/Grail/Twilight―Hate Pendragon
+      Lyonesse (Cornwall): Uther/Anarchy/Boy King/Conquest/Romance―Hate Irish
+      Malahaut (Cumbria): Uther/Anarchy―Hate Saxons
+      Maris (Logres): Uther/Anarchy―Hate Saxons
+      Nohaut (Cumbria): Uther/Anarchy/Boy King/Conquest―Hate Malahaut
+      Out Isles: All Periods―Hate everyone else
+      Salisbury (Logres): Uther/Anarchy/Boy King―Hate Saxons
+      Somerset (Logres): Uther/Anarchy―Hate Irish
+      Strangorre (Cumbria): All Periods―Hate Irish and Picts
+      Surrey (Logres): Uther/Anarchy/Boy King—Hate (other) Saxons
+      Thamesmouth: Uther/Anarchy―Hate Saxons
+      Tintagel (Cornwall): Uther/Anarchy―Hate Irish
+      Totnes (Cornwall): All Periods―Hate Giants; Uther/Anarchy―Hate Irish
+      Tribruit (Logres): Boy King onward―Fear Faeries
+      Vannetais (Brittany): All Periods―Hate French; Tournament/Grail/Twilight―Hate Brittany
+      Wuerensis (Logres): Uther/Anarchy―Hate Cambrians
+  Aquitainian:
+    passions:
+      Loyalty (lord): 15
+      Love (family): 15
+      Hospitality: 15
+      Honor: 15
+    attributes:
+      con: 1 
+      dex: 1
+      app: 1
+    traits: 
+      Arian Christianity: { cha: 13, ene: 13, for: 12, gen: 10, hon: 13, jus: 13, mer: 13, mod: 10, pru: 12, spi: 10, tem: 10, tru: 10, val: 15 }
+    male:
+      names: [Achila, Agila, Ardo, Alaric, Athanagild, Braulio, Bulgar, Chindasuinth, Chintila, Cison, Egica, Ervig, Euric, Gundemar, Hanna, Heraus, Hermenegild, Hermenigild, Ildefonsus, Isidore, Iudila, Julian, Leander, Leovigild, Liuva, Reccared, Recared, Reccesuinth, Receswinth, Roderic, Sembe, Senius, Sisbert, Sisebut, Sisenand, Suinthila, Suniefred, Theoderic, Theudisclus, Thorismund, Tulga, Wamba, Witteric, Wittiza]
+      skills:
+        Other:
+          Awareness: 5
+          Boating: 1
+          Compose: 4
+          Courtesy: 8
+          Dancing: 2
+          Faerie Lore: 2
+          Falconry: 2
+          First Aid: 2
+          Folklore: 2
+          Gaming: 2
+          Heraldry: 1
+          Hunting: 5
+          Intrigue: 5
+          Orate: 5
+          Play (harp): 2
+          Read (Latin): 2
+          Recognize: 2
+          Religion (Arian Christian): 2
+          Singing: 2
+          Stewardship: 2
+          Swimming: 2
+          Tourney: 0
+          Venery: 10
+        Combat: 
+          Battle: 10
+          Siege: 2
+          Horsemanship: 10
+        Weapons:
+          Sword: 10
+          Dagger: 2
+          Spear: 2
+          Lance: 10
+    female:
+      names: [Brunhilda, Florentina, Elaine, Eleanor]
+      skills:
+        Other:
+          Awareness: 3
+          Boating: 0
+          Compose: 4
+          Chirurgery: 8
+          Courtesy: 8
+          Dancing: 2
+          Faerie Lore: 1
+          Falconry: 3
+          First Aid: 8
+          Folklore: 1
+          Gaming: 3
+          Heraldry: 1
+          Hunting: 1
+          Industry: 8
+          Intrigue: 5
+          Orate: 2
+          Play (harp): 3
+          Read (Latin): 2
+          Recognize: 2
+          Religion (Arian Christian): 2
+          Singing: 3
+          Stewardship: 8
+          Swimming: 1
+          Tourney: 0
+          Venery: 10
+        Combat: 
+          Battle: 1
+          Siege: 2
+          Horsemanship: 3
+        Weapons:
+          Dagger: 3
+    passions:
+      Loyalty (lord): 13
+      Love (family): 15
+      Hospitality: 15
+      Honor: 17
     homeland:
       Anglia: All Periods―Hate Angles
       Cambenet (Cumbria): Uther/Anarchy―Hate Irish
