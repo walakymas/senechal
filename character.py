@@ -121,8 +121,10 @@ class Character:
         if not force and mid in Character.cache:
             return Character.cache[mid]
         else:
+            print(f"get_by_memberid db")
             record = CharacterTable().get_by_memberid(mid)
             if record:
+                print(f"get_by_memberid db")
                 c = Character(record)
                 Character.cache[mid] = c
                 return c

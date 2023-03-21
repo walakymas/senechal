@@ -6,14 +6,10 @@ from utils import *
 class Login(BaseCommand):
 
     def __init__(self):
-        description = "Trait, stat, passion vagy skill próba"
+        description = "Authenticate token"
         params = ['weblogin']
         super().__init__(description,
-                         longdescription='''***!weblogin {spec} {modifier=0}*** A játékosok saját karakterhez indíthatnak próbát 
-***!c {név} {spec} {modifier=0}*** A mesélő egy névrészlet megadásával azonosíthatja a karaktert
-*spec* próbáratett tulajdonság nevének kezdő részlete
-*modifier* aktuális módosító  
-''')
+        longdescription='''***!weblogin authenticate token''')
 
     async def handle(self, params, message, client):
         char = get_me(message)

@@ -51,6 +51,8 @@ class BaseTableHandler:
                     return cur.fetchmany(many)
             Database.db.commit()
         except psycopg2.Error:
+            print(f"db error")
             Database.db.rollback();
             
+
 

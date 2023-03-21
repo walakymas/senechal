@@ -114,6 +114,9 @@ def get_me(message, force=False):
     me = None
     if cmd_split[-1].startswith('<@!'):
         me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
+    elif cmd_split[-1].startswith('<@'):
+        me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
+
     if me:
         return me
     else:
