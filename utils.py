@@ -140,7 +140,7 @@ def get_embed(char, description=False):
 
 
 def add_field(embed, name=None, value=None, inline=False, formatted=False):
-    if len(embed.description) == 0:
+    if not embed.description or len(embed.description) == 0:
         embed.description = ""
     if formatted:
         embed.description += f"{name} `{value}`   "

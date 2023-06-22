@@ -23,7 +23,8 @@ sched = AsyncIOScheduler()
 def main():
     print("Starting up bot..."+os.environ['token'])
     intents = discord.Intents.default()
-#    intents.members = True
+    intents.guilds = True
+    intents.message_content = True
     client = discord.Client(intents=intents)
 
     # Define event handlers for the client
