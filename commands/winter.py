@@ -77,7 +77,9 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                         if 'role' in f and (f['role'] == 'wife' or f['role'] == 'lover'):
                             birth = 0
                             con = npc.data['stats']['con']
-                            if 'birth' in npc.data['main']:
+                            if 'Birth' in npc.data['main']:
+                                birth = npc.data['main']['Birth']
+                            elif 'birth' in npc.data['main']:
                                 birth = npc.data['main']['birth']
                             s += f"Con: {con}, Birth: {birth} \n"
 
