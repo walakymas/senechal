@@ -108,3 +108,5 @@ venv.bak/
 /senechal.db
 /db.sqlite3
 /*_tmp.pdf
+/run.sh
+*~
