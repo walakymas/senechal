@@ -15,7 +15,6 @@ fpdf2
 django
 django-cors-headers
 gunicorn
-django-heroku
 whitenoise
 dj-database-url
 disputils
