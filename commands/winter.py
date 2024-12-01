@@ -69,23 +69,26 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                 s = ""
                 if 'dbid' in f:
                     npc = Character.get_by_id(f['dbid'])
-                    rows = MarksTable().list(dbid=f['dbid'], year=year)
-                    marks = []
-                    if 'role' in f and (f['role'] == 'wife' or f['role'] == 'lover'):
-                        birth = 0
-                        con = npc.data['stats']['con']
-                        if 'birth' in npc.data['main']:
-                            birth = npc.data['main']['birth']
-                        s += f"Con: {con}, Birth: {birth} \n"
+                    if 'Deceased' in npc.data['main']:
+                        s = f"NPC is dead ({npc.data['main']['Deceased']})\n"
+                    else:
+                        rows = MarksTable().list(dbid=f['dbid'], year=year)
+                        marks = []
+                        if 'role' in f and (f['role'] == 'wife' or f['role'] == 'lover'):
+                            birth = 0
+                            con = npc.data['stats']['con']
+                            if 'birth' in npc.data['main']:
+                                birth = npc.data['main']['birth']
+                            s += f"Con: {con}, Birth: {birth} \n"
 
-                    s += f"Modified   Spec              Dobás   Hatás\n";
-                    for row in rows:
-                        #print(f"{row}")
-                        for t, name, value, *name2 in get_checkable(npc.get_data(), row[5]):
-                            if name not in marks:
-                                marks.append(name)
-                                (color, text, ro, success) = check(value, 0)
-                                s += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
+                        s += f"Modified   Spec              Dobás   Hatás\n";
+                        for row in rows:
+                            #print(f"{row}")
+                            for t, name, value, *name2 in get_checkable(npc.get_data(), row[5]):
+                                if name not in marks:
+                                    marks.append(name)
+                                    (color, text, ro, success) = check(value, 0)
+                                    s += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
                     if s != "":
                         embed.add_field(name=f"{npc.data['name']} ({f['connection']})", value=f"```{s}```", inline=False)
                 else:
