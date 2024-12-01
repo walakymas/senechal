@@ -116,6 +116,8 @@ def get_me(message, force=False):
         me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
     elif cmd_split[-1].startswith('<@'):
         me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
+    elif cmd_split[-1].startswith('++'):
+        me = Character.get_by_name(cmd_split[-1][2:], force=force)
 
     if me:
         return me
@@ -181,15 +183,15 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             embed.description += "\n\n"
             for s in Config.senechalConfig['stats']:
                 add_field(embed, name=s, value=data['stats'][s.lower()[:3]], formatted=True)
-            add_field(embed, name="Damage", value=str(char.get_damage()) + 'd6', formatted=True);
+            add_field(embed, name="Damage", value=str(char.get_damage()) + 'd6', formatted=True)
             add_field(embed, name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)),
-                      formatted=True);
+                      formatted=True)
             add_field(embed, name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)),
-                      formatted=True);
+                      formatted=True)
             add_field(embed, name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))),
-                      formatted=True);
+                      formatted=True)
             add_field(embed, name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)),
-                      formatted=True);
+                      formatted=True)
         embeds.append(embed)
     if task == "*" or "traits".startswith(task.lower()):
         if 'traits' in data:
@@ -213,7 +215,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             embed = get_embed(char)
             from database.eventstable import EventsTable
             embed.description += f"\n**Összes Glory**:  {EventsTable().glory(char.id)}"
-            for (id, created, modified, year, lord, desc, glory) in EventsTable().list(char.id):
+            for (id, created, modified, year, lord, desc, glory, dbid) in EventsTable().list(char.id):
 
                 if len(embed.description) + len(desc) > 2000:
                     embeds.append(embed)
@@ -289,12 +291,12 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
         add_field(embed, name="Pipák", value=f"```{msg}```", inline=False)
         embeds.append(embed)
     if len(embeds) == 0:
-        return;
+        return
     elif len(embeds) == 1:
         await channel.send(embed=embeds[0])
     else:
         paginator = EmbedPaginator(ctx, embeds)
-        await paginator.run([], channel=channel)
+        await paginator.run([message.author], channel=channel)
 
 def winterData(char):
     ss = 0
@@ -310,7 +312,7 @@ def winterData(char):
     from database.lordtable import LordTable
     for r in LordTable().list(char.memberid, 0):
         if r[4] == 'winter.stewardship':
-            winter['stewardship'] = r[5];
+            winter['stewardship'] = r[5]
         elif r[4] == 'winter.horses':
             winter['horses'] = r[5].strip().split(',')
     return winter
@@ -318,7 +320,7 @@ def winterData(char):
 
 def check(base, modifier=0, emoji=True):
     ro = dice(20)
-    r = ro;
+    r = ro
     c = base + int(modifier)
     if c > 20:
         r += c - 20
@@ -346,11 +348,11 @@ async def embed_check(ctx, data, name, base, modifier):
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
 
-    add_field(embed, name="Dobás", value=str(ro));
-    add_field(embed, name=name, value=str(base));
+    add_field(embed, name="Dobás", value=str(ro))
+    add_field(embed, name=name, value=str(base))
     if modifier != 0:
-        add_field(embed, name="Módosító", value=str(modifier));
-    add_field(embed, name="Eredmény", value=text, inline=False);
+        add_field(embed, name="Módosító", value=str(modifier))
+    add_field(embed, name="Eredmény", value=text, inline=False)
 
     await ctx.send(embed=embed)
 
@@ -361,11 +363,11 @@ async def embed_trait(ctx, data, name, base, modifier, name2):
     embed = discord.Embed(title=data['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
                           color=color)
     add_field(embed, name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")",
-              inline=False);
+              inline=False)
     if success > 2:
         (color, text, ro, success) = check(20 - base, 0)
         add_field(embed, name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base)) + ")",
-                  inline=False);
+                  inline=False)
 
     await ctx.send(embed=embed)
 
@@ -376,31 +378,31 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
     data = character.get_data(True)
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     add_field(embed, name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")",
-              inline=False);
+              inline=False)
     if damage >= 0 and success <= 2:
         if damage == 0:
             damage = round((data['stats']['str'] + data['stats']['siz']) / 6)
-        sum = 0;
+        sum = 0
         if success == 2:
             damage += 4
-        s = '';
+        s = ''
         for x in range(damage):
-            d = dice(6);
+            d = dice(6)
             if sum > 0:
                 s += '+'
             s += str(d)
             sum += d
-        add_field(embed, name="Sebzés", value=s + ' = ' + str(sum));
+        add_field(embed, name="Sebzés", value=s + ' = ' + str(sum))
     if obase > 0:
         (ocolor, otext, oro, osuccess) = check(obase, 0)
-        add_field(embed, name="Opposer", value=otext + " (" + str(oro) + " vs " + str(obase) + ")", inline=False);
+        add_field(embed, name="Opposer", value=otext + " (" + str(oro) + " vs " + str(obase) + ")", inline=False)
         if odamage >= 0 and osuccess <= 2:
-            sum = 0;
+            sum = 0
             if osuccess == 2:
                 odamage += 4
             for x in range(odamage):
                 sum += dice(6)
-            add_field(embed, name="Sebzés", value=str(sum));
+            add_field(embed, name="Sebzés", value=str(sum))
 
     await ctx.send(embed=embed)
 
