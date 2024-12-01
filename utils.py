@@ -5,13 +5,14 @@ from random import randint
 
 import discord
 from discord import HTTPException, Embed
-from disputils import EmbedPaginator
 from emoji import emojize
 
 import settings
 from character import Character
 from config import Config
 from database.markstable import MarksTable
+import json
+from json import JSONDecodeError
 
 
 # Returns a path relative to the bot directory
@@ -317,6 +318,10 @@ def winterData(char):
 
 
 def check(base, modifier=0, emoji=True):
+    (color, text, r, ro, success) = check2(base, modifier, emoji)
+    return [color, text, r, success]
+
+def check2(base, modifier=0, emoji=True):
     ro = dice(20)
     r = ro;
     c = base + int(modifier)
@@ -336,13 +341,24 @@ def check(base, modifier=0, emoji=True):
         color = discord.Color.blue()
         success = 1
     if emoji:
-        return [color, success_emojis[success] + " " + successes[success], r, success]
+        return [color, success_emojis[success] + " " + successes[success], r, ro, success]
     else:
-        return [color, successes[success], r, success]
+        return [color, successes[success], r, ro, success]
 
 
 async def embed_check(ctx, data, name, base, modifier):
-    (color, text, ro, success) = check(base, modifier)
+    (color, text, r, ro, success) = check2(base, modifier)
+
+    toJson = {}
+    toJson['action']='check'
+    toJson['name']=name
+    toJson['id']=data['dbid']
+    toJson['modifier']=modifier
+    toJson['text']=text
+    toJson['ro']=ro
+    toJson['success']=successes[success]
+
+    print(json.dumps(toJson, indent=4, ensure_ascii=False))
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
 

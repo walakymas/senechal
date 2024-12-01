@@ -7,6 +7,8 @@ from commands import *
 import re
 from utils import dice
 from config import Config
+import json
+from json import JSONDecodeError
 
 dicePattern = re.compile('([0-9]*)[dD]([0-9]+)([+-][0-9]+)?')
 
@@ -35,10 +37,16 @@ async def handle_command(command, args, message, bot_client, mid=0):
             (db, size, *other) = result.groups()
             if ('' != db):
                 num = int(db)
+            toJson = {}
+            toJson['action']='dice'
+            toJson['count']=db
+            toJson['size']=size
+            toJson['dices']=[]
             sum = 0;
             s = '';
             for x in range(num):
                 r = dice(int(size))
+                toJson['dices'].append(r)
                 sum += r
                 if (x > 0):
                     s += '+';
@@ -46,6 +54,9 @@ async def handle_command(command, args, message, bot_client, mid=0):
             if result.group(3):
                 sum += int(result.group(3))
                 s += result.group(3)
+                toJson['modifier']=int(result.group(3))
+            toJson['sum']=sum
+            print(json.dumps(toJson, indent=4, ensure_ascii=False))
             await message.channel.send(message.author.display_name + ': ' + s + '= ' + str(sum))
         return
 

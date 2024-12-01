@@ -4,7 +4,6 @@ import datetime
 import sys
 import os
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config                         import Config
 from database.database              import Database
 
@@ -13,17 +12,11 @@ from database.database              import Database
 this = sys.modules[__name__]
 this.running = False
 
-# Scheduler that will be used to manage events
-sched = AsyncIOScheduler()
-
-
-###############################################################################
-
-
 def main():
     print("Starting up bot..."+os.environ['token'])
     intents = discord.Intents.default()
     intents.guilds = True
+    intents.members = True
     intents.message_content = True
     client = discord.Client(intents=intents)
 
@@ -37,21 +30,9 @@ def main():
 
         this.running = True
 
-        # Set the playing status
         await client.change_presence(
                 activity=discord.Game(name=f"{Config.prefix}senechal since {datetime.datetime.now()}"))
         print("Logged in!", flush=True)
-
-        # Load all events
-        # print("Loading events...", flush=True)
-        # n_ev = 0
-        # for ev in BaseEvent.__subclasses__():
-        #     event = ev()
-        #     sched.add_job(event.run, 'interval', (client,),
-        #                   minutes=event.interval_minutes)
-        #     n_ev += 1
-        # sched.start()
-        # print(f"{n_ev} events loaded", flush=True)
 
         for guild in client.guilds:
             for m in guild.channels:

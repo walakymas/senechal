@@ -125,13 +125,15 @@ class Database:
                 cur.execute("""UPDATE events SET dbid = (SELECT id FROM characters WHERE characters.memberid = events.lord);""")
                 v = 12
             if v == 12:
-                cur.execute("""ALTER TABLE  tokens ADD tokenstate integer NOT NULL DEFAULT 0""")
+                cur.execute("""ALTER TABLE tokens ADD tokenstate integer NOT NULL DEFAULT 0""")
+                cur.execute("""ALTER TABLE tokens ADD CONSTRAINT un_token UNIQUE (token)""")
                 cur.execute("""CREATE TABLE IF NOT EXISTS player (
                         cid bigint PRIMARY KEY,
                         created timestamp without time zone NOT NULL DEFAULT  now(), 
                         modified timestamp without time zone NOT NULL DEFAULT now(),
                         playerstate bigint NOT NULL DEFAULT 0,
-                        playerrights bigint NOT NULL DEFAULT 0
+                        playerrights bigint NOT NULL DEFAULT 0,
+                        did bigint NOT NULL unique
                         )
                         """)
                 v = 13

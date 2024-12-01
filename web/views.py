@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import uuid;
 from json import JSONDecodeError
 
 from django.http import HttpResponse, JsonResponse, FileResponse
@@ -8,11 +9,14 @@ from django.views.decorators.cache import never_cache
 
 from character import Character
 from database.charactertable import CharacterTable
+from database.playertable import PlayerTable
 from database.markstable import MarksTable
 from database.eventstable import EventsTable
+from database.tokenstable import TokenTable
 from datetime import datetime
 import tempfile
 from config import Config
+import zipfile
 
 def index(request):
     return HttpResponse("Hello, world. You're at the senechal index.")
@@ -63,6 +67,27 @@ def pcs(request):
             result.append(c.get_data())
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
+def token(request):
+    cid = request.POST['cid']
+    resp = {'result':'fail'}
+    plyr = PlayerTable().get_by_cid(cid)
+    if plyr:
+        token = f"{uuid.uuid4()}"
+        try:
+            print(plyr)
+            TokenTable().set(token, plyr[0], None, 0)
+            record = TokenTable().get_info_by_token(token)
+            resp = {'result':'fail'}
+            if record:
+                resp = {'token':token, 'id':record[0]}
+            
+        except BaseException as ex:
+            print(ex)
+            return JsonResponse({'error':ex}, safe=False, json_dumps_params={'ensure_ascii': False})
+    else:
+        print(f"plyr failed")
+
+    return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def list(request):
     chars = []
@@ -148,17 +173,40 @@ def modify(request):
             if dn not in data:
                 data[dn] = {}
             set(data[dn], name[i+1:], value)
-    if 'json' in request.POST:
-        CharacterTable().set_json(request.POST['id'], request.POST['json'])
-    else:
-        j = CharacterTable().get_by_id(request.POST['id'])[6]
-        data = json.loads(j)
-        for name, value in request.POST.items():
-            if "id" != name:
-                set(data, name, value)
-        j = json.dumps(data, ensure_ascii=False, indent=2)
-        CharacterTable().set_json(request.POST['id'], j)
+    if 'token' in  request.POST:
+        if hasRight(request.POST['token'], request.POST['id']):
+            if 'json' in request.POST:
+                CharacterTable().set_json(request.POST['id'], request.POST['json'])
+            else:
+                j = CharacterTable().get_by_id(request.POST['id'])[6]
+                data = json.loads(j)
+                for name, value in request.POST.items():
+                    if "id" != name:
+                        set(data, name, value)
+                j = json.dumps(data, ensure_ascii=False, indent=2)
+                CharacterTable().set_json(request.POST['id'], j)
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
+
+def hasRight(token, cid):
+    print(f"to: {token}")
+    return token != 'null'
+
+def pdfs(request):
+    fz = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")
+    zf = zipfile.ZipFile(fz, "w")
+    from pdf.sheet import Sheet
+    for ch in CharacterTable().list():
+        if ch[3]:
+            pc = Character.get_by_id(ch[0])
+            sheet = Sheet(pc)
+            fp = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")
+            print(fp)
+            sheet.output(fp, 'F')
+            zf.write(fp,f"{pc.name}.pdf")
+    zf.close()
+    response = FileResponse(open(fz, 'rb'), filename=f"teampdf.zip")
+    response['Content-Type'] = 'application/zip'
+    return response
 
 
 def pdf(request):

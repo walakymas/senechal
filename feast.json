@@ -1,0 +1,489 @@
+{
+    "1" :{
+        "name":"Merrily Did He Run",
+        "check":{
+            "passion":"modest",
+            "win": {
+                "check": {
+                    "skill": "Compose",
+                    "success": {"geniality":2}
+                }
+            },
+            "oppose": {
+                "check": {
+                    "skill": "Courtesy",
+                    "fail": {"geniality":-2}
+                }
+            }
+        }
+    },
+    "2" :{
+        "name":"A Chance Encounter",
+        "check":{
+            "passion":"chaste",
+            "win": {
+                "geniality":2
+            },
+            "oppose": {
+                "winter":"Childbirth",
+                "feast":"left"
+            }
+        }
+    },
+    "3" :{
+        "name":"A Game of Dice"
+    },
+    "4" :{
+        "name":"A Helping Hand"
+    },
+    "5" :{
+        "name":"A Lady and You"
+    },
+    "6" :{
+        "name":"A Lady and You"
+    },
+    "7" :{
+        "name":"A Lady Departs"
+    },
+    "8" :{
+        "name":"A Lady Flirts"
+     },
+    "9" :{
+        "name":"A Lady Flirts"
+    },
+    "10" :{
+        "name":"A Lady of the Night"
+    },
+    "11" :{
+        "name":"A Lady's Honor"
+    },
+    "12" :{
+        "name":"A Lady's Gift"
+    },
+    "13" :{
+        "name":"A Loan?"
+    },
+    "14" :{
+        "name":"A love Poem"
+    },
+    "15" :{
+        "name":"A Man for All Seasons"
+    },
+    "16" :{
+        "name":"A New Teacher"
+    },
+    "17" :{
+        "name":"A Roaring Fire"
+    },
+    "18" :{
+        "name":"A Serving Girl Flirts"
+     },
+    "19" :{
+        "name":"A Serving Girl Flirts"
+    },
+    "20" :{
+        "name":"A Serving Girl Flirts"
+    },
+    "21" :{
+        "name":"A Serving Girl Flirts"
+    },
+    "22" :{
+        "name":"A Serving Girl Flirts"
+    },
+    "23" :{
+        "name":"A Test of Strength"
+    },
+    "24" :{
+        "name":"A Test of Strength"
+    },
+    "25" :{
+        "name":"A Slip of Wine"
+    },
+    "26" :{
+        "name":"About Things Real"
+    },
+    "27" :{
+        "name":"All You Can Eat"
+    },
+    "28" :{
+        "name":"Alms"
+     },
+    "29" :{
+        "name":"An Ideal Wife"
+    },
+    "30" :{
+        "name":"An Ideal Wife"
+    },
+    "31" :{
+        "name":"Be Valorous"
+    },
+    "32" :{
+        "name":"Biggest Mistake"
+    },
+    "33" :{
+        "name":"Boasting Knights"
+    },
+    "34" :{
+        "name":"Cristian Virtue"
+    },
+    "35" :{
+        "name":"Pagan Promise"
+    },
+    "36" :{
+        "name":"Center Stage"
+    },
+    "37" :{
+        "name":"Chance Encounter"
+    },
+    "38" :{
+        "name":"Chivalrous Life"
+     },
+    "39" :{
+        "name":"Christian Blessing"
+    },
+    "40" :{
+        "name":"Christian Sin"
+    },
+    "41" :{
+        "name":"Awkward Conversation"
+    },
+    "42" :{
+        "name":"Damaged Goods"
+    },
+    "43" :{
+        "name":"Dangerous Game"
+    },
+    "44" :{
+        "name":"Difficult Question"
+    },
+    "45" :{
+        "name":"Angry Dogs"
+    },
+    "46" :{
+        "name":"Raucous Contest"
+    },
+    "47" :{
+        "name":"Drunken Lout"
+    },
+    "48" :{
+        "name":"Drunken Lout"
+     },
+    "49" :{
+        "name":"Emergency"
+    },
+    "50" :{
+        "name":"Excellent Wine"
+    },
+    "51" :{
+        "name":"Faerie Tales"
+    },
+    "52" :{
+        "name":"Faerie Tales"
+    },
+    "53" :{
+        "name":"Fashion Disaster"
+    },
+    "54" :{
+        "name":"Generous Host"
+    },
+    "55" :{
+        "name":"Generous Knight"
+    },
+    "56" :{
+        "name":"Gentle Woman"
+    },
+    "57" :{
+        "name":"Glory Hound"
+    },
+    "58" :{
+        "name":"God(s) Shine On You"
+     },
+    "59" :{
+        "name":"Gossip"
+    },
+    "60" :{
+        "name":"Gossip"
+    },
+    "61" :{
+        "name":"Gossip"
+    },
+    "62" :{
+        "name":"Great Deeds"
+    },
+    "63" :{
+        "name":"Greet Deeds"
+    },
+    "64" :{
+        "name":"Greet Deeds"
+    },
+    "65" :{
+        "name":"Gwyddbwyll"
+    },
+    "66" :{
+        "name":"Help Needed"
+    },
+    "67" :{
+        "name":"Holy Blessing"
+    },
+    "68" :{
+        "name":"Holy Blessing"
+     },
+    "69" :{
+        "name":"How's the Wine"
+    },
+    "70" :{
+        "name":"Inflamed Passions"
+    },
+    "71" :{
+        "name":"Insult to a Lady"
+    },
+    "72" :{
+        "name":"Insult to a Serving Girl"
+    },
+    "73" :{
+        "name":"Introductions"
+    },
+    "74" :{
+        "name":"Juicy Tales"
+    },
+    "75" :{
+        "name":"Keep Dancing"
+    },
+    "76" :{
+        "name":"King of the Beam"
+    },
+    "77" :{
+        "name":"Ladies Quarrel"
+    },
+    "78" :{
+        "name":"Lady in Distress"
+     },
+    "79" :{
+        "name":"lead the Dance"
+    },
+    "80" :{
+        "name":"May We Dance?"
+    },
+    "81" :{
+        "name":"Lost Child"
+    },
+    "82" :{
+        "name":"Lost Love"
+    },
+    "83" :{
+        "name":"Malicious Slander"
+    },
+    "84" :{
+        "name":"Tipsy"
+    },
+    "85" :{
+        "name":"Manners!"
+    },
+    "86" :{
+        "name":"Mead"
+    },
+    "87" :{
+        "name":"Regale the Host"
+    },
+    "88" :{
+        "name":"Meet the Host"
+     },
+    "89" :{
+        "name":"Mercy, Milord"
+    },
+    "90" :{
+        "name":"Minstrels Sing"
+    },
+    "91" :{
+        "name":"Mistaken Identity"
+    },
+    "92" :{
+        "name":"More Drink"
+    },
+    "93" :{
+        "name":"More Drink"
+    },
+    "94" :{
+        "name":"More Drink"
+    },
+    "95" :{
+        "name":"More Drink"
+    },
+    "96" :{
+        "name":"More Drink"
+    },
+    "97" :{
+        "name":"More Drink"
+    },
+    "98" :{
+        "name":"More Drink"
+     },
+    "99" :{
+        "name":"More Drink"
+    },
+    "100" :{
+        "name":"More Food"
+    },
+    "101" :{
+        "name":"More Food"
+    },
+    "102" :{
+        "name":"More Food"
+    },
+    "103" :{
+        "name":"More Food"
+    },
+    "104" :{
+        "name":"More Food"
+    },
+    "105" :{
+        "name":"More Food"
+    },
+    "106" :{
+        "name":"More Food"
+    },
+    "107" :{
+        "name":"More Food"
+    },
+    "108" :{
+        "name":"New Friends"
+     },
+    "109" :{
+        "name":"Old Friends"
+    },
+    "110" :{
+        "name":"Oops!"
+    },
+    "111" :{
+        "name":"Overindulgence"
+    },
+    "112" :{
+        "name":"Pagana Gift"
+    },
+    "113" :{
+        "name":"Pagan Pleasures"
+    },
+    "114" :{
+        "name":"Passing Praise"
+    },
+    "115" :{
+        "name":"Passion"
+    },
+    "116" :{
+        "name":"People Skills"
+    },
+    "117" :{
+        "name":"Personal Valet"
+    },
+    "118" :{
+        "name":"Popular"
+     },
+    "119" :{
+        "name":"Quarreling Knights"
+    },
+    "120" :{
+        "name":"Queasy"
+    },
+    "121" :{
+        "name":"Queasy"
+    },
+    "122" :{
+        "name":"Romance"
+    },
+    "123" :{
+        "name":"Safekeeping"
+    },
+    "124" :{
+        "name":"Sage Advice"
+    },
+    "125" :{
+        "name":"Secret Dish"
+    },
+    "126" :{
+        "name":"Show of Strength"
+    },
+    "127" :{
+        "name":"Singing Sensation"
+    },
+    "128" :{
+        "name":"A Faux Pas"
+     },
+    "129" :{
+        "name":"Something Shiny"
+    },
+    "130" :{
+        "name":"Stewardship"
+    },
+    "131" :{
+        "name":"Story Request"
+    },
+    "132" :{
+        "name":"Strange Crone"
+    },
+    "133" :{
+        "name":"The Best Weapon"
+    },
+    "134" :{
+        "name":"Host Calls for a Dance"
+    },
+    "135" :{
+        "name":"Host Calls for a Hunt"
+    },
+    "136" :{
+        "name":"Host Calls for a Song"
+    },
+    "137" :{
+        "name":"Host Calls for a Toast"
+    },
+    "138" :{
+        "name":"Host Calls for a Toast"
+     },
+    "139" :{
+        "name":"Host Calls for a Toast"
+    },
+    "140" :{
+        "name":"Host Passes By"
+    },
+    "141" :{
+        "name":"Host Passes By"
+    },
+    "142" :{
+        "name":"Host Speaks at Length"
+    },
+    "143" :{
+        "name":"Host Needs Advice"
+    },
+    "144" :{
+        "name":"The Merchant of Venom"
+    },
+    "145" :{
+        "name":"Those Bandits"
+    },
+    "146" :{
+        "name":"Time to Share"
+    },
+    "147" :{
+        "name":"Tired"
+    },
+    "148" :{
+        "name":"Wallflower"
+     },
+    "149" :{
+        "name":"Wayward Wife"
+    },
+    "150" :{
+        "name":"Well-Dressed"
+    },
+    "151" :{
+        "name":"Who Are You?"
+    },
+    "152" :{
+        "name":"Who Was That?"
+    },
+    "153" :{
+        "name":"Wifely Woes"
+    },
+    "154" :{
+        "name":"Young Braggarts"
+    }
+}

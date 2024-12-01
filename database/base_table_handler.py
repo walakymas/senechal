@@ -50,8 +50,8 @@ class BaseTableHandler:
                 elif many:
                     return cur.fetchmany(many)
             Database.db.commit()
-        except psycopg2.Error:
-            print(f"db error")
+        except psycopg2.Error as  ex:
+            print(f"db error {ex}")
             Database.db.rollback();
             
 

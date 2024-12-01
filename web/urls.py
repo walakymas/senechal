@@ -27,10 +27,12 @@ urlpatterns = [
     path('mark', views.mark, name='mark'),
     path('event', views.event, name='event'),
     path('pdf', views.pdf, name='pdf'),
+    path('pdfs', views.pdfs, name='pdfs'),
     path('modify', views.modify, name='modify'),
     path('npc', views.npc, name='npc'),
     path('players', views.pcs, name='players'),
     path('newchar', views.newchar, name='newchar'),
     path('base', views.base, name='base'),
     path('list', views.list, name='list'),
+    path('token', views.token, name='list'),
 ]
