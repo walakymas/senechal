@@ -191,15 +191,11 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             add_field(embed, name="Damage", value=str(char.get_damage()) + 'd6', formatted=True)
             add_field(embed, name="Healing Rate", value=str(round((data['stats']['con'] + data['stats']['siz']) / 10)),
                       formatted=True)
-                      formatted=True)
             add_field(embed, name="Move Rate", value=str(round((data['stats']['dex'] + data['stats']['siz']) / 10)),
-                      formatted=True)
                       formatted=True)
             add_field(embed, name="HP", value=str(round((data['stats']['con'] + data['stats']['siz']))),
                       formatted=True)
-                      formatted=True)
             add_field(embed, name="Unconscious", value=str(round((data['stats']['con'] + data['stats']['siz']) / 4)),
-                      formatted=True)
                       formatted=True)
         embeds.append(embed)
     if task == "*" or "traits".startswith(task.lower()):
@@ -224,7 +220,6 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
             embed = get_embed(char)
             from database.eventstable import EventsTable
             embed.description += f"\n**Összes Glory**:  {EventsTable().glory(char.id)}"
-            for (id, created, modified, year, lord, desc, glory, dbid) in EventsTable().list(char.id):
             for (id, created, modified, year, lord, desc, glory, dbid) in EventsTable().list(char.id):
 
                 if len(embed.description) + len(desc) > 2000:
@@ -410,7 +405,6 @@ async def embed_trait(ctx, data, name, base, modifier, name2, message=None, char
                           color=color)
     add_field(embed, name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")",
               inline=False)
-              inline=False)
     if success > 2:
         (color, text, ro, success) = check(20 - base, 0)
         c = {}
@@ -436,7 +430,6 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
     data = character.get_data(True)
     embed = discord.Embed(title=name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
     add_field(embed, name=data['name'], value=text + " (" + str(ro) + " vs " + str(base + modifier) + ")",
-              inline=False)
               inline=False)
     if damage >= 0 and success <= 2:
         if damage == 0:
