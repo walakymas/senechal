@@ -30,6 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['senechalweb.herokuapp.com','senechal.herokuapp.com','localhost','127.0.0.1','192.168.0.95'
                  , 'senechalweb.duckdns.org'
                  , 'senechallocal.duckdns.org'
+                 , 'senechaldev.duckdns.org'
                  ]
 
 
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -73,6 +75,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://codepen.io",
     "http://localhost:4200",
     "http://192.168.1.131",
+    "http://senechaldev.duckdns.org"
 ]
 
 CORS_ALLOW_METHODS = [

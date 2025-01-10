@@ -9,6 +9,8 @@ from utils import dice
 from config import Config
 import json
 from json import JSONDecodeError
+from database.checktable import CheckTable
+from utils import *
 
 dicePattern = re.compile('([0-9]*)[dD]([0-9]+)([+-][0-9]+)?')
 
@@ -35,18 +37,21 @@ async def handle_command(command, args, message, bot_client, mid=0):
         if result:
             num = 1
             (db, size, *other) = result.groups()
+            char = get_me(message)
             if ('' != db):
                 num = int(db)
             toJson = {}
             toJson['action']='dice'
-            toJson['count']=db
-            toJson['size']=size
-            toJson['dices']=[]
+            c={}
+            toJson['c1']=c
+            c['count']=db
+            c['size']=size
+            c['dices']=[]
             sum = 0;
             s = '';
             for x in range(num):
                 r = dice(int(size))
-                toJson['dices'].append(r)
+                c['dices'].append(r)
                 sum += r
                 if (x > 0):
                     s += '+';
@@ -54,9 +59,12 @@ async def handle_command(command, args, message, bot_client, mid=0):
             if result.group(3):
                 sum += int(result.group(3))
                 s += result.group(3)
-                toJson['modifier']=int(result.group(3))
-            toJson['sum']=sum
-            print(json.dumps(toJson, indent=4, ensure_ascii=False))
+                c['modifier']=int(result.group(3))
+            c['sum']=sum
+            if (char!=None and message!=None) :
+                toJson['char']=char.data['dbid']
+                print(json.dumps(toJson, indent=4, ensure_ascii=False))
+                CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
             await message.channel.send(message.author.display_name + ': ' + s + '= ' + str(sum))
         return
 

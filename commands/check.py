@@ -19,13 +19,13 @@ class Check(BaseCommand):
         char = get_me(message)
         if char:
             (spec, modifier) = extract(params, ["---", 0])
-            await self.check(message.channel, char, spec, modifier)
+            await self.check(message.channel, char, spec, modifier, message)
         else:
             (name, spec, modifier) = extract(params, ["---", "---", 0])
             for char in Character.pcs(name):
-                await self.check(message.channel, char, spec, modifier)
+                await self.check(message.channel, char, spec, modifier, message)
 
-    async def check(self, ctx, char, spec, modifier):
+    async def check(self, ctx, char, spec, modifier, message):
         if spec == "---":
             data = char.get_data()
             embed = discord.Embed(title=char.name, timestamp=datetime.datetime.utcnow(),
@@ -57,7 +57,7 @@ class Check(BaseCommand):
             data = char.get_data()
             for t, name, value, *name2 in get_checkable(data, spec):
                 if 'trait' == t:
-                    await embed_trait(ctx, data, name, value, modifier, name2[0])
+                    await embed_trait(ctx, data, name, value, modifier, name2[0], message, char)
                 else:
-                    await embed_check(ctx, data, name, value, modifier)
+                    await embed_check(ctx, data, name, value, modifier, message, char)
 

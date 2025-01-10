@@ -11,9 +11,9 @@ class LordTable(BaseTableHandler):
                                  ' %(lord)s, %(year)s, %(key)s, %(value)s)'
                                  ' ON CONFLICT (lord, year, key) DO UPDATE SET value=%(value)s',
                                  {'lord': lord, 'year': year, 'key': key, 'value': value})
-
+  
     def remove(self, lord, year, key):
-        BaseTableHandler.execute("DELETE FROM properties WHERE lord=%s, year=%s, key=%s", param=[lord, year, key], commit=True)
+        BaseTableHandler.execute("DELETE FROM lord WHERE lord=%s, year=%s, key=%s", param=[lord, year, key], commit=True)
 
     def get(self, lord, year, key):
         return BaseTableHandler.execute("SELECT * FROM lord WHERE lord=%s, year=%s, key = %s", param=[lord, year, key])

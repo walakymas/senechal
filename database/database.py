@@ -7,7 +7,8 @@ import os
 
 class Database:
     conn = sqlite3.connect('senechal.db')
-    pq = os.environ['DATABASE_URL']
+    pq = os.getenv('DATABASE_URL')
+    print( os.getenv('DATABASE_URL'))
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],
@@ -68,7 +69,7 @@ class Database:
                         """)
                 cur.execute("CREATE UNIQUE INDEX idx_marks_lys ON marks (lord, year, spec);")
                 v = 1
-                cur.execute("UPDATE properties  SET value = 1 WHERE key = 'dbversion'")
+                cur.execute("UPDATE properties SET value = 1 WHERE key = 'dbversion'")
                 v = 3
             if v == 3:
                 cur.execute("DROP INDEX IF EXISTS idx_lord_key;")
@@ -137,6 +138,52 @@ class Database:
                         )
                         """)
                 v = 13
+            if v == 13:
+                cur.execute("""ALTER TABLE  player ADD name varchar NOT NULL DEFAULT 'a' """)
+                cur.execute("""ALTER TABLE  player ADD CONSTRAINT uniq_name UNIQUE (name) """)
+                cur.execute("""ALTER TABLE  player ADD character bigint """)
+                cur.execute("""ALTER TABLE  characters ADD player bigint """)
+                cur.execute("""CREATE TABLE IF NOT EXISTS checks (
+                        cid bigint PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT  now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        character bigint NOT NULL DEFAULT 0,
+                        command text,
+                        result text
+                        )
+                        """)
+                v = 14
+            if v == 14:
+                cur.execute("""CREATE TABLE IF NOT EXISTS p2c (
+                        cid bigint PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT  now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        character bigint NOT NULL DEFAULT 0,
+                        player bigint NOT NULL DEFAULT 0,
+                        connection varchar,
+                        comment text
+                        )
+                        """)
+                cur.execute("""CREATE TABLE IF NOT EXISTS c2c (
+                        cid bigint PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT  now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        c0 bigint NOT NULL DEFAULT 0,
+                        c1 bigint NOT NULL DEFAULT 0,
+                        connection varchar,
+                        comment text
+                        )
+                        """)
+                cur.execute("""create sequence player_id_seq""")
+                cur.execute("""ALTER TABLE player ALTER COLUMN cid SET DEFAULT nextval('player_id_seq'::regclass)""")
+                cur.execute("""ALTER TABLE player ADD did bigint """)
+                cur.execute("""INSERT INTO player (character,did, name) SELECT id, memberid, name from characters WHERE memberid IS NOT NULL """)
+                cur.execute("""UPDATE player set playerrights = 1023 WHERE did IN (470683159889969153, 778706677120892958)""")
+                cur.execute("""create sequence main_seq;""")
+                cur.execute("""ALTER TABLE p2c ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
+                cur.execute("""ALTER TABLE c2c ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
+                cur.execute("""ALTER TABLE checks ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
+                v = 15                            
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

@@ -10,7 +10,7 @@ class Winter(BaseCommand):
         super().__init__(description, None, ['tel'],
                          longdescription='''
 Egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
-Ha nincs megadva a blokk, akkor saját stewarshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
+Ha nincs megadva a blokk, akkor saját stewardshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
 Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasítással pipát kapott tulajdonságok, azokat listázza dob d20-l és közli az eredményt
 ''')
 

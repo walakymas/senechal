@@ -22,10 +22,15 @@ class TokenTable(BaseTableHandler):
         return BaseTableHandler.execute("SELECT * FROM tokens t LEFT JOIN player p ON p.id = t.cid WHERE token=%s", param=[token], fetch='one')
 
     def get_info_by_id(self, id):
-        return BaseTableHandler.execute("SELECT token, p.did, expires, tokenstate FROM tokens t LEFT JOIN player p ON p.cid = t.cid WHERE t.id = %s", param=[id], fetch='one')
+        return BaseTableHandler.execute("""SELECT token, p.did, expires, tokenstate, p.playerrights,
+                case when expires > now() THEN 1 ELSE 0 end state, p.name, p.cid 
+            FROM tokens t LEFT JOIN player p ON p.cid = t.cid WHERE t.id = %s"""
+            , param=[id], fetch='one')
 
     def get_info_by_token(self, token):
-        return BaseTableHandler.execute("SELECT id, p.did, expires, tokenstate FROM tokens t LEFT JOIN player p ON p.cid = t.cid WHERE t.token = %s", param=[token], fetch='one')
+        return BaseTableHandler.execute("""SELECT id, p.did, expires, tokenstate, p.playerrights,
+                case when expires > now() THEN 1 ELSE 0 end state, p.name, p.cid  
+                FROM tokens t LEFT JOIN player p ON p.cid = t.cid WHERE t.token = %s""", param=[token], fetch='one')
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM tokens ORDER BY id desc', fetch='all')

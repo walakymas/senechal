@@ -34,5 +34,10 @@ urlpatterns = [
     path('newchar', views.newchar, name='newchar'),
     path('base', views.base, name='base'),
     path('list', views.list, name='list'),
-    path('token', views.token, name='list'),
+    path('token', views.token, name='token'),
+    path('user', views.user, name='user'),
+    path('adminList', views.adminList, name='adminList'),
+    path('updatePlayer', views.updatePlayer, name='updatePlayer'),
+    path('cleanupTokens', views.cleanupTokens, name='cleanupTokens'),
+    path('checks', views.checks, name='cleanupTokens'),
 ]

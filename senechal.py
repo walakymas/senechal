@@ -6,6 +6,7 @@ import os
 
 from config                         import Config
 from database.database              import Database
+from pathlib import Path
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
@@ -63,6 +64,26 @@ def main():
     async def on_message_edit(before, after):
         print(after.content)
         await common_handle_message(after)
+
+    @client.event
+    async def on_raw_reaction_add(event):
+        print(f"reaction {event.channel_id}::{event.emoji.name}")
+        if event.emoji.name == '👀' and 'attachments' in os.environ and os.path.isdir(os.environ['attachments']):
+            dir = os.path.join(os.environ['attachments'], f"{event.channel_id}")
+            Path(dir).mkdir(parents=True, exist_ok=True)
+            ch = client.get_channel(event.channel_id)
+            msg = await ch.fetch_message(event.message_id)
+            for at in msg.attachments:
+                fileName = f"{at.id}_{at.filename}"
+                tempImage = os.path.join(dir, fileName)
+                if not os.path.isfile(tempImage):
+                    await at.save(fp=tempImage)
+                    os.utime(tempImage, (msg.created_at.timestamp(), msg.created_at.timestamp()))
+                    print(f'saved {tempImage}')
+                else:
+                    print('exists')
+                await event.member.send(f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}')
+
 
     Config.reload()
     client.run(Config.config['token'])
