@@ -25,4 +25,3 @@ class PlayerTable(BaseTableHandler):
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM player', fetch='all')
-

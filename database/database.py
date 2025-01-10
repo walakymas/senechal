@@ -9,6 +9,8 @@ class Database:
     conn = sqlite3.connect('senechal.db')
     pq = os.getenv('DATABASE_URL')
     print( os.getenv('DATABASE_URL'))
+    pq = os.getenv('DATABASE_URL')
+    print( os.getenv('DATABASE_URL'))
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],
@@ -69,6 +71,7 @@ class Database:
                         """)
                 cur.execute("CREATE UNIQUE INDEX idx_marks_lys ON marks (lord, year, spec);")
                 v = 1
+                cur.execute("UPDATE properties SET value = 1 WHERE key = 'dbversion'")
                 cur.execute("UPDATE properties SET value = 1 WHERE key = 'dbversion'")
                 v = 3
             if v == 3:
