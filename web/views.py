@@ -56,11 +56,18 @@ def pcresponse(pc):
 @never_cache
 def pcs(request):
     result = []
+    glorys = EventsTable().glorys();    
     records = CharacterTable().get_pcs()
+
     for r in records:
         c = Character(r)
+        d = c.get_data()
         if not ('role' in c.data and (c.data['role'] == 'Lord' or c.data['role'] == 'King' or c.data['role'] == 'Retired' )):
-            result.append(c.get_data())
+            for g in glorys:
+                print(f'{g}')
+                if g[0] == c.id:
+                    d['Glory']=g[1]
+            result.append(d)
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 

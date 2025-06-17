@@ -28,6 +28,8 @@ class EventsTable(BaseTableHandler):
     def list(self, dbid=-1, year=-1):
         return BaseTableHandler.execute('SELECT * FROM events WHERE (-1=%(dbid)s::bigint OR dbid=%(dbid)s::bigint) '
                                     'AND (-1=%(year)s OR year=%(year)s) ORDER BY dbid, year, id', {'dbid':dbid, 'year':year}, fetch='all')
+    def glorys(self):
+        return BaseTableHandler.execute('SELECT dbid, sum(glory) FROM events GROUP BY dbid', fetch='all')
 
     def glory(self, dbid=0):
         try:

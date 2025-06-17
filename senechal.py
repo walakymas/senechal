@@ -83,6 +83,26 @@ def main():
         print(after.content)
         await common_handle_message(after)
 
+    @client.event
+    async def on_raw_reaction_add(event):
+        print(f"reaction {event.channel_id}::{event.emoji.name}")
+        if event.emoji.name == '👀':
+            dir = os.path.join("/var/www/senechalPictures", f"{event.channel_id}")
+            from pathlib import Path
+            Path(dir).mkdir(parents=True, exist_ok=True)
+            ch = client.get_channel(event.channel_id)
+            msg = await ch.fetch_message(event.message_id)
+            for at in msg.attachments:
+                fileName = f"{at.id}_{at.filename}"
+                tempImage = os.path.join(dir, fileName)
+                if not os.path.isfile(tempImage):
+                    await at.save(fp=tempImage)
+                    os.utime(tempImage, (msg.created_at.timestamp(), msg.created_at.timestamp()))
+                    print(f'saved {tempImage}')
+                else:
+                    print('exists')
+                await event.member.send(f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}')
+
     Config.reload()
     client.run(Config.config['token'])
 

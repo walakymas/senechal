@@ -137,8 +137,8 @@ class Database:
                         """)
                 v = 13
             if v == 13:
-                cur.execute("""ALTER TABLE  player ADD name varchar NOT NULL DEFAULT 'a' """)
-                cur.execute("""ALTER TABLE  player CONSTRAINT UNIQ player_name UNIQUE (name) """)
+#                cur.execute("""ALTER TABLE  player ADD name varchar NOT NULL DEFAULT 'a' """)
+#                cur.execute("""ALTER TABLE  player ADD CONSTRAINT uniq_name UNIQUE (name) """)
                 cur.execute("""ALTER TABLE  player ADD character bigint """)
                 cur.execute("""ALTER TABLE  player ADD memberid bigint """)
                 cur.execute("""ALTER TABLE  characters ADD player bigint """)
