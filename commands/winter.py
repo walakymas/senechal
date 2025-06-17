@@ -46,9 +46,15 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         rows = MarksTable().list(dbid=charId, year=year)
         msg += f"Modified   Spec              Dobás   Hatás\n";
         marks = []
+        cnt = 0
         for row in rows:
             for t, name, value, *name2 in get_checkable(char.get_data(), row[5]):
                 if name not in marks:
+                    if cnt == 10:
+                        embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
+                        msg =""
+                        cnt = 0
+                    cnt += 1
                     marks.append(name)
                     (color, text, ro, success) = check(value, 0)
                     msg += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
@@ -77,7 +83,9 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                         if 'role' in f and (f['role'] == 'wife' or f['role'] == 'lover'):
                             birth = 0
                             con = npc.data['stats']['con']
-                            if 'birth' in npc.data['main']:
+                            if 'Birth' in npc.data['main']:
+                                birth = npc.data['main']['Birth']
+                            elif 'birth' in npc.data['main']:
                                 birth = npc.data['main']['birth']
                             s += f"Con: {con}, Birth: {birth} \n"
 

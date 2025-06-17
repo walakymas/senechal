@@ -9,15 +9,19 @@ class PlayerTable(BaseTableHandler):
     def set(self, name):
         BaseTableHandler.execute('INSERT INTO player (modified, name) VALUES(now(),  %(name)s)', {'name': name})
 
-    def remove(self, lord, year, key):
-        BaseTableHandler.execute("DELETE FROM player WHERE lord=%s, year=%s, key=%s", param=[lord, year, key], commit=True)
+    def remove(self, id):
+        BaseTableHandler.execute("DELETE FROM properties WHERE id=%s", param=[id], commit=True)
 
-    def get(self, lord, year, key):
-        return BaseTableHandler.execute("SELECT * FROM player WHERE lord=%s, year=%s, key = %s", param=[lord, year, key])
+    def get(self, id):
+        r = BaseTableHandler.execute("SELECT * FROM player WHERE cid=%s", param=[id], fetch='one')
+        print(f"player get:{r}")
+        return r
 
-    def get_by_value(self, year, key, value):
-        return BaseTableHandler.execute("SELECT * FROM player WHERE year=%s AND key = %s AND value=%s", param=[year, key, value])
+    def get_by_did(self, did):
+        return BaseTableHandler.execute("SELECT * FROM player WHERE did=%s", param=[did], fetch='one')
 
-    def list(self, lord=-1, year=-1):
-        return BaseTableHandler.execute('SELECT * FROM player WHERE (-1=%(lord)s::bigint OR lord=%(lord)s::bigint) AND (-1=%(year)s OR year=%(year)s) ORDER BY lord, year, key', {'lord': lord, 'year': year}, fetch='all')
+    def get_by_cid(self, did):
+        return BaseTableHandler.execute("SELECT p.* FROM player p JOIN characters c ON c.memberid=p.did WHERE c.id=%s", param=[did], fetch='one')
 
+    def list(self):
+        return BaseTableHandler.execute('SELECT * FROM player', fetch='all')

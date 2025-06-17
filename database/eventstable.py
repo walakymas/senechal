@@ -31,6 +31,9 @@ class EventsTable(BaseTableHandler):
     def glorys(self):
         return BaseTableHandler.execute('SELECT dbid, sum(glory) FROM events GROUP BY dbid', fetch='all')
 
+    def glorys(self):
+        return BaseTableHandler.execute('SELECT dbid, sum(glory) FROM events GROUP BY dbid', fetch='all')
+
     def glory(self, dbid=0):
         try:
             return int(BaseTableHandler.execute('SELECT sum(glory) FROM events WHERE dbid=%s::bigint', [dbid], fetch='one')[0])

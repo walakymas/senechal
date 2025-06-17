@@ -19,6 +19,7 @@ class Info(BaseCommand):
             s += "Guild: " + guild.name + "\n"
             for m in guild.members:
                 s += str(m.id) + ":" + m.name + "\n"
+            s += "Cannels\n"
             for m in guild.channels:
                 s += str(m.id) + ":" + m.name + "\n"
         await message.author.send(s);
