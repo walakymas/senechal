@@ -338,7 +338,8 @@ def check2(base, modifier=0, emoji=True):
     if c > 20:
         r += c - 20
         c = 20
-    if ro == c or r > 20:
+    print(f"c:{c} r:{r}")
+    if r == c or r > 20:
         color = discord.Color.gold()
         success = 2
     elif ro == 20:
@@ -376,12 +377,13 @@ async def embed_check(ctx, data, name, base, modifier, message=None, char:Charac
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
 
-    add_field(embed, name="Dobás", value=str(ro))
-    add_field(embed, name=name, value=str(base))
-    add_field(embed, name="Dobás", value=str(ro))
     add_field(embed, name=name, value=str(base))
     if modifier != 0:
         add_field(embed, name="Módosító", value=str(modifier))
+    if base+int(modifier)>20:
+        add_field(embed, name="Dobás", value=f"{r}  ({ro} + {base+int(modifier)-20})")
+    else:
+        add_field(embed, name="Dobás", value=str(ro))
     add_field(embed, name="Eredmény", value=text, inline=False)
     await ctx.send(embed=embed)
 
