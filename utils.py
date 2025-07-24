@@ -115,8 +115,10 @@ def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
     me = None
     if cmd_split[-1].startswith('<@!'):
+        print(f'get_me 1 "{cmd_split[-1][3:-1]}"')
         me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
     elif cmd_split[-1].startswith('<@'):
+        print(f'get_me 2 "{cmd_split[-1][3:-1]}"')
         me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
     elif cmd_split[-1].startswith('++'):
         me = Character.get_by_name(cmd_split[-1][2:], force=force)
@@ -333,12 +335,11 @@ def check(base, modifier=0, emoji=True):
 def check2(base, modifier=0, emoji=True):
     ro = dice(20)
     r = ro
-    r = ro
     c = base + int(modifier)
     if c > 20:
         r += c - 20
         c = 20
-    if ro == c or r > 20:
+    if r == c or r > 20:
         color = discord.Color.gold()
         success = 2
     elif ro == 20:
@@ -387,7 +388,7 @@ async def embed_check(ctx, data, name, base, modifier, message=None, char:Charac
 
 
 async def embed_trait(ctx, data, name, base, modifier, name2, message=None, char:Character=None):
-    (color, text, ro, success) = check(base, modifier)
+    (color, text, r, ro, success) = check2(base, modifier)
 
     toJson = {}
     toJson['action']='trait'
@@ -398,24 +399,26 @@ async def embed_trait(ctx, data, name, base, modifier, name2, message=None, char
     c['base']=base
     c['modifier']=modifier
     c['text']=text
+    c['r']=r
     c['ro']=ro
     c['success']=successes[success]
 
-    embed = discord.Embed(title=data['name'] + " " + name + " Trait Check", timestamp=datetime.datetime.utcnow(),
+    embed = discord.Embed(title=f"{data['name']} {name} Trait Check", timestamp=datetime.datetime.utcnow(),
                           color=color)
-    add_field(embed, name="Eredmény", value=text + " (" + str(ro) + " vs " + str(base + int(modifier)) + ")",
+    add_field(embed, name="Eredmény", value=f"{text} ({r}  vs {base + int(modifier)})",
               inline=False)
     if success > 2:
-        (color, text, ro, success) = check(20 - base, 0)
+        (color, text, r, ro, success) = check2(20 - base, 0)
         c = {}
         toJson['c2']=c
         c['name']=name2
-        c['base']=base
+        c['base']=20-base
         c['modifier']=modifier
         c['text']=text
+        c['r']=r
         c['ro']=ro
         c['success']=successes[success]
-        add_field(embed, name=name2, value=text + " (" + str(ro) + " vs " + str((20 - base)) + ")",
+        add_field(embed, name=name2, value=f"{text} ({r}  vs {20 -base})",
                   inline=False)
     if (char!=None and message!=None) :
         print(json.dumps(toJson, indent=4, ensure_ascii=False))
