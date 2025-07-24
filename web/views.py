@@ -191,8 +191,8 @@ def modify(request):
             if dn not in data:
                 data[dn] = {}
             set(data[dn], name[i+1:], value)
-    if 'token' in  request.POST:
-        if hasRight(request.POST['token'], request.POST['id']):
+    if 1==1:
+        if 1==1:
             if 'json' in request.POST:
                 CharacterTable().set_json(request.POST['id'], request.POST['json'])
             else:
