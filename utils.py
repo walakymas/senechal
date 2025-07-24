@@ -339,10 +339,6 @@ def check2(base, modifier=0, emoji=True):
     if c > 20:
         r += c - 20
         c = 20
-<<<<<<< HEAD
-=======
-    print(f"c:{c} r:{r}")
->>>>>>> 96cffab6eefd295147226d676373789d3e42ac94
     if r == c or r > 20:
         color = discord.Color.gold()
         success = 2
