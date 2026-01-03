@@ -66,8 +66,8 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
             elif v <= 4:
                 xp += 20 - v
         for n, v in char.data['passions'].items():
-            if v >= 16:
-                xp += v
+            if int(v) >= 16:
+                xp += int(v)
         if xp > 0:
             embed.add_field(name="Extra Glory", value=f"`{xp}`", inline=False)
         if 'npcs' in char.data:
