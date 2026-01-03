@@ -187,6 +187,19 @@ class Database:
                 cur.execute("""ALTER TABLE c2c ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
                 cur.execute("""ALTER TABLE checks ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
                 v = 15                            
+            if v == 15:
+                cur.execute("""CREATE TABLE IF NOT EXISTS feast (
+                        cid bigint PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT  now(), 
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        title varchar,
+                        description text,
+                        data text,
+                        deck text
+                        )
+                        """)
+                cur.execute("""ALTER TABLE feast ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
+                v = 16                            
             cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
             Database.db.commit()
 

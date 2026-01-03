@@ -39,5 +39,5 @@ urlpatterns = [
     path('adminList', views.adminList, name='adminList'),
     path('updatePlayer', views.updatePlayer, name='updatePlayer'),
     path('cleanupTokens', views.cleanupTokens, name='cleanupTokens'),
-    path('checks', views.checks, name='cleanupTokens'),
+    path('checks', views.checks, name='checks'),
 ]
