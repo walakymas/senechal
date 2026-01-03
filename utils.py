@@ -99,17 +99,14 @@ def get_checkable(data, spec):
 def tr(a):
     return str(a) + '/' + str(20 - a)
 
-
 def dice(size):
     return int(overwrite('debugdice', randint(1, size)))
-
 
 def overwrite(cname, orig):
     if cname in Config.config and "---" != Config.config[cname]:
         return Config.config[cname]
     else:
         return orig
-
 
 def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()

@@ -20,6 +20,7 @@ class CharacterTable(BaseTableHandler):
         memberid = None
         role = None
         player = None
+        j['dbid'] = id
         if 'url' in j:
             url = j['url']
         if 'memberId' in j:
@@ -27,7 +28,7 @@ class CharacterTable(BaseTableHandler):
         if 'role' in j:
             role = j['role']
         if 'player' in j:
-            role = j['player']
+            player = j['player']
         BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, memberid=%(memberid)s , role=%(role)s , player=%(player)s  WHERE id=%(id)s",
                                  {'id': id, 'name': j['name'], 'data': data, 'url': url, 'memberid': memberid, 'role': role, 'player': player})
 
@@ -41,8 +42,8 @@ class CharacterTable(BaseTableHandler):
         return BaseTableHandler.execute("SELECT * FROM characters WHERE id = %s", param=[mid], fetch='one')
 
     def get_pcs(self):
-        return BaseTableHandler.execute("SELECT * FROM characters WHERE memberid IS NOT NULL", fetch='all')
+        return BaseTableHandler.execute("SELECT c.* FROM characters c JOIN player p ON p.character = c.id", fetch='all')
 
     def list(self):
-        return BaseTableHandler.execute('SELECT * FROM characters ORDER BY name', fetch='all')
+        return BaseTableHandler.execute('SELECT c.*, p.did as pmid FROM characters c LEFT JOIN player p ON p.character = c.id ORDER BY name', fetch='all')
 

@@ -4,10 +4,11 @@ import re
 import uuid;
 from json import JSONDecodeError
 
-from django.http import HttpResponse, JsonResponse, FileResponse
+from django.http import HttpResponse, JsonResponse, FileResponse, HttpRequest
 from django.views.decorators.cache import never_cache
 
 from character import Character
+from database.c2ctable import C2CTable
 from database.charactertable import CharacterTable
 from database.playertable import PlayerTable
 from database.markstable import MarksTable
@@ -15,6 +16,8 @@ from database.eventstable import EventsTable
 from database.tokenstable import TokenTable
 from database.checktable import CheckTable
 from database.base_table_handler import BaseTableHandler
+from database.feasttable import FeastTable
+from feast import Feast
 from datetime import datetime
 import tempfile
 from config import Config
@@ -25,8 +28,9 @@ def index(request):
 
 
 def base(request):
-
     result = Config.senechal()
+    if Config.authorization:
+        result['loginNeeded'] = 'true';
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def pcresponse(pc):
@@ -111,9 +115,9 @@ def list(request):
     chars = []
     for ch in CharacterTable().list():
         type = 'npc'
-        if ch[3]:
+        if ch[9]:
             type = 'pc'
-        chars.append({'id': ch[0], 'modified': ch[2], 'name': ch[4], 'type': type, 'role': ch[7], 'player': ch[8], 'url': ch[5], 'memberid':str(ch[3])})
+        chars.append({'id': ch[0], 'modified': ch[2], 'name': ch[4], 'type': type, 'role': ch[7], 'player': ch[8], 'url': ch[5], 'memberid':str(ch[9])})
     return JsonResponse(chars, safe=False, json_dumps_params={'ensure_ascii': False})
 
 @never_cache
@@ -191,20 +195,19 @@ def modify(request):
             if dn not in data:
                 data[dn] = {}
             set(data[dn], name[i+1:], value)
-    if 1==1:
-        if 1==1:
-            if 'json' in request.POST:
-                CharacterTable().set_json(request.POST['id'], request.POST['json'])
-            else:
-                j = CharacterTable().get_by_id(request.POST['id'])[6]
-                data = json.loads(j)
-                for name, value in request.POST.items():
-                    if "id" != name and "token" != name:
-                        set(data, name, value)
-                j = json.dumps(data, ensure_ascii=False, indent=2)
-                CharacterTable().set_json(request.POST['id'], j)
+    if not(Config.authorization) or (('token' in  request.POST and hasRight(request.POST['token'], request.POST['id']))):
+        if 'json' in request.POST:
+            CharacterTable().set_json(request.POST['id'], request.POST['json'])
         else:
-            print("modification prohibited")
+            j = CharacterTable().get_by_id(request.POST['id'])[6]
+            data = json.loads(j)
+            for name, value in request.POST.items():
+                if "id" != name and "token" != name:
+                    set(data, name, value)
+            j = json.dumps(data, ensure_ascii=False, indent=2)
+            CharacterTable().set_json(request.POST['id'], j)
+    else:
+        print("modification prohibited")
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
 
 def hasRight(token, cid):
@@ -251,9 +254,10 @@ PLAYER_FIELDS =  [
     ('modified','string'),
     ('playerstate',''),
     ('playerrights','number'),
-    ('did','string'),
     ('name','string'),
-    ('character','number')
+    ('character','string'),
+    ('memberid','number'),
+    ('did','number')
     ]
 TOKEN_FIELDS =  [
     ('id','number'),
@@ -273,6 +277,15 @@ CHECK_FIELDS =  [
     ('result','json'),
     ('name','string')
     ]
+C2C_FIELDS =  [
+    ('id','number'),
+    ('created','string'),
+    ('modified','string'),
+    ('c0','number'),
+    ('c1','number'),
+    ('connection','string'),
+    ('comment','string')
+    ]
 @never_cache
 def adminList(request):
     list =  []
@@ -287,18 +300,20 @@ def adminList(request):
         elif "checks" == request.GET['table']:
             fields = CHECK_FIELDS
             list = CheckTable().list()
+        elif "c2c" == request.GET['table']:
+            fields = C2C_FIELDS
+            list = C2CTable().list()
     return JsonResponse(convert(list, fields), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def convert(list, fields):
+    print(f"Converting list: {list} with fields: {fields}")
     result = []
     for l in list:
         i = 0
         row = {}
         for f in fields:
             if f[1]=='json':
-                print(f"{f} {f[0]} {i} {l}")
                 ll = l[i].replace('\\n','\n')
-                print(f"{ll}")
                 row[f[0]]= json.loads(ll)
             else:
                 row[f[0]]= str(l[i])
@@ -326,7 +341,85 @@ def cleanupTokens(request):
 def checks(request):
     result = []
     res = CheckTable().list()
-    for i in res:
-        print(f"{i}")
-        result.append(convert(i,CHECK_FIELDS)) 
     return JsonResponse(convert(res,CHECK_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
+
+def addC2C(request):
+    print('pre addC2C:'+request.POST['c0']+':'+request.POST['c1']+':'+request.POST['connection']+':'+request.POST['comment']+':')
+    C2CTable().add(request.POST['c0']*1, request.POST['c1']*1, request.POST['connection'], request.POST['comment'])
+    fields = C2C_FIELDS
+    list = C2CTable().list()
+    return JsonResponse(convert(list, fields), safe=False, json_dumps_params={'ensure_ascii': False})
+
+def connections(request):
+    cid = request.GET['cid']
+    list = convert(C2CTable().list(cid), C2C_FIELDS)
+    for c2c in list:
+        print(f'c2c::::: {c2c}')
+        c = c2c['c0'] 
+        if c == cid:
+            c = c2c['c1']
+        pc = Character.get_by_id(c)
+        if pc:
+            c2c['char'] = pc.get_data()
+        else:
+            c2c['char'] = None
+
+    return JsonResponse(list, safe=False, json_dumps_params={'ensure_ascii': False})
+
+def feastConfig(request):
+    result = Config.feast()
+    if Config.authorization:
+        result['loginNeeded'] = 'true';
+    return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False}) 
+ 
+@never_cache
+def feast(request):
+    feast = FeastTable().get()
+    if feast:
+        f = Feast(feast)
+    else:
+        f = Feast(None)
+        feast = FeastTable().get()
+        f = Feast(feast)
+    print(f"Feast request received {hasattr(request, 'POST')}")
+    if( hasattr(request, 'POST') and 'action' in request.POST):
+        print(f"Feast request received with action {request.POST['action']}")
+        action = request.POST['action']
+        if action == 'test':
+            f.data['state'] = 'init'
+            f.set_rounds(4)
+            f.set_courses(['Appetizer', 'Soup','Main Course', 'Dessert'])
+            f.add_participiant(36)
+            f.add_participiant(71)
+            f.add_participiant(37)
+            f.add_participiant(32)
+            f.set_participiant(36, 'near', EventsTable().glory(36))
+            f.set_participiant(37, 'above', EventsTable().glory(37))
+            f.set_participiant(32, 'near', EventsTable().glory(32))
+            f.set_participiant(71, 'below', EventsTable().glory(71))
+            f.data['round'] = 1
+            f.draw_card(36)
+            f.draw_card(71)
+            f.draw_card(37)
+            f.draw_card(32)
+        elif action == 'seat':
+            if 'cid' in request.POST:
+                cid = int(request.POST['cid'])
+                f.add_participiant(cid)
+                f.set_participiant(cid, request.POST['seat'], EventsTable().glory(cid))
+        elif action == 'setrounds':
+            if 'rounds' in request.POST:
+                f.data['rounds'] = int(request.POST['rounds'])
+                FeastTable().updateData(f);
+        elif action == 'setcourses':
+            if 'courses' in request.POST:
+                f.set_courses(request.POST['courses'].split(','))
+        elif action == 'nextState':
+            f.next_state()
+        elif action == 'roundAction':
+            if 'roundAction' in request.POST and 'pid' in request.POST:
+                f.set_round_action(request.POST['roundAction'], int(request.POST['pid']))
+
+
+    data = f.get_data()
+    return JsonResponse(data, safe=False, json_dumps_params={'ensure_ascii': False})

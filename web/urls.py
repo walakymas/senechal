@@ -40,4 +40,9 @@ urlpatterns = [
     path('updatePlayer', views.updatePlayer, name='updatePlayer'),
     path('cleanupTokens', views.cleanupTokens, name='cleanupTokens'),
     path('checks', views.checks, name='checks'),
+    path('feast', views.feast, name='feast'),
+    path('feastConfig', views.feastConfig, name='feastConfig'),
+    path('addC2C', views.addC2C, name='addC2C'),
+    path('connections', views.connections, name='connections'),
+
 ]

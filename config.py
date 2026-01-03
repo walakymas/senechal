@@ -1,13 +1,14 @@
 import yaml
 import os
-
+import json
 
 class Config:
     inited = False
 
-
+    authorization = False
 
     config = {}
+    feastConfig = {}
     senechalConfig = {}
     prefix = "!"
     mainChannelId = 779078275111714917
@@ -16,6 +17,10 @@ class Config:
     def senechal():
         Config.reload()
         return Config.senechalConfig
+
+    def feast():
+        Config.reload()
+        return Config.feastConfig
 
     def armor(spec):
         if spec in Config.senechal()['armors']:
@@ -62,6 +67,8 @@ class Config:
 
             with open(r'senechal.yml') as file:
                 Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
+            with open(r'feast.json') as file:
+                Config.feastConfig = json.load(file)
             Config.inited = True
 
     @staticmethod

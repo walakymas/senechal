@@ -110,3 +110,7 @@ venv.bak/
 /*_tmp.pdf
 /run.sh
 *~
+Dockerfile.senechal
+docker-compose.yml
+.idea
+.git_

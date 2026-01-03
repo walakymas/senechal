@@ -12,6 +12,9 @@ class Set(BaseCommand):
 **debugme:** fix user id, az üzenet küldőjétől függetlenül. így megnézhetem másnak mi jelenne meg.''')
 
     async def handle(self, params, message, client):
-        Config.config[params[0]] = params[1]
-        print(f"{Config.config}")
-        await message.author.send(f"Set '{params[0]}' to '{params[1]}'")
+        if params[1] == '---':
+            Config.config.pop(params[0], None)  # Remove the entry if value is '---'
+            await message.author.send(f"Unset '{params[0]}'")
+        else:
+            Config.config[params[0]] = params[1]
+            await message.author.send(f"Set '{params[0]}' to '{params[1]}'")
