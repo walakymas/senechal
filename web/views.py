@@ -344,17 +344,23 @@ def checks(request):
     return JsonResponse(convert(res,CHECK_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def addC2C(request):
-    print('pre addC2C:'+request.POST['c0']+':'+request.POST['c1']+':'+request.POST['connection']+':'+request.POST['comment']+':')
     C2CTable().add(request.POST['c0']*1, request.POST['c1']*1, request.POST['connection'], request.POST['comment'])
     fields = C2C_FIELDS
     list = C2CTable().list()
-    return JsonResponse(convert(list, fields), safe=False, json_dumps_params={'ensure_ascii': False})
+    if request.POST['withchars'] == 'true':
+        return connectionsByCid(request.POST['c0']*1)
+    else:
+        return JsonResponse(convert(list, fields), safe=False, json_dumps_params={'ensure_ascii': False})
+
 
 def connections(request):
+    
     cid = request.GET['cid']
+    return connectionsByCid(cid)
+
+def connectionsByCid(cid):
     list = convert(C2CTable().list(cid), C2C_FIELDS)
     for c2c in list:
-        print(f'c2c::::: {c2c}')
         c = c2c['c0'] 
         if c == cid:
             c = c2c['c1']

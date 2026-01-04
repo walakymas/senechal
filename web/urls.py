@@ -45,4 +45,6 @@ urlpatterns = [
     path('addC2C', views.addC2C, name='addC2C'),
     path('connections', views.connections, name='connections'),
 
+
+
 ]
