@@ -1,6 +1,5 @@
 import datetime
 import sqlite3
-from config import Config
 from urllib.parse import urlparse
 import psycopg2
 import os
@@ -93,17 +92,6 @@ class Database:
             if v == 7:
                 cur.execute("TRUNCATE characters")
                 import json
-                for name, ch in Config.charactersOrig.items():
-                    mid = None
-                    if "memberId" in ch:
-                        mid = ch['memberId']
-                    url = None
-                    if "url" in ch:
-                        url = ch['url']
-
-                    insert = cur.execute("""INSERT INTO characters (created, modified, memberid, name, url, data) 
-                        VALUES(now(), now(), %s, %s, %s, %s)""",
-                                         [mid, ch['name'], url, json.dumps(ch, ensure_ascii=False)])
                 v = 8
             if v == 8:
                 cur.execute("ALTER TABLE characters ADD role varchar")

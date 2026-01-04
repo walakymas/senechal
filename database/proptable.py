@@ -14,7 +14,12 @@ class PropertiesTable(BaseTableHandler):
         BaseTableHandler.execute("DELETE FROM properties WHERE key=%s", param=[key], commit=True)
 
     def get(self, key):
-        return BaseTableHandler.execute("SELECT * FROM properties WHERE key=%s", param=[key])
+        row =  BaseTableHandler.execute("SELECT * FROM properties WHERE key=%s", param=[key], fetch='one')
+        return row 
+ 
+    def getValue(self, key):
+        value =  BaseTableHandler.execute("SELECT value FROM properties WHERE key=%s", param=[key], fetch='one')
+        return value[0]
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM properties ORDER BY key', fetch='all')

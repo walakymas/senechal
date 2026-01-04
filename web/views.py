@@ -17,6 +17,7 @@ from database.tokenstable import TokenTable
 from database.checktable import CheckTable
 from database.base_table_handler import BaseTableHandler
 from database.feasttable import FeastTable
+from database.proptable import PropertiesTable
 from feast import Feast
 from datetime import datetime
 import tempfile
@@ -30,7 +31,8 @@ def index(request):
 def base(request):
     result = Config.senechal()
     if Config.authorization:
-        result['loginNeeded'] = 'true';
+        result['loginNeeded'] = 'true'
+    result['hook'] = Config.hook
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def pcresponse(pc):
@@ -306,7 +308,6 @@ def adminList(request):
     return JsonResponse(convert(list, fields), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def convert(list, fields):
-    print(f"Converting list: {list} with fields: {fields}")
     result = []
     for l in list:
         i = 0
@@ -354,7 +355,6 @@ def addC2C(request):
 
 
 def connections(request):
-    
     cid = request.GET['cid']
     return connectionsByCid(cid)
 

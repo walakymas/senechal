@@ -1,7 +1,7 @@
 import yaml
 import os
 import json
-
+from database.proptable import PropertiesTable
 class Config:
     inited = False
 
@@ -13,6 +13,7 @@ class Config:
     prefix = "!"
     mainChannelId = 779078275111714917
     mainChannel = None
+    hook = None
 
     def senechal():
         Config.reload()
@@ -52,7 +53,7 @@ class Config:
                     Config.config.update(yaml.load(file, Loader=yaml.FullLoader))
                     if ('prefix' in Config.config):
                         Config.prefix = Config.config['prefix']
-                    if ('mainChannel' in Config.config):
+                    if ('mainChannel' in Config.config): 
                         Config.mainChannelId = Config.config['mainChannel']
             except IOError:
                 Config.config = {'token': None}
@@ -69,6 +70,9 @@ class Config:
                 Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
             with open(r'feast.json') as file:
                 Config.feastConfig = json.load(file)
+
+            Config.hook = PropertiesTable().getValue('hook')
+            
             Config.inited = True
 
     @staticmethod
