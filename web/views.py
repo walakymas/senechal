@@ -360,6 +360,7 @@ def connections(request):
 
 def connectionsByCid(cid):
     list = convert(C2CTable().list(cid), C2C_FIELDS)
+    year = MarksTable().year()
     for c2c in list:
         c = c2c['c0'] 
         if c == cid:
@@ -367,6 +368,10 @@ def connectionsByCid(cid):
         pc = Character.get_by_id(c)
         if pc:
             c2c['char'] = pc.get_data()
+            c2c['marks'] = []
+            for r in MarksTable().list(c, year):
+                c2c['marks'].append(r[5])
+
         else:
             c2c['char'] = None
 
