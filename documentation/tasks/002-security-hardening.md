@@ -1,9 +1,9 @@
 # Task 002: Security hardening (web app)
 
-> **Status `in-progress`.** The safe, non-breaking items are implemented on
-> `collab/security-hardening` in three scoped commits. **CSRF is deliberately not
-> changed yet** — it can break the external front-end and needs the owner's input
-> (see *Outcome → CSRF*). This is behaviour-changing; it will be reviewed via the PR.
+> **Status `in-progress` — implementation complete, ready for PR.** The safe,
+> non-breaking items are implemented on `collab/security-hardening` in three scoped
+> commits. **CSRF: decided to leave off** (proportionate; token auth is the protection —
+> see D07 and *Outcome → CSRF*). Behaviour-changing; reviewed via the PR.
 
 ---
 
@@ -45,8 +45,7 @@
 - [x] Introduce env-based `SECRET_KEY` and `DEBUG` (with a non-breaking fallback).
 - [x] Strip secret-leaking prints (token, DB URL).
 - [x] Implement `hasRight()` against `TokenTable` (exists + active + not expired).
-- [ ] **CSRF — decision pending** (see *Outcome → CSRF*). Needs to know which endpoints
-      the external front-end calls and whether it can send CSRF tokens.
+- [x] **CSRF — decided: leave off** (proportionate; token auth + CORS are the protection). See D07.
 - [ ] Owner sets the new env vars in deploy and verifies the app boots with `DEBUG=False`.
 
 ## Respect-the-owner checklist
@@ -99,12 +98,11 @@
 ## Outcome
 - **Result:** Secrets removed from logs; `SECRET_KEY`/`DEBUG` env-driven; `hasRight()`
   validates tokens. Implemented in three scoped commits.
-- **CSRF (deferred — needs a decision):** Re-enabling `CsrfViewMiddleware` would block
-  the external front-end's cross-origin POSTs unless that front-end sends CSRF tokens.
-  For a token-authenticated API consumed by a separate SPA, the more natural protection
-  is the token check (above) rather than cookie-based CSRF. Options to choose from:
-  (a) enable CSRF globally + have the front-end send tokens; (b) enable CSRF but exempt
-  the JSON API endpoints and rely on token auth; (c) leave CSRF off and rely on token
-  auth + CORS. Pending owner/collaborator input.
+- **CSRF (decided — leave off, D07):** The web API is a cross-origin, token-authenticated
+  JSON API consumed by a separate SPA; Django's cookie-based CSRF doesn't fit it and
+  would mainly risk breaking the front-end. For a small hobby app the proportionate
+  protection is the token check (improved above) plus the CORS allowlist, so
+  `CsrfViewMiddleware` stays disabled. Revisit only if the app adopts Django
+  session/cookie login.
 - **CHANGELOG entry:** 2026-05-25 — "Security hardening: env secrets, no secret logging,
   real hasRight()".

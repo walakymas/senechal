@@ -9,6 +9,19 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Task 002 CSRF decision: keep it off (D07)
+
+- **Branch:** `collab/security-hardening`
+- **Type:** decision (no code change)
+- **Approved by:** collaborator
+- **Summary:** Decided to leave CSRF disabled. For a small, token-authenticated,
+  cross-origin hobby API, cookie-based CSRF doesn't fit and enabling it would mainly risk
+  breaking the external SPA. Token auth + CORS are the proportionate protection. This
+  completes the Task 002 implementation (remaining work is owner-side deploy env vars).
+- **See:** `pm/DECISIONS.md` D07; `documentation/tasks/002-security-hardening.md`.
+
+---
+
 ## 2026-05-25 — Security hardening: env secrets, no secret logging, real hasRight() (Task 002, in progress)
 
 - **Branch:** `collab/security-hardening` (stacked on `collab/code-review-and-docs`)

@@ -10,9 +10,10 @@
 
 ## In one line
 
-The safe part of the security task is implemented (env secrets, no secret logging, real
-`hasRight()`); the **CSRF approach is a pending decision**. Workflow docs and the new
-README are ready on their own branches.
+The security task is implemented (env secrets, no secret logging, real `hasRight()`) and
+**CSRF is decided: left off** (proportionate — D07). Task 002 is ready for a PR; only
+owner-side deploy env vars remain. Workflow docs and the new README are ready on their
+own branches.
 
 ## Tasks
 
@@ -24,13 +25,11 @@ README are ready on their own branches.
 
 ## In progress
 
-- Task 002: safe items done in 3 commits (`8961e25`, `a611e8a`, `dd0b011`). Remaining:
-  the CSRF decision and owner-side env-var setup on deploy.
+- Task 002: implementation complete (4 commits). CSRF decided (off, D07). Ready for PR;
+  only owner-side deploy env-vars remain.
 
 ## Next up
 
-- **Decide the CSRF approach** for Task 002 (see `tasks/002-security-hardening.md` →
-  Outcome → CSRF).
 - Decide whether to push the branches / open PRs (PR1 docs → main; PR2 readme and
   PR3 security, both based on the docs branch).
 - A future bug-fix task will touch `web/views.py` and `utils.py` — overlaps this branch,
@@ -38,9 +37,8 @@ README are ready on their own branches.
 
 ## Blockers / waiting on
 
-- **CSRF decision** before Task 002 can be called done.
-- On merge/deploy the owner must set `DJANGO_SECRET_KEY` and `DJANGO_DEBUG`, and confirm
-  `ALLOWED_HOSTS` with `DEBUG=False`.
+- None blocking. On merge/deploy the owner must set `DJANGO_SECRET_KEY` and
+  `DJANGO_DEBUG`, and confirm `ALLOWED_HOSTS` with `DEBUG=False`.
 
 ## Health notes (from `documentation/01-code-review.md`)
 
