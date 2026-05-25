@@ -44,3 +44,12 @@ Format: `D<NN> — date — decision — why — status`.
   file and PR description. **Supersedes** the earlier "behaviour-changing requires owner
   approval before implementing" rule (D02-era wording).
 - **Status:** active.
+
+### D07 — 2026-05-25 — Keep CSRF disabled; rely on token auth (proportionate security)
+- **Why:** senechal is a small hobby app for a gaming group, with an intentionally light
+  security model. The web API is a cross-origin, token-authenticated JSON API consumed
+  by a separate SPA — Django's cookie-based CSRF doesn't fit it and would mainly risk
+  breaking the front-end. The token check (improved in Task 002) plus the CORS allowlist
+  are the appropriate protection at this scale; over-hardening isn't warranted.
+- **Decision:** leave `CsrfViewMiddleware` off.
+- **Status:** active. Revisit only if the app ever adopts Django session/cookie login.

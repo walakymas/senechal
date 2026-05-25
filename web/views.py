@@ -213,8 +213,19 @@ def modify(request):
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
 
 def hasRight(token, cid):
-    print(f"to: {token}")
-    return token != 'null'
+    # Authenticate the token: it must exist, be active (tokenstate == 1), and not be
+    # expired. This replaces the previous `token != 'null'` placeholder.
+    # NOTE: this is authentication only. Per-character authorization (does this player
+    # control character `cid`?) is a follow-up — see
+    # documentation/tasks/002-security-hardening.md.
+    if not token or token in ('null', 'undefined', 'None'):
+        return False
+    record = TokenTable().get_info_by_token(token)
+    if not record:
+        return False
+    tokenstate = record[3]
+    not_expired = record[5]
+    return tokenstate == 1 and not_expired == 1
 
 def pdfs(request):
     fz = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")

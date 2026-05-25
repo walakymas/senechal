@@ -4,43 +4,44 @@
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
 **Last updated:** 2026-05-25
-**Active branch:** `collab/code-review-and-docs`
-**Committed?** Yes — workflow scaffolding (`CLAUDE.md`, `documentation/`, `pm/`)
-committed to the branch. Not pushed; no PR opened yet.
+**Active branch:** `collab/security-hardening` (stacked on `collab/code-review-and-docs`)
+**Committed?** Yes — security work in 3 commits here; workflow docs on
+`collab/code-review-and-docs`; README on `collab/readme`. Nothing pushed; no PRs yet.
 
 ## In one line
 
-Collaborator workflow and documentation scaffolding are in place; the first real code
-task (security hardening) is written up and **awaiting owner approval** before any code
-is touched.
+The security task is implemented (env secrets, no secret logging, real `hasRight()`) and
+**CSRF is decided: left off** (proportionate — D07). Task 002 is ready for a PR; only
+owner-side deploy env vars remain. Workflow docs and the new README are ready on their
+own branches.
 
 ## Tasks
 
-| ID | Title | Status | Type |
-|----|-------|--------|------|
-| 001 | Set up collaborator workflow (branch + docs) | done | behaviour-preserving |
-| 002 | Security hardening (web app) | proposed | behaviour-changing |
+| ID | Title | Status | Type | Branch |
+|----|-------|--------|------|--------|
+| 001 | Set up collaborator workflow (branch + docs) | done | behaviour-preserving | code-review-and-docs |
+| 002 | Security hardening (web app) | in-progress | behaviour-changing | security-hardening |
+| 003 | Project-specific README (preserve original) | in-progress | behaviour-preserving | readme |
 
 ## In progress
 
-- Reviewing/refining the workflow docs before pushing: respectful rewrite of the code
-  review, `CLAUDE.md` fixes, and a new lite task template.
+- Task 002: implementation complete (4 commits). CSRF decided (off, D07). Ready for PR;
+  only owner-side deploy env-vars remain.
 
 ## Next up
 
-- Implement Task 002 (security hardening) on `collab/security-hardening`; the owner
-  reviews via the PR (no pre-approval needed — see DECISIONS D06).
-- Decide whether to add **Task 003**: replace the stale upstream README with a
-  project-specific one.
-- Decide whether to push the branch / open a PR for review.
+- Decide whether to push the branches / open PRs (PR1 docs → main; PR2 readme and
+  PR3 security, both based on the docs branch).
+- A future bug-fix task will touch `web/views.py` and `utils.py` — overlaps this branch,
+  so order/stack it after security to avoid conflicts.
 
 ## Blockers / waiting on
 
-- None right now — behaviour-changing work is reviewed via PR, not pre-approval. The
-  owner will need to set new env vars (`SECRET_KEY`, `DJANGO_DEBUG`) when Task 002 merges.
+- None blocking. On merge/deploy the owner must set `DJANGO_SECRET_KEY` and
+  `DJANGO_DEBUG`, and confirm `ALLOWED_HOSTS` with `DEBUG=False`.
 
 ## Health notes (from `documentation/01-code-review.md`)
 
 - No automated tests, no CI, unpinned deps, EOL Django 3.1 / Python 3.9.5.
-- Several high-severity web security gaps (see Task 002).
-- None of these are addressed yet — documentation/process only so far.
+- Web security: the log leaks, `SECRET_KEY`/`DEBUG`, and the `hasRight()` placeholder are
+  addressed in Task 002; CSRF and per-character authorization remain open.

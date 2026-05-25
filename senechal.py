@@ -14,7 +14,7 @@ this = sys.modules[__name__]
 this.running = False
 
 def main():
-    print("Starting up bot..."+os.environ['token'])
+    print("Starting up bot...")
     intents = discord.Intents.default()
     intents.guilds = True
     intents.members = True

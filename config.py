@@ -57,9 +57,7 @@ class Config:
                         Config.mainChannelId = Config.config['mainChannel']
             except IOError:
                 Config.config = {'token': None}
-                print("pre token"+os.environ['token'])
                 if 'token' in os.environ:
-                    print("exist")
                     Config.config['token'] = os.environ['token']
                 if 'prefix' in os.environ:
                     Config.prefix = os.environ['prefix']
