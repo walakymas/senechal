@@ -22,10 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@9b(x7vf$=2!5h=3$n0jimllr*wmhc)hakobzsst8g%tl^=iaf'
+# Read from the environment. The literal fallback is the previously-committed key,
+# which is now public (it lives in git history) — set DJANGO_SECRET_KEY in the deploy
+# environment to rotate it to a fresh secret.
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '@9b(x7vf$=2!5h=3$n0jimllr*wmhc)hakobzsst8g%tl^=iaf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Off by default; set DJANGO_DEBUG=true (or 1/yes/on) in a development environment.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').strip().lower() in ('1', 'true', 'yes', 'on')
 
 ALLOWED_HOSTS = ['senechalweb.herokuapp.com','senechal.herokuapp.com','localhost','127.0.0.1','192.168.0.95'
                  , 'senechalweb.duckdns.org'
@@ -133,8 +137,6 @@ DATABASES = {
 
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
-print(DATABASES['default'])
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
