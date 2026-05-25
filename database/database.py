@@ -7,9 +7,6 @@ import os
 class Database:
     conn = sqlite3.connect('senechal.db')
     pq = os.getenv('DATABASE_URL')
-    print( os.getenv('DATABASE_URL'))
-    pq = os.getenv('DATABASE_URL')
-    print( os.getenv('DATABASE_URL'))
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],

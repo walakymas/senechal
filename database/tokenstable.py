@@ -7,7 +7,6 @@ class TokenTable(BaseTableHandler):
         super().__init__('tokens')
 
     def set(self, token, cid, expires, tokenstate):
-        print(f"{token} {cid} {expires} {tokenstate}")
         BaseTableHandler.execute('INSERT INTO tokens (modified, token, cid, expires) VALUES(now(),%(token)s,%(cid)s, now())'
                                  ' ON CONFLICT (token) DO UPDATE SET modified=now(), tokenstate=%(tokenstate)s', 
                                  {'token': token, 'cid': cid, 'tokenstate':tokenstate, 'expires':expires})
