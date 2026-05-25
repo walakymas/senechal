@@ -10,12 +10,12 @@
 
 ## Metadata
 - **ID:** <NNN>
-- **Status:** `proposed`  <!-- proposed | approved | in-progress | blocked | done | abandoned -->
+- **Status:** `proposed`  <!-- proposed | in-progress | in-review | blocked | done | abandoned -->
 - **Type:** `behaviour-preserving`  <!-- behaviour-preserving | behaviour-changing -->
 - **Branch:** `collab/<slug>`
 - **Created:** YYYY-MM-DD
-- **Owner approval required?:** <!-- yes for any behaviour-changing edit; no for docs/internal -->
-- **Approved by / date:** <!-- fill once approved -->
+- **Reviewed via PR:** <!-- link once opened — the PR is the review/approval gate -->
+- **Operational impact:** <!-- env vars to set, client-breakage risk, migrations — or "none" -->
 
 ## Context
 - **Problem / motivation:** <why this task exists>
@@ -35,7 +35,7 @@
 - [ ] Working on a dedicated branch, not `main`.
 - [ ] No unrelated reformatting, renaming, or import re-ordering.
 - [ ] No deletion of working code without flagging it in *Before / after* below.
-- [ ] Any behaviour-changing edit was approved (see Metadata) before implementing.
+- [ ] Behaviour-changing edits are flagged in *Before / after* and *Operational impact*; the PR is the review gate.
 
 ## DOCUMENTATION — required (do not set Status to `done` until all checked)
 > Every task must produce documentation, not just code. This is the core rule of the

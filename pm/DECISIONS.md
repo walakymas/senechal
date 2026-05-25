@@ -34,3 +34,13 @@ Format: `D<NN> — date — decision — why — status`.
   chronological CHANGELOG doesn't provide; DECISIONS captures rationale.
 - **Status:** active. (Alternative considered: nest under `documentation/pm/` — chose
   root for visibility; can be moved if the owner prefers fewer top-level folders.)
+
+### D06 — 2026-05-25 — The PR is the approval gate; no pre-implementation approval for `collab/*` work
+- **Why:** Work on a `collab/*` branch never reaches `main` without the owner reviewing
+  and merging the PR, so gating implementation on prior approval was redundant overhead.
+  Implement on a branch and let the PR carry the change and its review.
+- **Implication:** Behaviour-changing tasks must loudly flag the runtime change and any
+  **operational impact** (new env vars, possible client breakage, migrations) in the task
+  file and PR description. **Supersedes** the earlier "behaviour-changing requires owner
+  approval before implementing" rule (D02-era wording).
+- **Status:** active.

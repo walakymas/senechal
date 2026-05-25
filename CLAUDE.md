@@ -23,9 +23,14 @@ Work here is done by **collaborators**, not the owner. Therefore:
 - **Respect the owner's code.** No wholesale reformatting, no mass renames, no
   re-ordering imports, no deleting working code without flagging it first.
 - **Never commit directly to `main`.** All work happens on `collab/*` branches.
-- **Behaviour-changing edits require owner approval** before implementation. A
-  behaviour-changing edit is anything observable at runtime (bot/web responses,
-  stored data, config semantics). Documentation and comments are not behaviour.
+- **The PR is the review/approval gate.** Implement freely on a `collab/*` branch —
+  nothing reaches `main` without the owner reviewing and merging the PR, so no
+  pre-approval is needed to write code on a branch.
+- **Flag behaviour-changing work loudly.** A behaviour-changing edit (anything
+  observable at runtime: bot/web responses, stored data, config semantics) must be
+  called out in the task file and the PR description, including any **operational
+  impact** the owner must act on (new env vars, changes that could break existing
+  clients). Documentation and comments are not behaviour.
 - **Keep `.claude/` out of commits** (local tooling).
 
 ## The task system — how all work is organised

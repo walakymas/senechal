@@ -9,6 +9,32 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Workflow change: the PR is the approval gate (no pre-implementation approval)
+
+- **Branch:** `collab/code-review-and-docs`
+- **Type:** behaviour-preserving (process/docs only)
+- **Approved by:** collaborator
+- **Summary:** Replaced the "behaviour-changing edits require owner approval before
+  implementing" rule with "implement on a `collab/*` branch; the PR is the review and
+  approval gate." Behaviour-changing tasks must instead flag runtime + operational impact.
+- **Motivation:** Nothing reaches `main` without the owner merging the PR, so
+  pre-approval was redundant. See `pm/DECISIONS.md` D06.
+- **Files changed:**
+  - `CLAUDE.md` — ownership rules updated (PR-as-gate; flag behaviour-changing work).
+  - `documentation/tasks/README.md` — lifecycle now
+    `proposed → in-progress → in-review → done`; conventions/steps updated.
+  - `documentation/tasks/TASK_TEMPLATE.md` — replaced approval metadata with
+    *Reviewed via PR* + *Operational impact*; updated status vocabulary and checklist.
+  - `documentation/tasks/002-security-hardening.md` — no longer "awaiting approval";
+    operational impact recorded; ready to implement.
+  - `pm/DECISIONS.md` — added D06.
+  - `pm/STATUS.md` — removed the approval blocker; updated next steps.
+- **Source code touched:** none.
+- **Risk & rollback:** none to application behaviour. Revert this commit to restore the
+  prior approval rule.
+
+---
+
 ## 2026-05-25 — Add pm/ folder (status, roadmap, decisions) + template STATUS step
 
 - **Branch:** `collab/code-review-and-docs`

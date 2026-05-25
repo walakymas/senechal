@@ -13,32 +13,35 @@ to write documentation, so no change can be marked complete without it.
 1. Pick the next free number (`NNN`), e.g. `002`.
 2. Copy `TASK_TEMPLATE.md` to `documentation/tasks/<NNN>-<kebab-slug>.md`.
 3. Fill in *Context*, *Scope*, and *Plan*; set Status to `proposed`.
-4. If the task is **behaviour-changing**, get owner approval before implementing and
-   record it in *Metadata*.
+4. If the task is **behaviour-changing**, make sure the task file (and later the PR)
+   clearly flag the runtime change and any **operational impact** — new env vars,
+   possible client breakage, migrations. No pre-implementation approval is required.
 5. Create the branch named in *Metadata* and do the work.
-6. Complete the *Documentation* checklist (CHANGELOG entry, Outcome, files table).
-7. Set Status to `done`.
+6. Complete the *Documentation* checklist (CHANGELOG entry, STATUS refresh, Outcome, files table).
+7. Open a PR (Status `in-review`); the owner approves by merging (Status `done`).
 
 ## Task lifecycle (Status field)
 
 ```
-proposed ──approved──▶ approved ──start──▶ in-progress ──finish──▶ done
-   │                                            │
-   └──────────────── abandoned ◀────────────────┴──▶ blocked
+proposed ──start──▶ in-progress ──open PR──▶ in-review ──merge──▶ done
+   │                     │
+   └──── abandoned ◀─────┴──▶ blocked
 ```
 
-- `proposed` — written up, not yet agreed.
-- `approved` — agreed to proceed (required before starting behaviour-changing work).
+- `proposed` — written up, not started.
 - `in-progress` — branch created, work underway.
+- `in-review` — PR opened; the owner reviews here. **This is the approval gate** — the
+  owner approves by merging. No pre-implementation approval is required.
 - `blocked` — waiting on something (note what, in the task file).
-- `done` — merged or ready for review, documentation complete.
+- `done` — merged, documentation complete.
 - `abandoned` — decided against; keep the file for the record, note why.
 
 ## Conventions
 
 - **One task = one branch = one focused change.** Don't bundle unrelated edits.
 - **Numbering** is sequential and never reused. Abandoned tasks keep their number.
-- **Behaviour-changing** tasks (anything observable at runtime) require approval.
+- **Behaviour-changing** tasks (anything observable at runtime) must be flagged in the
+  task file and PR; the owner approves them by reviewing/merging the PR (no pre-approval).
 - Every task ends with a `CHANGELOG.md` entry; the task file holds the detail, the
   changelog holds the chronological summary.
 

@@ -27,13 +27,14 @@ is touched.
 
 ## Next up
 
-- Get owner approval (or feedback) on Task 002 before implementing anything.
+- Implement Task 002 (security hardening) on `collab/security-hardening`; the owner
+  reviews via the PR (no pre-approval needed — see DECISIONS D06).
 - Decide whether to push the branch / open a PR for review.
 
 ## Blockers / waiting on
 
-- **Owner approval** required for Task 002 (behaviour-changing).
-- Confirmation from collaborator on when to commit.
+- None right now — behaviour-changing work is reviewed via PR, not pre-approval. The
+  owner will need to set new env vars (`SECRET_KEY`, `DJANGO_DEBUG`) when Task 002 merges.
 
 ## Health notes (from `documentation/01-code-review.md`)
 

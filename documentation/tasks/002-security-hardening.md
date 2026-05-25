@@ -1,8 +1,9 @@
 # Task 002: Security hardening (web app)
 
-> **Status is `proposed`. This is behaviour-changing and NOT yet approved or
-> implemented.** No source code has been touched for this task. It documents the
-> intended work so the owner can approve (and adjust) before anything changes.
+> **Status `proposed` — not yet implemented.** This is behaviour-changing. Per the
+> workflow, no pre-approval is needed: it will be built on a `collab/*` branch and
+> reviewed by the owner via the PR. The PR description must surface the *Operational
+> impact* below. No source code has been touched yet.
 
 ---
 
@@ -10,10 +11,12 @@
 - **ID:** 002
 - **Status:** `proposed`
 - **Type:** `behaviour-changing`
-- **Branch:** `collab/security-hardening` *(to be created on approval)*
+- **Branch:** `collab/security-hardening` *(to be created when work starts)*
 - **Created:** 2026-05-25
-- **Owner approval required?:** **yes** — required before implementing.
-- **Approved by / date:** <pending owner approval>
+- **Reviewed via PR:** <link once opened — the PR is the review/approval gate>
+- **Operational impact:** owner must set env vars (`SECRET_KEY`, `DJANGO_DEBUG`) or the
+  app won't boot with the new config; re-enabling CSRF may require the external
+  front-end to send CSRF tokens.
 
 ## Context
 - **Problem / motivation:** The Django web app is internet-facing and has several
@@ -59,10 +62,11 @@
 - [ ] Working on a dedicated branch (`collab/security-hardening`), not `main`.
 - [ ] No unrelated reformatting / renames.
 - [ ] No deletion of working code without flagging it here.
-- [ ] **Behaviour-changing — explicit owner approval obtained before implementing.**
+- [ ] **Behaviour-changing — runtime change + operational impact flagged in this file and the PR.**
 
 ## DOCUMENTATION — required (complete before marking `done`)
 - [ ] `documentation/CHANGELOG.md` entry added.
+- [ ] `pm/STATUS.md` refreshed to the new current state.
 - [ ] *Outcome* section below filled.
 - [ ] *Files touched* table filled with `path:line` + rationale.
 - [ ] Note any new env vars the owner must set in their deploy (e.g. `SECRET_KEY`,
