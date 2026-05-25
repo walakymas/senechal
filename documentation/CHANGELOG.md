@@ -9,6 +9,32 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Security hardening: env secrets, no secret logging, real hasRight() (Task 002, in progress)
+
+- **Branch:** `collab/security-hardening` (stacked on `collab/code-review-and-docs`)
+- **Type:** **behaviour-changing** (see operational impact)
+- **Approved by:** collaborator (reviewed by owner via the upcoming PR)
+- **Summary:** Implemented the safe, non-breaking part of the security task in three
+  scoped commits. CSRF is intentionally left for a decision (see task 002).
+- **Commits:**
+  - `8961e25` — `SECRET_KEY`/`DEBUG` from env (settings.py); removed a DB-config print.
+  - `a611e8a` — removed secret-leaking prints (bot token, DB URL, token) and fixed a
+    latent `KeyError` in config.py.
+  - `dd0b011` — real token validation in `hasRight()` (views.py).
+- **Files touched:** `web/settings.py`, `senechal.py`, `config.py`,
+  `database/database.py`, `database/tokenstable.py`, `web/views.py`.
+- **Before / after:** secrets no longer printed to logs; `SECRET_KEY`/`DEBUG` come from
+  the environment (`DEBUG` defaults to off); `hasRight()` checks a real, active,
+  unexpired token instead of `token != 'null'`.
+- **Operational impact (owner must act):** set `DJANGO_SECRET_KEY` (rotate the now-public
+  key) and `DJANGO_DEBUG` in the deploy environment; with `DEBUG=False`, confirm
+  `ALLOWED_HOSTS` covers the live host. The `hasRight()` change is inert until
+  `Config.authorization` is enabled.
+- **Still open:** CSRF decision (task 002); per-character authorization (follow-up).
+- **Risk & rollback:** `git revert 8961e25 a611e8a dd0b011`.
+
+---
+
 ## 2026-05-25 — Review & refine the workflow docs (respectful review, CLAUDE.md fixes, task-lite)
 
 - **Branch:** `collab/code-review-and-docs`
