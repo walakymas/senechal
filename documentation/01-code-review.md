@@ -4,9 +4,13 @@
 **Reviewer:** collaborator (read-only analysis; no code was modified)
 **Branch:** `collab/code-review-and-docs`
 
-This document is analysis only. It records the state of the codebase as found, so
-that any later changes can be justified against concrete findings. File references
-use `path:line`.
+**About this review.** This is a constructive review meant to help, not to criticise.
+senechal is a real, working tool that its owner has built and kept running for a live
+gaming group — that is genuinely impressive, and the design gets a lot right (see
+*Strengths* first). The notes below are framed as **opportunities**, prioritised, each
+with an exact `path:line` so they are easy to act on. They describe the code as found
+at this date so that later changes can be justified against concrete observations —
+they are not a judgement of the author.
 
 ---
 
@@ -28,7 +32,7 @@ Heroku (`Procfile` defines a `worker` and a `web` process).
 
 ---
 
-## 2. Structure
+## 2. Structure & strengths
 
 ```
 senechal.py            worker entrypoint (bot)
@@ -43,72 +47,88 @@ pdf/        sheet.py (FPDF2 sheet generator)
 tests/      deck_test.py    pdf/test_sheet.py
 ```
 
-**Strongest part — the command plugin system.** Command classes subclass
-`BaseCommand`, and `message_handler.py:18` auto-registers every subclass plus its
-aliases. Adding a feature is a matter of dropping one file into `commands/`.
+What stands out positively:
 
-**Data layer.** A thin handler-per-table pattern over `psycopg2`. Notably it **uses
-parameterized queries** (e.g. `database/markstable.py:10`), so the SQL layer itself
-is injection-safe.
+- **The command plugin system is genuinely nice.** Command classes subclass
+  `BaseCommand`, and `message_handler.py:18` auto-registers every subclass plus its
+  aliases. Adding a feature is a matter of dropping one file into `commands/` — clean
+  and easy to extend.
+- **The data layer uses parameterized queries** (e.g. `database/markstable.py:10`), so
+  the SQL layer is well-protected against injection. That is a good habit already in
+  place.
+- **Clear separation** between bot, web, data layer, and domain model. `character.py`
+  in particular is a coherent, well-organised module.
+- **Real, broad functionality** — character sheets, trait/skill/passion checks, marks,
+  glory/events, feasts, PDF export, and a web companion — all working in production.
 
 ---
 
-## 3. Code-quality findings
+## 3. Opportunities: code quality
 
-### 3.1 Duplicated lines (merge / find-replace artifacts) — some are real bugs
-- `utils.py:451-452`, `utils.py:455-456`, `utils.py:464-465` — the same embed field
-  is added twice, so it renders doubled.
-- `utils.py:444-445` — `dice(6)` is rolled twice and the first result discarded.
+These are mostly small, localised items — the kind that accumulate in any actively
+developed project. Several are quick wins.
+
+### 3.1 Duplicated lines (likely copy/paste or merge duplications)
+- `utils.py:451-452`, `utils.py:455-456`, `utils.py:464-465` — an embed field is added
+  twice, so it renders doubled.
+- `utils.py:444-445` — `dice(6)` is rolled twice and the first result is discarded.
 - Harmless echoes: `utils.py:298-299`, `utils.py:304-305`,
   `database/database.py:11-12`, `database/database.py:73-74`.
 
-### 3.2 Dead / broken code
-- `config.py:81` — `Config.characters` is never defined, so `pcs`/`npcs` raise
+### 3.2 Small bugs and unreachable code
+- `config.py:81` — `Config.characters` is never defined, so `pcs`/`npcs` would raise
   `AttributeError` if called.
 - `commands/base_command.py:32` — typo `message.channelsend` (should be
-  `message.channel.send`); the fallback help path would crash.
-- `web/views.py:339` — `cleanupTokens` SQL is broken: missing `WHERE`, and `INTERVALL`
-  is misspelled. The endpoint always errors.
+  `message.channel.send`); the fallback help path would raise an error.
+- `web/views.py:339` — the `cleanupTokens` SQL has a typo (`INTERVALL`) and is missing a
+  `WHERE` clause, so this endpoint currently errors.
 - `utils.py:120-123` — a duplicated, unreachable `elif` branch in `get_me`.
 
-### 3.3 Debug output and secret leakage to logs
-- The **bot token is printed to stdout**: `senechal.py:17`, `config.py:60`.
-- **DB credentials are printed**: `web/settings.py:137`, `database/database.py:10`.
-- `print()` debugging is scattered widely, including player and token records.
+### 3.3 Logging and secrets in logs
+- A few `print()` calls aid debugging but currently emit secrets: the bot token at
+  `senechal.py:17` and `config.py:60`, and DB credentials at `web/settings.py:137` and
+  `database/database.py:10`. Worth removing or guarding so they don't reach host logs.
+- `print()` debugging is used widely (including player and token records); a logging
+  level/flag would let it be quietened in production.
 
-### 3.4 Other
-- Import-time DB connection in `database/database.py:8-20` crashes if `DATABASE_URL`
-  is unset; there is also a vestigial unused SQLite handle (`database.py:8`).
-- Hand-rolled migration stepper (`database.py`) with skipped version numbers
-  (`v=1` then `v=3`, `v=4` then `v=7`) — fragile but functional.
-- Builtins shadowed (`list`, `type`, `id`, `sum`) throughout `web/views.py`.
-- No type hints; mixed-language identifiers/strings; `character.py` is the cleanest
-  module.
+### 3.4 Other observations
+- `database/database.py:8-20` opens the DB connection at import time and depends on
+  `DATABASE_URL` being set; there is also a vestigial unused SQLite handle
+  (`database.py:8`).
+- The hand-rolled migration stepper (`database.py`) works, though its skipped version
+  numbers (`v=1` then `v=3`, `v=4` then `v=7`) make it a little hard to follow.
+- Builtins are shadowed (`list`, `type`, `id`, `sum`) in places in `web/views.py`.
+- No type hints, and identifiers/strings mix English and Hungarian; `character.py` is
+  the cleanest module to model the rest on.
 
 ---
 
-## 4. Security findings (the application is internet-facing)
+## 4. Opportunities: security
 
-| Issue | Location |
-|-------|----------|
+Because the app is internet-facing, these are the highest-priority items.
+
+| Item | Location |
+|------|----------|
 | `DEBUG = True` in production | `web/settings.py:28` |
-| Hardcoded `SECRET_KEY` committed to git | `web/settings.py:25` |
-| CSRF middleware disabled | `web/settings.py:55` |
-| Authorization is a stub — `hasRight()` returns `token != 'null'`, never checks the DB | `web/views.py:215` |
-| Mutating endpoints with no auth (`modify`, `newchar`, `mark`, `event`, `updatePlayer`, `cleanupTokens`, `adminList`, `token`) | `web/urls.py:22-50` |
-| `senechal.db` (SQLite containing Discord IDs) committed to the repo | tracked in git |
+| `SECRET_KEY` hardcoded in the committed settings | `web/settings.py:25` |
+| CSRF middleware commented out | `web/settings.py:55` |
+| `hasRight()` is currently a placeholder — it returns `token != 'null'` rather than checking the DB | `web/views.py:215` |
+| Mutating endpoints reachable without auth (`modify`, `newchar`, `mark`, `event`, `updatePlayer`, `cleanupTokens`, `adminList`, `token`) | `web/urls.py:22-50` |
+| `senechal.db` (SQLite containing Discord IDs) is tracked in git | tracked in git |
 
-Net effect: anyone who knows the URL can read player data and create/modify/delete
-characters and player records. CSRF-off + no-auth + stub-auth compound one another.
+Because these combine, the mutating endpoints are, as configured, reachable without
+authentication. Addressing the settings (secret key, `DEBUG`, CSRF) and giving
+`hasRight()` a real check would close most of the exposure with a fairly small change.
 
 ---
 
 ## 5. Testing & operations
-- **Effectively no automated tests.** `tests/deck_test.py` has one method that is not
-  prefixed `test_` (so `unittest` skips it) and contains no assertions.
-- **No CI** configuration, no linter/formatter config.
-- **Unpinned dependencies** (`requirements.txt` has no versions) → non-reproducible
-  builds. **Django 3.1 and Python 3.9.5 are both end-of-life** (no security patches).
+- There is little automated test coverage today. `tests/deck_test.py` has one method
+  that isn't prefixed `test_` (so `unittest` skips it) and has no assertions.
+- No CI configuration and no linter/formatter config yet.
+- Dependencies are unpinned (`requirements.txt` has no versions), which makes builds
+  hard to reproduce. Django 3.1 and Python 3.9.5 are both past end-of-life, so they no
+  longer receive upstream security patches.
 
 ---
 
@@ -117,41 +137,42 @@ characters and player records. CSRF-off + no-auth + stub-auth compound one anoth
 **Strengths**
 - Clean, extensible command-plugin architecture; clear bot / web / data / domain
   separation.
-- A genuinely working, domain-rich tool (sheets, trait/skill checks, marks, glory,
-  feasts, PDF export, web companion) in real use.
-- Parameterized SQL in the data layer; coherent domain model with sane defaults.
+- A genuinely working, domain-rich tool (sheets, checks, marks, glory, feasts, PDF
+  export, web companion) in real use.
+- Parameterized SQL in the data layer; a coherent domain model with sensible defaults.
 
 **Weaknesses**
-- Serious security gaps (DEBUG, secret key, CSRF off, no/stub auth).
-- Hygiene debt: duplicated lines, dead code, secret-leaking debug prints, shadowed
-  builtins, no types.
-- Near-zero tests, no CI, no lint/format gating.
-- EOL runtime/framework, unpinned deps; fragile import-time bootstrapping.
+- Security items worth prioritising (DEBUG, secret key, CSRF, the auth placeholder) —
+  see §4.
+- Some accumulated cleanup: duplicated lines, a few small bugs, debug prints, no types.
+- Little automated testing, CI, or lint/format gating yet.
+- End-of-life runtime/framework and unpinned dependencies.
 
 **Opportunities**
 - A small, contained security pass (env-based secret key, `DEBUG=False`, re-enable
-  CSRF, real token validation) removes the highest-severity risks with a tiny diff.
+  CSRF, real token validation) removes the highest-severity risks with a modest diff.
 - Pin dependencies; add `pytest` + GitHub Actions + `ruff`/`black`.
-- The dice/check/feast logic is pure and highly testable — ideal first tests.
-- Consolidate the two DB access paths (web uses raw `psycopg2`; the Django ORM and
-  migrations sit unused) and de-duplicate `utils.py`.
+- The dice/check/feast logic is pure and highly testable — an ideal first test target.
+- The two DB access paths (web uses raw `psycopg2`; the Django ORM and migrations are
+  present but largely unused) could be consolidated; `utils.py` could be de-duplicated.
 
 **Threats**
-- Unauthenticated mutating endpoints exposed publicly → data tampering/loss.
-- EOL Django 3.1 / Python 3.9 → unpatched CVEs.
-- Bus factor: idiosyncratic, sparsely documented, single-author, mixed-language code.
-- Token/credentials printed to host logs → bot-account compromise if logs leak.
+- Internet-facing mutating endpoints are currently unauthenticated (§4).
+- EOL Django 3.1 / Python 3.9 — no upstream security patches.
+- Maintainability: more docs and tests would make it easier for additional people to
+  contribute and reduce reliance on the original author's context.
+- Secrets currently reach host logs, so log access could expose the bot token.
 
 ---
 
-## 7. Suggested priority (for discussion — nothing changed yet)
+## 7. Suggested priorities (for discussion)
 
-1. **Security hardening** (highest severity, smallest diff): secrets to env,
-   `DEBUG=False`, re-enable CSRF, implement real token validation in `hasRight`.
-2. **Bug fixes** from §3.2 / §3.1 that are clearly unintended (broken `cleanupTokens`
-   SQL, doubled embed fields, `base_command.py:32` typo).
-3. **Hygiene**: remove secret-leaking prints; de-duplicate `utils.py`.
+1. **Security hardening** (highest severity, modest diff): secrets to env,
+   `DEBUG=False`, re-enable CSRF, real token validation in `hasRight`.
+2. **Small bug fixes** from §3.2 / §3.1 (the `cleanupTokens` SQL, the doubled embed
+   fields, the `base_command.py:32` typo).
+3. **Cleanup**: remove secret-leaking prints; de-duplicate `utils.py`.
 4. **Tooling**: pin dependencies, add tests + CI.
 
-Each of these would be done on its own branch and recorded in `CHANGELOG.md` with a
-full before/after and rollback note, pending owner approval.
+Each would be its own branch and PR, recorded in `documentation/CHANGELOG.md` with a
+before/after and rollback note. The owner reviews and approves each via its PR.

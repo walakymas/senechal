@@ -57,7 +57,7 @@
 ## Before / after
 - **Before:** <current behaviour or state>
 - **After:** <new behaviour or state>
-- **Behaviour-changing?** <yes/no — if yes, restate the approval>
+- **Behaviour-changing?** <yes/no — if yes, restate the operational impact; the PR is the review gate>
 
 ## Verification
 - **How tested:** <commands run, manual steps, expected vs actual>

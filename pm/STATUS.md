@@ -23,12 +23,15 @@ is touched.
 
 ## In progress
 
-- Nothing actively coding — workflow setup complete; awaiting direction on the next task.
+- Reviewing/refining the workflow docs before pushing: respectful rewrite of the code
+  review, `CLAUDE.md` fixes, and a new lite task template.
 
 ## Next up
 
 - Implement Task 002 (security hardening) on `collab/security-hardening`; the owner
   reviews via the PR (no pre-approval needed — see DECISIONS D06).
+- Decide whether to add **Task 003**: replace the stale upstream README with a
+  project-specific one.
 - Decide whether to push the branch / open a PR for review.
 
 ## Blockers / waiting on

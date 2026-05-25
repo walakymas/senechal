@@ -5,13 +5,23 @@ A lightweight, in-repo system for tracking collaborator work. Each unit of work 
 definition of done.
 
 The point of the system is simple: **documentation is part of the task, not an
-afterthought.** The task template (`TASK_TEMPLATE.md`) carries explicit instructions
-to write documentation, so no change can be marked complete without it.
+afterthought.** The templates carry explicit instructions to write documentation, so
+no change can be marked complete without it.
+
+## Which template?
+
+- **`TASK_TEMPLATE.md`** (full) — the default. Use for behaviour-changing, multi-file,
+  security-related, or anything needing a real plan and verification.
+- **`TASK_TEMPLATE_LITE.md`** (lite) — for small, low-risk, behaviour-preserving
+  changes (a typo, a one-line fix, a doc tweak). It keeps the non-negotiables (its own
+  task file, a CHANGELOG entry, and a STATUS refresh) but drops the heavier sections.
+  If a "lite" task turns out behaviour-changing, switch it to the full template.
 
 ## How to create a task
 
 1. Pick the next free number (`NNN`), e.g. `002`.
-2. Copy `TASK_TEMPLATE.md` to `documentation/tasks/<NNN>-<kebab-slug>.md`.
+2. Copy the right template (`TASK_TEMPLATE.md` or `TASK_TEMPLATE_LITE.md`) to
+   `documentation/tasks/<NNN>-<kebab-slug>.md`.
 3. Fill in *Context*, *Scope*, and *Plan*; set Status to `proposed`.
 4. If the task is **behaviour-changing**, make sure the task file (and later the PR)
    clearly flag the runtime change and any **operational impact** — new env vars,
@@ -49,6 +59,7 @@ proposed ──start──▶ in-progress ──open PR──▶ in-review ─�
 
 | File | Purpose |
 |------|---------|
-| `TASK_TEMPLATE.md` | The template to copy for every new task. |
+| `TASK_TEMPLATE.md` | Full template — the default for any non-trivial task. |
+| `TASK_TEMPLATE_LITE.md` | Lite template — for small, low-risk, behaviour-preserving changes. |
 | `001-setup-collaborator-workflow.md` | First task — a worked example (the branch + docs setup). |
 | `<NNN>-<slug>.md` | One file per task. |

@@ -9,6 +9,30 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Review & refine the workflow docs (respectful review, CLAUDE.md fixes, task-lite)
+
+- **Branch:** `collab/code-review-and-docs`
+- **Type:** behaviour-preserving (docs only)
+- **Approved by:** collaborator
+- **Summary:** Reviewed the documentation/workflow before pushing. Rewrote the code
+  review in a respectful, constructive tone (same findings and `path:line` locations,
+  none removed); fixed a contradiction in `CLAUDE.md` and added run/gotcha guidance;
+  added a slim "lite" task template.
+- **Files changed:**
+  - `documentation/01-code-review.md` — respectful rewrite; leads with strengths;
+    findings reframed as opportunities (no findings dropped).
+  - `CLAUDE.md` — fixed stale "approval before coding" line to match the PR-as-gate
+    rule; added "Running it locally" and "Gotchas worth knowing" sections.
+  - `documentation/tasks/TASK_TEMPLATE.md` — fixed stale "restate the approval" wording.
+  - `documentation/tasks/README.md` — documented the full-vs-lite template choice.
+- **Files added:**
+  - `documentation/tasks/TASK_TEMPLATE_LITE.md` — slim template for small, low-risk,
+    behaviour-preserving changes.
+- **Source code touched:** none.
+- **Risk & rollback:** none to application behaviour. Revert this commit.
+
+---
+
 ## 2026-05-25 — Workflow change: the PR is the approval gate (no pre-implementation approval)
 
 - **Branch:** `collab/code-review-and-docs`

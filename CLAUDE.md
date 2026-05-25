@@ -43,7 +43,9 @@ To do any non-trivial work:
 1. Copy `documentation/tasks/TASK_TEMPLATE.md` to
    `documentation/tasks/<NNN>-<slug>.md` (next free number).
 2. Fill in *Context*, *Scope*, *Plan*; set Status to `proposed`.
-3. If the task is behaviour-changing, get approval and record it before coding.
+3. If the task is behaviour-changing, flag the runtime change and any **operational
+   impact** in the task file (and later the PR). No pre-approval is needed — the PR is
+   the review/approval gate.
 4. Implement on the task's branch.
 5. Complete the template's **`DOCUMENTATION — required`** checklist: add an entry to
    `documentation/CHANGELOG.md` (append-only *history*) **and** refresh `pm/STATUS.md`
@@ -52,6 +54,27 @@ To do any non-trivial work:
 See `documentation/README.md` and `documentation/tasks/README.md` for details, and
 `documentation/01-code-review.md` for known issues and their `path:line` locations.
 Project status, roadmap, and the decision log live in `pm/`.
+
+## Running it locally
+
+- **Bot:** `python senechal.py` (Procfile `worker`). Needs the Discord bot token in the
+  `token` environment variable (or in `config.yml`, which is gitignored).
+- **Web:** `python manage.py runserver` for development, or `gunicorn web.wsgi`
+  (Procfile `web`).
+- **Database:** both processes expect a PostgreSQL `DATABASE_URL` env var. The data
+  layer connects on import, so it must be set before importing anything in `database/`.
+- Config is read from `config.yml` (optional, gitignored), `senechal.yml`, and
+  `feast.json`.
+
+## Gotchas worth knowing
+
+- `database/database.py` opens its PostgreSQL connection at **import time** from
+  `DATABASE_URL` — importing `database/` without it set will fail.
+- `senechal.py` reads `os.environ['token']` directly at startup (no graceful fallback).
+- `web/views.py` uses raw `psycopg2`; the Django ORM/migrations exist but are largely
+  unused — match the existing data-layer style within a file rather than mixing.
+- Known issues with exact `path:line` locations are catalogued in
+  `documentation/01-code-review.md`.
 
 ## Quick conventions
 
