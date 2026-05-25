@@ -29,7 +29,7 @@ class BaseCommand:
         elif self.description:
             await message.channel.send(self.description)
         else:
-            await message.channelsend(f"Can't help")
+            await message.channel.send(f"Can't help")
 
     # Every command must override this method
     async def handle(self, params, message, client):
