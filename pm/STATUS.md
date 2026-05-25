@@ -4,9 +4,9 @@
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
 **Last updated:** 2026-05-25
-**Active branch:** `collab/code-review-and-docs`
-**Committed?** Yes — workflow scaffolding (`CLAUDE.md`, `documentation/`, `pm/`)
-committed to the branch. Not pushed; no PR opened yet.
+**Active branch:** `collab/readme` (stacked on `collab/code-review-and-docs`)
+**Committed?** Yes — workflow scaffolding committed on `collab/code-review-and-docs`;
+README work in progress on `collab/readme`. Nothing pushed; no PRs opened yet.
 
 ## In one line
 
@@ -20,19 +20,18 @@ is touched.
 |----|-------|--------|------|
 | 001 | Set up collaborator workflow (branch + docs) | done | behaviour-preserving |
 | 002 | Security hardening (web app) | proposed | behaviour-changing |
+| 003 | Project-specific README (preserve original) | in-progress | behaviour-preserving |
 
 ## In progress
 
-- Reviewing/refining the workflow docs before pushing: respectful rewrite of the code
-  review, `CLAUDE.md` fixes, and a new lite task template.
+- Task 003 (README): new project README written; original preserved verbatim at
+  `documentation/original-template-readme.md`. Ready to commit on `collab/readme`.
 
 ## Next up
 
 - Implement Task 002 (security hardening) on `collab/security-hardening`; the owner
   reviews via the PR (no pre-approval needed — see DECISIONS D06).
-- Decide whether to add **Task 003**: replace the stale upstream README with a
-  project-specific one.
-- Decide whether to push the branch / open a PR for review.
+- Decide whether to push the branches / open PRs for review.
 
 ## Blockers / waiting on
 
