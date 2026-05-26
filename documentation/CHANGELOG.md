@@ -9,6 +9,23 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Bug fixes: base_command typo + utils.py de-duplication (Task 004)
+
+- **Branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)
+- **Type:** **behaviour-changing** (corrects doubled embed output / a crash path)
+- **Approved by:** collaborator
+- **Summary:** Fixed `message.channelsend` → `message.channel.send` and removed
+  copy/paste duplications in `utils.py` (doubled embed fields, a double `paginator.run`,
+  a doubled die roll, a dead `elif`). **Scoped to files no other open PR touches**
+  (`commands/base_command.py`, `utils.py`) — no overlap with the security PR.
+- **Files touched:** `commands/base_command.py`, `utils.py`.
+- **Before / after:** some embeds rendered a field twice and the paginator ran twice;
+  the help fallback crashed. Now each renders once and the fallback works. No game-logic
+  change (the duplicate die roll only ever used the second value).
+- **Risk & rollback:** low; `git revert <sha>`.
+
+---
+
 ## 2026-05-25 — Add project README; preserve original template README (Task 003)
 
 - **Branch:** `collab/readme` (stacked on `collab/code-review-and-docs`)

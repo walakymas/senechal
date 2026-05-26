@@ -4,42 +4,45 @@
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
 **Last updated:** 2026-05-25
-**Active branch:** `collab/readme` (stacked on `collab/code-review-and-docs`)
-**Committed?** Yes — workflow scaffolding committed on `collab/code-review-and-docs`;
-README work in progress on `collab/readme`. Nothing pushed; no PRs opened yet.
+**Active branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)
+**Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
+are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
+not opened yet (the `gh` CLI isn't installed — open them from the GitHub links).
 
 ## In one line
 
-Collaborator workflow and documentation scaffolding are in place; the first real code
-task (security hardening) is written up and **awaiting owner approval** before any code
-is touched.
+Four work-streams on parallel branches off the docs branch; three are pushed and ready
+for PRs, the bug-fix branch is committed locally.
 
 ## Tasks
 
-| ID | Title | Status | Type |
-|----|-------|--------|------|
-| 001 | Set up collaborator workflow (branch + docs) | done | behaviour-preserving |
-| 002 | Security hardening (web app) | proposed | behaviour-changing |
-| 003 | Project-specific README (preserve original) | in-progress | behaviour-preserving |
+| ID | Title | Status | Type | Branch | Pushed |
+|----|-------|--------|------|--------|--------|
+| 001 | Collaborator workflow (branch + docs) | done | behaviour-preserving | code-review-and-docs | yes |
+| 002 | Security hardening (web app) | in-progress (ready for PR) | behaviour-changing | security-hardening | yes |
+| 003 | Project-specific README | in-progress (ready for PR) | behaviour-preserving | readme | yes |
+| 004 | Bug fixes (base_command, utils) | in-progress (ready for PR) | behaviour-changing | bugfixes | no |
 
 ## In progress
 
-- Task 003 (README): new project README written; original preserved verbatim at
-  `documentation/original-template-readme.md`. Ready to commit on `collab/readme`.
+- Task 004: typo + `utils.py` de-duplications done; both files compile. Scoped to avoid
+  any file the other PRs touch.
 
 ## Next up
 
-- Implement Task 002 (security hardening) on `collab/security-hardening`; the owner
-  reviews via the PR (no pre-approval needed — see DECISIONS D06).
-- Decide whether to push the branches / open PRs for review.
+- Open the PRs (links in the chat / `git ls-remote`): PR1 docs → `main`; PR2 readme,
+  PR3 security, PR4 bugfixes — all based on the docs branch (they retarget to `main`
+  after PR1 merges + its branch is deleted).
+- Push `collab/bugfixes` when ready for its PR.
+- On the security merge/deploy, owner sets `DJANGO_SECRET_KEY` / `DJANGO_DEBUG`.
 
 ## Blockers / waiting on
 
-- None right now — behaviour-changing work is reviewed via PR, not pre-approval. The
-  owner will need to set new env vars (`SECRET_KEY`, `DJANGO_DEBUG`) when Task 002 merges.
+- None blocking. PRs must be opened manually (no `gh` CLI).
 
 ## Health notes (from `documentation/01-code-review.md`)
 
-- No automated tests, no CI, unpinned deps, EOL Django 3.1 / Python 3.9.5.
-- Several high-severity web security gaps (see Task 002).
-- None of these are addressed yet — documentation/process only so far.
+- No automated tests, no CI, unpinned deps, EOL Django 3.1 / Python 3.9.5 (GitHub
+  Dependabot reports 21 vulnerabilities on the default branch).
+- Web security log-leaks / `SECRET_KEY` / `DEBUG` / `hasRight()` addressed in Task 002;
+  CSRF intentionally left off (D07). Bug fixes in Task 004.
