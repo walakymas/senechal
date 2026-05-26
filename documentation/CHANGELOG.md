@@ -26,6 +26,31 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-05-25 — Add project README; preserve original template README (Task 003)
+
+- **Branch:** `collab/readme` (stacked on `collab/code-review-and-docs`)
+- **Type:** behaviour-preserving (documentation only)
+- **Approved by:** collaborator
+- **Summary:** Replaced the upstream-template README with a project-specific one, and
+  **preserved the original README verbatim** so nothing is lost.
+- **Where the old README went:** moved verbatim to
+  `documentation/original-template-readme.md` (with a header noting its origin and that
+  it still documents the command/event plugin pattern and the `utils` helpers). The new
+  `README.md` links to it.
+- **Motivation:** The old README documented the generic template (`settings.py`,
+  `BOT_TOKEN`, `client.send_message`) rather than how senechal actually works.
+- **Files added:**
+  - `documentation/original-template-readme.md` — the original README, preserved verbatim.
+  - `documentation/tasks/003-project-readme.md` — the task record.
+- **Files changed:**
+  - `README.md` — rewritten to describe the real project (purpose, architecture, config,
+    how to run), crediting the agubelu template origin and keeping the GPL-3.0 reference.
+- **Source code touched:** none.
+- **Risk & rollback:** none to application behaviour. `git revert <sha>`, or copy
+  `documentation/original-template-readme.md` back to `README.md`.
+
+---
+
 ## 2026-05-25 — Review & refine the workflow docs (respectful review, CLAUDE.md fixes, task-lite)
 
 - **Branch:** `collab/code-review-and-docs`
