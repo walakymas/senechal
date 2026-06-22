@@ -153,6 +153,43 @@ periods:
   - [Grail Quest, 554]
   - [Twilight, 558]
 
+newchar6th:
+  male:
+    knightly: ['Awareness', 'Courtesy', 'First Aid', 'Recognize', 'Hunting', 'Battle', 'Horsemanship', 'Brawling', 'Charge', 'Sword']
+    skills:
+      Other:
+        Awareness: 5
+        Compose: 5
+        Courtesy: APP-5
+        Dancing: DEX/2
+        Falconry: 5
+        First Aid: DEX/2
+        Flirting: APP-5
+        Folklore: APP-5
+        Gaming: 5
+        Hunting: 5
+        Intrigue: APP-5
+        Literacy: 0
+        Orate: APP-5
+        Play Instrument: DEX/5
+        Recognize: 5
+        Religion: 5
+        Singing: 5
+        Stewardship: 5
+      Combat: 
+        Battle: 5
+        Horsemanship: DEX/2
+      Weapons:
+        Brawling: STR/2
+        Charge: DEX/2
+        Hafted: DEX/2
+        Sword: DEX/2
+        Spear: DEX/2
+        Two-Handed Hafted: DEX/2
+        Bow: DEX/2
+        Crossbow: DEX/2
+        Thrown Weapon: DEX/2
+
 newchar:
   Cymric:
     passions:
@@ -170,10 +207,10 @@ newchar:
       names: [Addonwy, Aeron, Afan, Aneirin, Aeddan, Amig, Amlyn, Athrwys, Arddur, Buddfannan, Blaen, Bledri, Bradwen, Bleddig, Cadfannan, Cadfael, Cadwallon, Cilydd, Cynon, Cynfan, Cyfulch, Cynrain, Cunvelyn, Caradoc, Cibno, Ceredig, Cadlew, Cynwal, Clydno, Cynhafal, Dafydd, Defi, Dwyai, Edar, Edern, Eiddef, Erthgi, Elad, Eudaf, Biffin, Gwefrfawr, Gwegon, Gwion, Gwyn, Gwarddur, Gwern, Gwyleged, Gwrien, Gwraid, Gorthyn, Gwaednerth, Gwengad, Brugyn, Gwenabwy, Gwrfelling, Gwair, Graid, Geriant, Gwanon, Hyfaidd, Hywel, Ieuan, Llywel, Marchlew, Moried, Morien, Madog, Morial, Mynyddog, Merin, Neilyn, Nwython, Nai, Nerthaid, Neddig, Nidian, Owain, Padern, Pedrog, Ricerch, Rhodri, Rhufon, Rhun, Sawel, Seriol, Sywno, Tathal, Tathan, Tudfwlch, Tyngyr, Uren, Uwain, Ysgarran]
       skills:
         Other:
-          Awareness: 7
+          Awareness: 5
           Boating: 1
           Compose: 1
-          Courtesy: 5
+          Courtesy: 3
           Dancing: 2
           Faerie Lore: 1
           Falconry: 3
@@ -181,22 +218,21 @@ newchar:
           Flirting: 3
           Folklore: 2
           Gaming: 3
-          Heraldry: 1
-          Hunting: 6
+          Heraldry: 3
+          Hunting: 2
           Intrigue: 3
-          Orate: 5
+          Orate: 3
           Play (harp): 3
           Read (Latin): 0
           Recognize: 3
           Religion (varies): 2
-          Romance: 0
-          Singing: 4
+          Romance: 2
+          Singing: 3
           Stewardship: 2
           Swimming: 2
-          Tourney: 0
+          Tourney: 2
         Combat: 
           Battle: 10
-          Siege: 2
           Horsemanship: 10
         Weapons:
           Sword: 10
