@@ -18,9 +18,11 @@ class Check(BaseCommand):
     async def handle(self, params, message, client):
         char = get_me(message)
         if char:
+            print("check.handle:hasChar", flush=True)
             (spec, modifier) = extract(params, ["---", 0])
             await self.check(message.channel, char, spec, modifier, message)
         else:
+            print("check.handle:noChar", flush=True)
             (name, spec, modifier) = extract(params, ["---", "---", 0])
             for char in Character.pcs(name):
                 await self.check(message.channel, char, spec, modifier, message)

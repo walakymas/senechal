@@ -44,6 +44,7 @@ urlpatterns = [
     path('feastConfig', views.feastConfig, name='feastConfig'),
     path('addC2C', views.addC2C, name='addC2C'),
     path('connections', views.connections, name='connections'),
+    path('maps', views.maps, name='maps'), 
 
 
 

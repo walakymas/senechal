@@ -118,7 +118,7 @@ def get_me(message, force=False):
     elif cmd_split[-1].startswith('<@'):
         print(f'get_me 2 "{cmd_split[-1][3:-1]}"', flush=True)
         me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
-    elif cmd_split[-1].startswith('@'):
+    elif cmd_split[-1].startswith('!'):
         print(f'get_me 3: {cmd_split[-1][1:]}', flush=True)
         me = Character.get_by_name(cmd_split[-1][1:], force=force)
     elif cmd_split[-1].startswith('cid:'):

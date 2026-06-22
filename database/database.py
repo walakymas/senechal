@@ -187,7 +187,23 @@ class Database:
                         )
                         """)
                 cur.execute("""ALTER TABLE feast ALTER COLUMN cid SET DEFAULT nextval('main_seq'::regclass)""")
-                v = 16                            
-            cur.execute(f"UPDATE properties  SET value = {v} WHERE key = 'dbversion'")
-            Database.db.commit()
+                v = 16
+
+            # New migration step: create maps table
+            if v == 16:
+                cur.execute("""CREATE TABLE IF NOT EXISTS maps (
+                        id SERIAL PRIMARY KEY,
+                        created timestamp without time zone NOT NULL DEFAULT now(),
+                        modified timestamp without time zone NOT NULL DEFAULT now(),
+                        url varchar,
+                        category varchar,
+                        ord integer,
+                        name varchar
+                        )""")
+                cur.execute("ALTER TABLE maps ALTER COLUMN id SET DEFAULT nextval('main_seq'::regclass)")
+                cur.execute("CREATE INDEX IF NOT EXISTS idx_maps_ord ON maps (ord);")
+                v = 17
+
+            cur.execute(f"UPDATE properties  SET value = {v}, modified=now() WHERE key = 'dbversion'")
+            Database.db.commit()                      
 

@@ -18,11 +18,24 @@ from database.checktable import CheckTable
 from database.base_table_handler import BaseTableHandler
 from database.feasttable import FeastTable
 from database.proptable import PropertiesTable
+from database.mapstable import MapsTable  
+
 from feast import Feast
 from datetime import datetime
 import tempfile
 from config import Config
 import zipfile
+
+
+MAP_FIELDS = [
+    ('id','number'),
+    ('created','string'),
+    ('modified','string'),
+    ('url','string'),
+    ('category','string'),
+    ('ord','number'),
+    ('name','string')
+]
 
 def index(request):
     return HttpResponse("Hello, world. You're at the senechal index.")
@@ -436,3 +449,9 @@ def feast(request):
 
     data = f.get_data()
     return JsonResponse(data, safe=False, json_dumps_params={'ensure_ascii': False})
+
+@never_cache
+def maps(request):
+    # Return all available maps
+    list = MapsTable().list()
+    return JsonResponse(convert(list, MAP_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
