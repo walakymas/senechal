@@ -110,17 +110,24 @@ def overwrite(cname, orig):
 
 def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
+    print('get_me', flush=True)
     me = None
     if cmd_split[-1].startswith('<@!'):
-        print(f'get_me 1 "{cmd_split[-1][3:-1]}"')
+        print(f'get_me 1 "{cmd_split[-1][3:-1]}"', flush=True)
         me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
     elif cmd_split[-1].startswith('<@'):
-        print(f'get_me 2 "{cmd_split[-1][3:-1]}"')
+        print(f'get_me 2 "{cmd_split[-1][3:-1]}"', flush=True)
         me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
-    elif cmd_split[-1].startswith('++'):
-        me = Character.get_by_name(cmd_split[-1][2:], force=force)
-    elif cmd_split[-1].startswith('++'):
-        me = Character.get_by_name(cmd_split[-1][2:], force=force)
+    elif cmd_split[-1].startswith('@'):
+        print(f'get_me 3: {cmd_split[-1][1:]}', flush=True)
+        me = Character.get_by_name(cmd_split[-1][1:], force=force)
+    elif cmd_split[-1].startswith('cid:'):
+        print(f'get_me 4: {cmd_split[-1][4:]}', flush=True)
+        me = Character.get_by_id(int(cmd_split[-1][4:]), force=force)
+    else:
+        print(f'get_me else: {cmd_split[-1]}', flush=True)
+
+    print(f'me:{me}', flush=True)
 
     if me:
         return me

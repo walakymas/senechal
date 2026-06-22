@@ -29,8 +29,8 @@ class CharacterTable(BaseTableHandler):
             role = j['role']
         if 'player' in j:
             player = j['player']
-        BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, memberid=%(memberid)s , role=%(role)s , player=%(player)s  WHERE id=%(id)s",
-                                 {'id': id, 'name': j['name'], 'data': data, 'url': url, 'memberid': memberid, 'role': role, 'player': player})
+        BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, memberid=%(memberid)s , role=%(role)s  WHERE id=%(id)s",
+                                 {'id': id, 'name': j['name'], 'data': data, 'url': url, 'memberid': memberid, 'role': role})
 
     def get_by_name(self, name):
         return BaseTableHandler.execute(f"SELECT * FROM characters WHERE name ILIKE '%{name}%'", fetch='one')

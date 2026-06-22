@@ -198,6 +198,7 @@ def modify(request):
                 data[dn] = {}
             set(data[dn], name[i+1:], value)
     if not(Config.authorization) or (('token' in  request.POST and hasRight(request.POST['token'], request.POST['id']))):
+        print("modify")
         if 'json' in request.POST:
             CharacterTable().set_json(request.POST['id'], request.POST['json'])
         else:
@@ -205,6 +206,7 @@ def modify(request):
             data = json.loads(j)
             for name, value in request.POST.items():
                 if "id" != name and "token" != name:
+                    print(f"modify {name} : {value}")
                     set(data, name, value)
             j = json.dumps(data, ensure_ascii=False, indent=2)
             CharacterTable().set_json(request.POST['id'], j)
