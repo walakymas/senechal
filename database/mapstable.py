@@ -12,6 +12,9 @@ class MapsTable(BaseTableHandler):
     def get(self, id):
         return BaseTableHandler.execute("SELECT id, created, modified, url, category, ord, name FROM maps WHERE id=%s", param=[id], fetch='one')
 
+    def get_by_url(self, url):
+        return BaseTableHandler.execute("SELECT id, created, modified, url, category, ord, name FROM maps WHERE url=%s", param=[url], fetch='one')
+
     def add(self, url, category, ord, name):
         BaseTableHandler.execute('INSERT INTO maps (created, modified, url, category, ord, name) VALUES(now(), now(), %(url)s, %(category)s, %(ord)s, %(name)s)', {'url': url, 'category': category, 'ord': ord, 'name': name}, commit=True)
 

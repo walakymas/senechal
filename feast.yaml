@@ -13,6 +13,13 @@
         skill: Courtesy
         fail:
           geniality: -2
+  text: "An entertainer mocks one of your Distinguishing Features in his song"
+  full: |
+    An entertainer mocks one of your Distinguishing Features in his song.
+
+    MODEST WINS: You are gracious and laugh along. Roll Compose: on a success, you return a witty barb (+2 Geniality).
+
+    PROUD WINS: You are visibly perturbed. Roll Courtesy: on a failure, you lose your temper (-2 Geniality).
 "2":
   name: A Chance Encounter
   geniality: 1
@@ -28,6 +35,13 @@
   tags:
     - "leave"
     - "winter"
+  text: "A beautiful lady passes by and whispers in your ear."
+  full: |
+    A beautiful lady passes by and whispers in your ear.
+
+    CHASTE WINS: +3 Geniality.
+
+    LUSTFUL WINS: You depart the feast arm in arm. Roll on Childbirth this Winter Phase.
 "3":
   name: A Game of Dice
   geniality: 0
@@ -48,6 +62,14 @@
       action: money
       add: checkFailedBy
       multiply: -2
+  text: "A group of guests leave the main hall to play a game of dice. They ask you to join them."
+  full: |
+    A group of guests leave the main hall to play a game of dice. They ask you to join them.
+
+    SUCCESS: You gain a number of denarii equal to your Gaming result.
+    CRITICAL SUCCESS: You gain a number of denarii equal to twice your Gaming result.
+    FAILURE: You lose a number of denarii equal to your Gaming result minus your Gaming skill.
+    FUMBLE: You lose a number of denarii equal to your Gaming result minus your Gaming skill, doubled.
 "4":
   name: A Helping Hand
   geniality: 0
@@ -60,6 +82,13 @@
       text: "You decline"
   tags:
     - "miss"
+  text: "A serving girl asks for assistance in taking care of a drunken knight."
+  full: |
+    A serving girl asks for assistance in taking care of a drunken knight.
+
+    GENEROUS WINS: Miss the next feast round. The knight remembers your kindness when he wakes. Gain 5 Glory and +2 Geniality.
+
+    SELFISH WINS: You decline. The knight embarrasses himself and drunkenly blames the serving girl.
 "5":
   name: A Lady and You
   geniality: 1
@@ -70,6 +99,15 @@
   tags:
     - "keep"
     - "host"
+  text: "An important lady spends time conversing with you."
+  full: |
+    An important lady spends time conversing with you.
+
+    You interact with a lady. At the start of each round you may keep this card or discard it. If you keep it, gain +1 Geniality per round.
+
+    You cannot draw cards while you keep this card.
+
+    If you have this card at the end of the feast, you may petition the host for permission to court the lady.
 "6":
   name: A Lady and You
   geniality: 1
@@ -80,6 +118,15 @@
   tags:
     - "keep"
     - "host"
+  text: "An important lady spends time conversing with you."
+  full: |
+    An important lady spends time conversing with you.
+
+    You interact with a lady. At the start of each round you may keep this card or discard it. If you keep it, gain +1 Geniality per round.
+
+    You cannot draw cards while you keep this card.
+
+    If you have this card at the end of the feast, you may petition the host for permission to court the lady.
 "7":
   name: A Lady Departs
   geniality: 2
@@ -101,6 +148,15 @@
   tags:
     - leave
     - winter
+  text: "A lady is preparing to leave the feast and you may escort her to her chambers."
+  full: |
+    A lady is preparing to leave the feast and you may escort her to her chambers.
+
+    SUCCESS: The lady thanks you for your kindness. Gain 1 Glory.
+
+    CRITICAL SUCCESS: Roll Lustful vs Chaste (3d6 + 3 if unknown). On a success, you depart with her; roll on Childbirth this Winter Phase.
+
+    Mandatory (Lustful 16+)
 "8":
   name: A Lady Flirts
   check:
@@ -111,6 +167,13 @@
       geniality: 2
     fumble:
       geniality: -2
+  text: "A lady of the court flirts with you."
+  full: |
+    SUCCESS: You tell some good stories. +1 Geniality.
+
+    CRITICAL SUCCESS: The lady enjoys your company. +2 Geniality.
+
+    FUMBLE: Something you say upsets her. -2 Geniality.
 "9":
   name: A Lady Flirts
   check:
@@ -121,391 +184,1318 @@
       geniality: 2
     fumble:
       geniality: -2
+  text: "A lady of the court flirts with you."
+  full: |
+    SUCCESS: You tell some good stories. +1 Geniality.
+
+    CRITICAL SUCCESS: The lady enjoys your company. +2 Geniality.
+
+    FUMBLE: Something you say upsets her. -2 Geniality.
 "10":
   name: A Lady of the Night
   tags:
     - "leave"
+  text: "A courtesan offers her company."
+  full: |
+    A courtesan offers her company.
+
+    CHASTE WINS: You gracefully decline. +1 Geniality.
+
+    LUSTFUL WINS: Pay 3d20 denarii and depart the feast. Roll on Childbirth this Winter Phase.
 "11":
   name: A Lady's Honor
+  text: "A lady needs a knight to challenge another knight to a contest of honor."
+  full: |
+    A lady needs a knight to challenge another knight to a contest of honor.
+
+    To determine the rival's Skill value if unknown, roll 2d6 + 8.
+
+    YOU WIN: She compliments your skill. +2 Geniality.
+
+    HE WINS: The lady appreciates your effort, but others are not so sure of you. -1 Geniality.
+
+    TIE: The ladies laugh and leave, chatting. +1 Geniality.
 "12":
   name: A Lady's Gift
   tags:
     - "duel"
+  text: "Several knights speak about gifts to their ladies."
+  full: |
+    Several knights speak about gifts to their ladies.
+
+    SUCCESS: You wax poetic about fair ladies. +2 Geniality.
+
+    CRITICAL SUCCESS: A nearby merchant hears you and offers you a gift for half price.
+
+    FUMBLE: “No one treats a lady like that!” A knight challenges you to a duel. -3 Geniality.
 "13":
   name: A Loan?
+  text: "Another knight asks if you can lend him money."
+  full: |
+    Another knight asks if you can lend him money to (roll 1d6): 1-2 Pay a debt; 3-4 Buy a lady a present; 5-6 Ransom a captive.
+
+    GIVE HIM THE MONEY: Gain Generous, Merciful, or Just (respectively).
+
+    DECLINE HIS REQUEST: Gain Selfish, Cruel, or Arbitrary (respectively).
 "14":
   name: A love Poem
+  text: "A knight is struggling to compose a love poem. You help him."
+  full: |
+    A knight is struggling to compose a love poem. You help him.
+
+    SUCCESS: He returns the favor. You gain +5 on any one Orate roll during this feast. +1 Geniality.
+
+    FUMBLE: The poem is terrible and embarrasses the knight; he blames you. -2 Geniality.
 "15":
   name: A Man for All Seasons
   tags:
     - "keep"
+  text: "You impress the other guests with your consummate knowledge."
+  full: |
+    You impress the other guests with your consummate knowledge.
+
+    Keep this card. Whenever you roll a critical success or you check a Skill or Trait, place a Knowledge counter on this card.
+
+    When you depart the feast, gain +2 Geniality for each Knowledge counter on A Man for All Seasons.
 "16":
   name: A New Teacher
   tags:
     - "keep"
+  text: "You meet a knight renowned in a particular field. He is willing to give you pointers."
+  full: |
+    You meet a knight renowned in a particular field. He is willing to give you pointers.
+
+    SUCCESS: Gain the appropriate Skill.
+
+    CRITICAL SUCCESS: He is impressed with your talent and sings your praises. +3 Geniality.
+
+    FAILURE: You need to learn more. You may depart the feast for impromptu training. If you do, gain the Skill.
 "17":
   name: A Roaring Fire
   tags:
     - "miss"
+  text: "As you rest near the hearth, a hot ember pops from the fire and lands on your clothes."
+  full: |
+    As you rest near the hearth, a hot ember pops from the fire and lands on your clothes.
+
+    SUCCESS: You knock the ember away before it can do any harm.
+
+    FAILURE: The ember burns a large hole in your clothes. Choose: lose 2 Geniality, or miss one round to change your clothes.
 "18":
   name: A Serving Girl Flirts
   tags:
     - "leave"
     - "winter"
+  text: "A serving girl flirts with you."
+  full: |
+    A serving girl flirts with you.
+
+    SUCCESS: +1 Geniality. Gain Flirting.
+
+    CRITICAL SUCCESS: Roll Chaste vs Lustful. If Lustful wins, you depart the feast with the girl; roll on Childbirth this Winter Phase.
+
+    FUMBLE: You receive a slap in the face.
 "19":
   name: A Serving Girl Flirts
   tags:
     - "leave"
     - "winter"
+  text: "A serving girl flirts with you."
+  full: |
+    A serving girl flirts with you.
+
+    SUCCESS: +1 Geniality. Gain Flirting.
+
+    CRITICAL SUCCESS: Roll Chaste vs Lustful. If Lustful wins, you depart the feast with the girl; roll on Childbirth this Winter Phase.
+
+    FUMBLE: You receive a slap in the face.
 "20":
   name: A Serving Girl Flirts
   tags:
     - "leave"
     - "winter"
+  text: "A serving girl flirts with you."
+  full: |
+    A serving girl flirts with you.
+
+    SUCCESS: +1 Geniality. Gain Flirting.
+
+    CRITICAL SUCCESS: Roll Chaste vs Lustful. If Lustful wins, you depart the feast with the girl; roll on Childbirth this Winter Phase.
+
+    FUMBLE: You receive a slap in the face.
 "21":
   name: A Serving Girl Flirts
   tags:
     - "leave"
     - "winter"
+  text: "A serving girl flirts with you."
+  full: |
+    A serving girl flirts with you.
+
+    SUCCESS: +1 Geniality. Gain Flirting.
+
+    CRITICAL SUCCESS: Roll Chaste vs Lustful. If Lustful wins, you depart the feast with the girl; roll on Childbirth this Winter Phase.
+
+    FUMBLE: You receive a slap in the face.
 "22":
   name: A Serving Girl Flirts
   tags:
     - "leave"
     - "winter"
+  text: "A serving girl flirts with you."
+  full: |
+    A serving girl flirts with you.
+
+    SUCCESS: +1 Geniality. Gain Flirting.
+
+    CRITICAL SUCCESS: Roll Chaste vs Lustful. If Lustful wins, you depart the feast with the girl; roll on Childbirth this Winter Phase.
+
+    FUMBLE: You receive a slap in the face.
 "23":
   name: A Test of Strength
+  text: "A knight boasts about his strength and challenges you to an arm-wrestling match."
+  full: |
+    A knight boasts about his strength and challenges you to an arm-wrestling match.
+
+    To determine the rival's Str if unknown, roll 1d6 + 12. On a tie, reroll until someone wins.
+
+    YOU WIN: You are victorious. Gain 2 Glory (plus 1 Glory for each reroll).
+
+    HE WINS: He moves on to challenge others. You may give this card to another player. If you do, gain 1 Geniality. That player must play this card next turn instead of drawing any cards.
 "24":
   name: A Test of Strength
+  text: "A knight boasts about his strength and challenges you to an arm-wrestling match."
+  full: |
+    A knight boasts about his strength and challenges you to an arm-wrestling match.
+
+    To determine the rival's Str if unknown, roll 1d6 + 12. On a tie, reroll until someone wins.
+
+    YOU WIN: You are victorious. Gain 2 Glory (plus 1 Glory for each reroll).
+
+    HE WINS: He moves on to challenge others. You may give this card to another player. If you do, gain 1 Geniality. That player must play this card next turn instead of drawing any cards.
 "25":
   name: A Slip of Wine
+  text: "You share a goblet of wine with a lady. You may make a toast to her."
+  full: |
+    You share a goblet of wine with a lady. You may make a toast to her.
+
+    You may choose not to toast the lady. If you do not, lose 2 Geniality and gain the Modest trait.
+
+    If you toast her, roll Orate.
+    SUCCESS: She blushes at such sentiment. +1 Geniality.
+    CRITICAL SUCCESS: She is greatly impressed. +2 Geniality.
+    FUMBLE: You compared her to what?!? -5 Geniality.
 "26":
   name: About Things Real
+  text: "A lady asks if you believe in faeries and spirits."
+  full: |
+    A lady asks if you believe in faeries and spirits.
+
+    SPIRITUAL WINS: You tell her your own stories about faeries. Roll Faerie Lore: on a success, +1 Geniality.
+
+    WORLDLY WINS: You explain that there are no faeries and that magic is not real. She walks away and calls you a curmudgeon. -1 Geniality.
 "27":
   name: All You Can Eat
   tags:
     - "leave"
     - "winter"
+  text: "A voracious knight challenges you to see who can eat the most."
+  full: |
+    A voracious knight challenges you to see who can eat the most.
+
+    To determine the opponent's Indulgent if unknown, roll 1d6 + 13.
+
+    IF YOU FAIL AND THE KNIGHT WINS: You depart the feast with a bellyache.
+
+    IF THE KNIGHT FAILS AND YOU WIN: Gain 5 Glory. If you surpass a multiple of 1,000 Glory in the next Winter Phase, you may increase your size by 1.
 "28":
   name: Alms
+  text: "A monk is asking guests to donate to the church."
+  full: |
+    A monk is asking guests to donate to the church.
+
+    SUCCESS: You must give at least 3 to the church. For each 3 donated, gain 5 Glory. If you give at least 34, gain the Generous trait.
+
+    Pagan knights may choose not to roll, but those who willingly give at least 34 gain the Worldly trait.
 "29":
   name: An Ideal Wife
   tags:
     - "host"
+  text: "The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife."
+  full: |
+    The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife.
+
+    Roll on the Random Marriage table at +5 to determine the eligible lady.
+
+    UNMARRIED: If you decline her hand, lose 1 Loyalty (Lord).
+
+    MARRIED: You may recommend a fellow player-knight. If you do, give this card to that player and gain the Generous trait. That player must play this card next turn instead of drawing any cards.
 "30":
   name: An Ideal Wife
   tags:
     - "host"
+  full: |
+    The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife.
+
+    Roll on the Random Marriage table at +5 to determine the eligible lady.
+
+    UNMARRIED: If you decline her hand, lose 1 Loyalty (Lord).
+
+    MARRIED: You may recommend a fellow player-knight. If you do, give this card to that player and gain the Generous trait. That player must play this card next turn instead of drawing any cards.
 "31":
   name: Be Valorous
+  full: |
+    Several knights speak about bravery versus foolish recklessness.
+
+    VALOROUS WINS: The knights are impressed by your courageous words. +1 Geniality.
+
+    RECKLESS WINS: They hope your recklessness will not kill you. -2 Geniality.
 "32":
   name: Biggest Mistake
   tags:
     - "duel"
+  full: |
+    Several knights talk merrily about their greatest gaffes. They ask you to share your biggest mistake.
+
+    SUCCESS: Your humorous anecdote is well received. Gain 5 Glory and the Modest trait.
+
+    FAILURE: They mock you. Roll Proud: on a success, you may challenge one of them to a duel.
 "33":
   name: Boasting Knights
+  full: |
+    Several knights are arguing about their favorite weapons and skills.
+
+    To determine each knight's Orate if unknown, roll 2d6 + 3.
+
+    Gain +1 Geniality for each knight you best, plus an additional +1 Geniality if you best them all.
 "34":
   name: Cristian Virtue
   tags:
     - "keep"
     - "religious"
+  full: |
+    A monk wishes to show his worth. He hopes you will hire him after the feast as part of your retinue.
+
+    Keep this card. While you do, gain +5 to all Read, Folk Lore, and Religion rolls. You gain +1 Geniality for each success on Read, Folk Lore, and Religion.
+
+    If you roll a success on Indulgent, Lustful, or Worldly, the monk leaves your company and you must discard this card.
 "35":
   name: Pagan Promise
   tags:
     - "keep"
     - "pagan"
+  full: |
+    A pagan priest wishes to show his worth. He hopes you will hire him afterwards as part of your retinue.
+
+    Keep this card. While you do, gain +5 to all Read, Folk Lore, and Religion rolls. You gain +1 Geniality for each success on Read, Folk Lore, and Religion.
+
+    If you roll a success on Chaste, Lazy, or Selfish, the priest leaves your company and you must discard this card.
 "36":
   name: Center Stage
+  full: |
+    The host calls upon you to entertain with story, music, or a song.
+
+    SUCCESS: A notable performance. +1 Geniality.
+    CRITICAL SUCCESS: All are impressed. +2 Geniality.
+    FUMBLE: Why did you pick that song? -2 Geniality.
 "37":
   name: Chance Encounter
   tags:
     - "keep"
+  full: |
+    A lady asks for your help.
+
+    SUCCESS: You offer the lady sage advice on her problem and she remains at your side. Gain the appropriate Trait, Passion, or Skill.
+
+    Keep this card. As long as you keep it, gain +1 Geniality per round.
+
+    Discard this card if you interact with another lady.
 "38":
   name: Chivalrous Life
+  full: |
+    The conversation turns to matters of chivalry.
+
+    SUCCESS: You have some good ideas. +1 Geniality.
+    CRITICAL SUCCESS: You show wisdom and impress others. +2 Geniality.
+    FUMBLE: An embarrassing faux pas. -2 Geniality.
 "39":
   name: Christian Blessing
   tags:
     - "religious"
     - "winter"
+  full: |
+    You receive a blessing from a holy man present at the feast.
+
+    Gain an additional 3 from an exceptional harvest next Winter Phase.
 "40":
   name: Christian Sin
   tags:
     - "religious"
+  full: |
+    A renowned holy person speaks of the sins surrounding feasting.
+
+    SPIRITUAL WINS: You gain a +5 bonus to Temperate rolls during the feast. Further, you may pledge 3 to the church. If you do, gain +2 Geniality.
+
+    WORLDLY WINS: “I do what I want!” (no bonus)
 "41":
   name: Awkward Conversation
+  full: |
+    Another guest engages you on a topic you know little about.
+
+    SUCCESS: You pick up a few basics. Gain the appropriate Skill.
+    CRITICAL SUCCESS: You surprise the knight with your eagerness to learn. You gain a friend for the rest of the feast: +3 to this Skill for the remainder of the feast and +2 Geniality.
 "42":
   name: Damaged Goods
+  full: |
+    A piece of jewelry snags on a hanging or a passing cloak and is in danger of getting lost.
+
+    SUCCESS: You manage to hold onto it, but the piece is damaged (half its value until repaired). Repairing the jewelry costs one-tenth the value of the item.
+
+    FAILURE: Your jewelry flies off and is lost in the crowd. You can roll Awareness each following feast round; on a success, you find it again. If you roll Awareness, you draw no cards that round.
+
+    Discard and draw again if you have no jewelry.
 "43":
   name: Dangerous Game
+  full: |
+    Several young knights play a rather dangerous game with knives. They ask you to join in.
+
+    SUCCESS: +1 Geniality. Gain Dagger skill.
+    FAILURE: You wound your hand. Take 1d3 damage.
 "44":
   name: Difficult Question
   tags:
     - "keep"
+  full: |
+    Keep this card until you interact with another woman. You cannot draw cards while you keep this one. Each round, make one Flirting or Romance roll.
+
+    FLIRTING SUCCESS: The lady remains at your side, amused by your banter. +1 Geniality.
+    ROMANCE SUCCESS: The lady grows fond of your comments. +2 Geniality.
+
+    ANY FUMBLE: You must discard this card, and you lose all Geniality gained from it.
+
+    At the end of the feast, if you still have this card, you may petition the lady's lord for permission.
 "45":
   name: Angry Dogs
   tags:
     - "leave"
+  full: |
+    The host's dogs bark whenever you come near.
+
+    SUCCESS: You stop eating that blood pudding. No effect.
+    CRITICAL SUCCESS: You learn something new about dogs. Gain Hunting skill.
+    FAILURE: You try to shoo the dogs away while still eating your food. -2 Geniality. Roll Temperate: on a success, gain Temperate trait.
+    FUMBLE: The dogs chase you out of the hall! You depart the feast.
 "46":
   name: Raucous Contest
   tags:
     - "leave"
+  full: |
+    Several knights begin a drinking contest.
+
+    To determine each knight's Indulgent if unknown, roll 3d6 + 2.
+
+    Gain +2 Glory for each knight you best and an additional +5 Glory if you win the contest.
+
+    All contestants (including the player-knight) are then requested by the steward to depart the feast.
 "47":
   name: Drunken Lout
+  full: |
+    A drunk knight, dancing clumsily, bumps into you.
+
+    FORGIVING WINS: You gracefully help the drunk, who becomes your friend for the rest of the evening. +1 Geniality.
+    VENGEFUL WINS: You bump the lout back and he is knocked to the floor. -1 Geniality.
 "48":
   name: Drunken Lout
+  full: |
+    A drunk knight, dancing clumsily, bumps into you.
+
+    FORGIVING WINS: You gracefully help the drunk, who becomes your friend for the rest of the evening. +1 Geniality.
+    VENGEFUL WINS: You bump the lout back and he is knocked to the floor. -1 Geniality.
 "49":
   name: Emergency
   tags:
     - "leave"
+  full: |
+    A guest sitting next to you begins choking on a piece of food.
+
+    SUCCESS: People notice your efforts. Gain 5 Glory and +2 Geniality.
+    CRITICAL SUCCESS: You gain a small favor from the thankful guest.
+    FAILURE: Another knight assists with the choke and gets all the credit! -1 Geniality.
+    FUMBLE: A series of clumsy efforts might have actually killed the victim, had not another guest intervened. -5 Geniality, and you depart the feast in shame.
 "50":
   name: Excellent Wine
+  full: |
+    A very good wine is served at your table.
+
+    TEMPERATE WINS: Gain the Temperate trait.
+    INDULGENT WINS: Your Intoxication level goes up by one.
 "51":
   name: Faerie Tales
+  full: |
+    Several ladies ask you to tell them something about faeries.
+
+    SUCCESS: You tell some entertaining stories and the ladies smile. +1 Geniality.
+    CRITICAL SUCCESS: The ladies laud you as an authority. +2 Geniality. Gain Flirting.
 "52":
   name: Faerie Tales
+  full: |
+    Several ladies ask you to tell them something about faeries.
+
+    SUCCESS: You tell some entertaining stories and the ladies smile. +1 Geniality.
+    CRITICAL SUCCESS: The ladies laud you as an authority. +2 Geniality. Gain Flirting.
 "53":
   name: Fashion Disaster
   tags:
     - "miss"
+  full: |
+    Another knight has arrived wearing the same clothing as you.
+
+    SUCCESS: Your status is higher. +1 Geniality. If you decide to change clothes anyway, gain Merciful and miss the next feast round.
+    FAILURE: His status is higher. You must miss one round to change clothing, or suffer -2 Geniality per round until you do.
 "54":
   name: Generous Host
   tags:
     - "host"
+  full: |
+    The host requests your help for one of his other guests.
+
+    Move up one seating area and remain there for the rest of the feast.
 "55":
   name: Generous Knight
+  full: |
+    A rich and generous knight asks you about your circumstances at home.
+
+    If your grade of maintenance is Poor or Ordinary, the knight offers to provide goods and services for you. If you accept, you may live as a Rich knight for the next year. If you decline the offer, gain the Proud trait.
 "56":
   name: Gentle Woman
   tags:
     - "keep"
+  full: |
+    A lady takes a shine to you and helps spruce up some of your clothing.
+
+    At the start of each round, you can keep this card or discard it. If you keep it, gain +2 Geniality per round.
+
+    You cannot draw cards while you keep this one.
+
+    Discard this card if you are forced to change your clothing.
 "57":
   name: Glory Hound
+  full: |
+    Why do your friends get all the good opportunities? Not this time.
+
+    If you drew more than one card, you must discard all other cards you drew. (You can keep other Keeper cards you already have in play.)
+
+    You may look at each other player's cards before any cards are played this round. Choose one card from among theirs. You may play that card as if you had drawn it yourself. If you do, lose 1 Geniality and gain the Reckless trait.
 "58":
   name: God(s) Shine On You
   tags:
     - "keep"
+  full: |
+    The power(s) above shine upon you, and everyone sees you in a different light.
+
+    Keep this card. While you do, gain +5 to all Courtesy, Dancing, Flirting, and Orate rolls. You get +1 Geniality for each success on Courtesy, Dancing, Flirting, and Orate.
+
+    Roll Spiritual each time you use this card's bonus. FAILURE: Discard this card.
+
+    You cannot draw cards while you keep this one.
 "59":
   name: Gossip
   tags:
     - "keep"
+  full: |
+    You overhear some interesting conversation.
+
+    SUCCESS: Keep this card. You cannot draw cards while you keep this one. Gain +10 on any one Skill roll, then discard this card.
+    FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "60":
   name: Gossip
   tags:
     - "keep"
+  full: |
+    You overhear some interesting conversation.
+
+    SUCCESS: Keep this card. You cannot draw cards while you keep this one. Gain +10 on any one Skill roll, then discard this card.
+    FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "61":
   name: Gossip
   tags:
     - "keep"
+  full: |
+    You overhear some interesting conversation.
+
+    SUCCESS: Keep this card. You cannot draw cards while you keep this one. Gain +10 on any one Skill roll, then discard this card.
+    FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "62":
   name: Great Deeds
+  full: |
+    Several knights ask you to tell of your great deeds.
+
+    MODEST WINS: Your humility pleases the knights. Gain 5 Glory.
+    PROUD WINS: Roll Orate.
+      SUCCESS: "Remarkable!" Gain 10 Glory.
+    FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "63":
-  name: Greet Deeds
+  name: Great Deeds
+  full: |
+    Several knights ask you to tell of your great deeds.
+
+    MODEST WINS: Your humility pleases the knights. Gain 5 Glory.
+    PROUD WINS: Roll Orate.
+      SUCCESS: "Remarkable!" Gain 10 Glory.
+    FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "64":
-  name: Greet Deeds
+  name: Great Deeds
+  full: |
+    Several knights ask you to tell of your great deeds.
+
+    MODEST WINS: Your humility pleases the knights. Gain 5 Glory.
+    PROUD WINS: Roll Orate.
+      SUCCESS: "Remarkable!" Gain 10 Glory.
+    FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "65":
   name: Gwyddbwyll
+  full: |
+    Another knight offers you a game of Gwyddbwyll.
+
+    To determine the knight's Gaming if unknown, roll 3d6.
+    SUCCESS: You win, but barely. Gain Gaming trait.
+    CRITICAL SUCCESS: You trounce your opponent. +2 Geniality.
+    FUMBLE: You play poorly and people whisper about your competence. -1 Geniality.
 "66":
   name: Help Needed
   tags:
     - "keep"
+  full: |
+    A knight asks your assistance. He urgently needs to leave and asks you to entertain a lady relative.
+
+    Roll 1d6 to determine the lady's relationship to the knight: 1-2 his daughter; 3-4 his wife; 5-6 his sister.
+
+    At the start of each turn you can keep this card or discard it. If you keep it, gain +2 Geniality per round. If you discard it willingly, lose 2 Geniality.
+
+    You may discard this card without penalty if you draw a Host card, as you have reason to leave the lady. You cannot draw cards while you keep this one.
 "67":
   name: Holy Blessing
   tags:
     - "keep"
+  full: |
+    It seems you are blessed by higher powers.
+
+    Keep this card. You may discard this card before making any roll or test during the feast. If you do, you do not roll, but succeed automatically.
+
+    You cannot draw cards while you keep this one.
+
+    If you still have this card at the end of the feast, gain 15 Glory.
 "68":
   name: Holy Blessing
   tags:
     - "keep"
+  full: |
+    It seems you are blessed by higher powers.
+
+    Keep this card. You may discard this card before making any roll or test during the feast. If you do, you do not roll, but succeed automatically.
+
+    You cannot draw cards while you keep this one.
+
+    If you still have this card at the end of the feast, gain 15 Glory.
 "69":
   name: How's the Wine
+  full: |
+    You are asked to comment on the wine.
+
+    SUCCESS: Your comments are well received. Gain Courtesy trait.
+    CRITICAL SUCCESS: Your connoisseur's comments are highly valued: +2 Geniality.
+    FUMBLE: Other guests find your comments boorish. -2 Geniality.
 "70":
   name: Inflamed Passions
   tags:
     - "duel"
+  full: |
+    Talk at your table becomes quite heated.
+
+    PRUDENT WINS: You stay out of it. +1 Geniality.
+    RECKLESS WINS: You voice your opinion and are challenged to a duel. -1 Geniality.
 "71":
   name: Insult to a Lady
   tags:
     - "duel"
+  full: |
+    You witness a knight insulting a lady and rise up in her defense.
+
+    SUCCESS: The knight apologizes. +1 Geniality.
+    CRITICAL SUCCESS: The knight backs down and apologizes profusely. +2 Geniality.
+    FAILURE: The knight feels he is in the right and accepts your challenge. You are challenged to a duel. -1 Geniality.
+    FUMBLE: The knight laughs in your face. -3 Geniality.
 "72":
   name: Insult to a Serving Girl
+  full: |
+    A knight slaps a serving girl. You see others turn away in embarrassment.
+
+    JUST WINS: You intervene. Your cup and trencher now runneth over; gain +5 to Indulgent until the end of the feast. +2 Geniality.
+    ARBITRARY WINS: You ignore the situation and turn away. Gain Indulgent trait.
 "73":
   name: Introductions
+  full: |
+    A famous knight from outside the area asks if you would introduce him to some guests.
+
+    SUCCESS: You introduce him to some guests. +1 Geniality.
+    CRITICAL SUCCESS: You time it well and introduce him to the host. +2 Geniality.
+    FUMBLE: You forget names you know well. -2 Geniality.
 "74":
   name: Juicy Tales
   tags:
     - "keep"
     - "miss"
+  full: |
+    A guest has some juicy tales to tell about the host or another significant guest.
+
+    Keep this card. You miss the next round of the feast as you listen to gossip.
+
+    In a subsequent round you may discard this card to avoid the Geniality penalty imposed by another card or to gain +5 to any Intrigue roll.
 "75":
   name: Keep Dancing
   tags:
     - "keep"
+  full: |
+    You are invited to dance.
+
+    SUCCESS: Your dancing attracts the gaze of an eligible lady. Gain Flirting trait.
+    CRITICAL SUCCESS: Your dancing is admired and commented upon by many. +1 Geniality.
+    FAILURE: You may keep this card until the next round and play it again instead of drawing a card. If you do not, -2 Geniality.
 "76":
   name: King of the Beam
   tags:
     - "keep"
+  full: |
+    You are selected to be the lead character for this feast's disguising (King of the Bean, Cupid's cherub, the Great White Stag, etc.).
+
+    Gain 10 Glory and +3 Geniality.
+
+    Keep this card. For the rest of the feast you must choose to draw cards in preference to any other activity. If you have any other keeper cards in play that prevent you from drawing cards, discard those keeper cards.
+
+    While you have King of the Bean, you cannot play another keeper card.
 "77":
   name: Ladies Quarrel
   tags:
     - "duel"
+  full: |
+    Two ladies are quarreling and the situation is becoming awkward.
+
+    JUST WINS: You help settle their differences amicably. +2 Geniality.
+    ARBITRARY WINS: You side with one lady. Roll 1d6; on a 6 an angry husband or male friend of the other lady challenges you to a contest or duel (GM's choice).
 "78":
   name: Lady in Distress
   tags:
     - "duel"
+  full: |
+    You notice a lady trying to avoid an amorous knight.
+
+    SUCCESS: The lady is grateful. +1 Geniality.
+    CRITICAL SUCCESS: The lady sings your praises. +2 Geniality.
+    FAILURE: The knight shoves you aside. You may challenge him to a duel; if you do, gain the Proud trait.
+    FUMBLE: The knight challenges you to a duel for your trouble.
 "79":
   name: Lead the Dance
+  full: |
+    A lady is picked to lead the next dance; you are chosen to join her.
+
+    SUCCESS: You dance well. +1 Geniality. Gain Dancing trait.
+    CRITICAL SUCCESS: Everyone is impressed. +2 Geniality.
+    FUMBLE: You step on someone's toes. -2 Geniality.
 "80":
   name: May We Dance?
   tags:
     - "keep"
+  full: |
+    A lady praises your dancing.
+
+    SUCCESS: "You are a good dancer." +1 Geniality.
+    CRITICAL SUCCESS: She is impressed and stays with you. Keep this card until you interact with another woman. While you keep it, gain +1 Geniality per round.
 "81":
   name: Lost Child
+  full: |
+    A child tugs at your clothes and implores you for help in finding his or her parents.
+
+    MERCIFUL WINS: You help the child. Miss the next round. +2 Geniality.
+    CRUEL WINS: You send the child to the steward. Gain Cruel trait.
 "82":
   name: Lost Love
+  full: |
+    A weeping knight bemoans his lost love.
+
+    MERCIFUL WINS: You join him in his lament to the exclusion of all else. +1 Geniality. You suffer -5 to all Courtesy, Dancing, Flirting, and Orate rolls next round.
+    CRUEL WINS: You mock his loss and he leaves the feast. Others look on in pity. -2 Geniality.
 "83":
   name: Malicious Slander
+  full: |
+    A knight unfairly criticizes you within earshot.
+
+    MODEST WINS: You ignore the scoundrel. +2 Geniality. Gain Modest trait.
+    PROUD WINS: You scuffle with the knight and the steward has to pull you apart. -2 Geniality. You may challenge the knight to a duel. If you don't, lose 1 Honor.
 "84":
   name: Tipsy
+  full: |
+    You keep forgetting your manners. Is it the drink?
+
+    SUCCESS: Time to take it slow. +5 Temperate next round.
+    FUMBLE: You've nearly embarrassed yourself and it's time to retire. Depart the feast.
 "85":
   name: Manners!
+  full: |
+    You unexpectedly pass wind while the host or an important guest is speaking.
+
+    SUCCESS: You manage to excuse yourself graciously. No effect.
+    CRITICAL SUCCESS: You are adequately abashed and the speaker finds it funny. +1 Geniality.
+    FAILURE: People around you disapprove.
+    FUMBLE: That wasn't just wind. You leave to change clothes. Miss the next round.
 "86":
   name: Mead
+  full: |
+    A large keg of fine mead is brought in and opened.
+
+    TEMPERATE WINS: You compliment the host on his fine choice. +1 Geniality.
+    INDULGENT WINS: Your intoxication increases one level.
 "87":
   name: Regale the Host
+  full: |
+    You are asked to entertain the high table with a story.
+
+    SUCCESS: Your tale is adequate. +1 Geniality.
+    CRITICAL SUCCESS: The host is enthralled and asks you to tell the story again. +3 Geniality. Keep this card; you must play it again next round, but you gain +5 on your Orate roll. If you get this result again, you may discard this card.
+    FAILURE: The host seems unimpressed.
+    FUMBLE: The host shows displeasure at your poor story. You may not play any Host cards for the remainder of the feast.
 "88":
   name: Meet the Host
+  full: |
+    The host has heard of your puissance and wishes to quiz you on your expertise.
+
+    SUCCESS: The host is satisfied with your knowledge. +1 Geniality.
+    CRITICAL SUCCESS: He sings your praises to the rest of the guests. +2 Geniality.
+    FAILURE: Unimpressive. You can do better. -1 Geniality.
+    FUMBLE: You make a fool of yourself. You may not play any Host cards for the remainder of the feast.
 "89":
   name: Mercy, Milord
+  full: |
+    Several ladies ask you how merciful you would be if confronted with your hated foe.
+
+    MERCIFUL WINS: The ladies bless you for your mercy. +1 Geniality. Gain Merciful trait.
+    HATE WINS: Your violent ways offend the ladies. -2 Geniality.
 "90":
   name: Minstrels Sing
+  full: |
+    The minstrels play a rousing song, and you feel like joining in the merriment.
+
+    SUCCESS: You accompany the minstrels well. +1 Geniality.
+    CRITICAL SUCCESS: You take the lead and the minstrels themselves applaud you. +2 Geniality.
+    FUMBLE: Out of tune, out of time. -2 Geniality.
 "91":
   name: Mistaken Identity
+  full: |
+    A knight mistakes you for another. He praises you for deeds you did not perform.
+
+    MODEST WINS: You inform him of his mistake. Roll Courtesy.
+      SUCCESS: He is impressed by your humble grace. +1 Geniality.
+    DECEITFUL WINS: You accept his praise. Gain Deceitful trait.
 "92":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "93":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "94":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "95":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "96":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "97":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "98":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "99":
   name: More Drink
+  tags:
+    - "miss"
+  full: |
+    Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
+    Mandatory (Indulgent 16+)
 "100":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "101":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "102":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "103":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "104":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "105":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "106":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "107":
   name: More Food
+  full: |
+    Another platter of food is brought out.
+
+    TEMPERATE WINS: No effect.
+    INDULGENT WINS: Make a Constitution check to keep eating. FAILURE: You feel full and retreat to a quiet place, missing the next feast round.
+    Mandatory (Indulgent 16+)
 "108":
   name: New Friends
+  full: |
+    A knight asks to be introduced to your friends. He is alone and seeks good company.
+
+    Keep this card. While you do, gain +5 to all Courtesy, Dancing, Flirting, and Orate rolls.
+
+    Discard this card when you draw a Host card or a mandatory card.
+
+    If you have this card at the end of the feast, the knight is grateful and gives you a gift worth £1.
 "109":
   name: Old Friends
+  full: |
+    An older knight who was a friend of your father tells you some good stories.
+
+    SUCCESS: The knight asks to stay at your estate a while and reminisce.
+
+    If you accept his offer, Love (Family) and Hospitality +2 Geniality. You must pay £3/year for 1d6 years to support the knight while he stays with you.
+
+    If you decline, gain the Prudent trait.
 "110":
   name: Oops!
+  full: |
+    A serving girl drops a platter of food all over you.
+
+    SUCCESS: You avoid the mess. +1 Geniality.
+    FAILURE: Keep this card. While you do, -3 Geniality per round. If you miss one round to clean up, you may discard this card.
 "111":
   name: Overindulgence
+  full: |
+    You've had too much to drink. Your stomach is uneasy and your head is spinning.
+
+    FAILURE: You step outside for some fresh air. Miss the next round.
+    FUMBLE: You embarrass yourself and need to change your clothes. Miss the next round and lose 4 Geniality.
 "112":
   name: Pagana Gift
+  full: |
+    A local witch (or pagan) approaches you and grants you a gift.
+
+    If you are unmarried, all horse survival rolls for your estate have a +3 bonus this Winter Phase.
+    If you are married, gain a +3 on all child survival rolls this Winter Phase.
 "113":
   name: Pagan Pleasures
+  full: |
+    A bard sings of the pleasures of feasting.
+
+    SPIRITUAL WINS: Your mouth waters. Gain +1d6 to Indulgent next round.
+    WORLDLY WINS: “I do what I want!” Gain Worldly trait.
 "114":
   name: Passing Praise
+  full: |
+    The hostess of the feast passes by and comments on your looks.
+
+    SUCCESS: She comments how you resemble a noted knight. +1 Geniality.
+    CRITICAL SUCCESS: She notes aloud how handsome you look tonight. +2 Geniality.
+    FUMBLE: Her words are cruel. You might remind her of someone she despises. -2 Geniality.
 "115":
   name: Passion
+  full: |
+    During a conversation, a fellow guest says you lack passion.
+
+    SUCCESS: You show them that you do in fact care deeply. Gain the Passion trait.
+    FAILURE: Perhaps they're right. Reduce the Passion by 1 point. If you are speaking to a knight (roll 1d6: 1-3), you may instead challenge him to a duel. Gain Proud trait.
 "116":
   name: People Skills
+  full: |
+    Your reputation for nobility is noted.
+
+    SUCCESS: How noble you are! +1 Geniality.
+    CRITICAL SUCCESS: The servants hear you. The next morning, you will find a bottle of the house's best wine among your equipment. +2 Geniality.
+    FUMBLE: Word spreads among the commoners of your ill-considered ways. Lose £1 of income this Winter Phase as they conceal render from you.
 "117":
   name: Personal Valet
+  full: |
+    A knight says he hired a personal valet, but sadly he cannot afford the boy any longer.
+
+    You may hire the boy as a valet if you wish for £1 per year. If you do, the valet has a Fashion Skill of 2d6 + 4. As long as he remains in your employ, you may substitute his Fashion Skill for your own.
 "118":
   name: Popular
+  full: |
+    You are popular tonight. Everyone seems drawn to you.
+
+    Keep this card. While you do, gain +2 Geniality per round.
+
+    If you roll a success on Proud or a failure on Modest, you must discard this card. The adulation begins to go to your head.
 "119":
   name: Quarreling Knights
+  full: |
+    Two knights are arguing and it is getting out of hand.
+
+    JUST WINS: You intervene and both knights accept your judgment. +1 Geniality.
+    ARBITRARY WINS: You side with one knight. The offended knight promises he won't forget the slight.
 "120":
   name: Queasy
+  full: |
+    You may miss one round to go get some fresh air. If you do not, you must roll Constitution.
+
+    FAILURE: You feel sick and depart the feast.
+    FUMBLE: You throw up in the hall and are escorted out by the stewards, departing the feast.
 "121":
   name: Queasy
+  full: |
+    You may miss one round to go get some fresh air. If you do not, you must roll Constitution.
+
+    FAILURE: You feel sick and depart the feast.
+    FUMBLE: You throw up in the hall and are escorted out by the stewards, departing the feast.
 "122":
   name: Romance
+  full: |
+    Some guests converse about love. They want to know how you would win the heart of a lady.
+
+    SUCCESS: The ladies swoon over your ideas. +2 Geniality.
+    CRITICAL SUCCESS: +2 Geniality and keep this card. If you draw a test card involving a lady, you may discard this card for a +5 bonus on the related test.
 "123":
   name: Safekeeping
+  full: |
+    A knight asks you to keep a piece of jewelry safe for him.
+
+    TRUSTING WINS: You do as he asks. Gain Honest trait.
+    SUSPICIOUS WINS: You are not convinced of the knight's good intentions. Roll Courtesy.
+    FAILURE: Your insinuation is insulting! -1 Geniality.
 "124":
   name: Sage Advice
+  full: |
+    The host seeks your counsel about some problems with another knight or lord.
+
+    SUCCESS: The host nods approvingly at your advice. +2 Geniality.
+    CRITICAL SUCCESS: The host is fascinated by your insights. Gain an additional 10 Glory and the host's favor.
+    FUMBLE: Nonsense. Are we talking about the same man? -4 Geniality.
 "125":
   name: Secret Dish
+  full: |
+    A platter of your favorite food is served nearby.
+
+    TEMPERATE SUCCESS: You ask for the platter to be brought over. All player-knights seated in the same area as you gain +1 Geniality, plus +1 Loyalty (Your player-knights' Order), if one exists.
+    INDULGENT SUCCESS: You stuff your face. Miss the next round.
 "126":
   name: Show of Strength
+  full: |
+    Another knight challenges you to a contest of strength.
+
+    To determine the knight's STR if unknown, roll 3d6 + 3. On a tie, reroll until someone wins.
+
+    YOU WIN: You are victorious. Gain 10 Glory.
+    CRITICAL SUCCESS: You trounce the knight and impress the entire court. Gain 20 Glory, +1 Geniality, and +5 to any one roll at this feast.
+    HE GETS A CRITICAL SUCCESS: You take 1d3 damage.
 "127":
   name: Singing Sensation
+  full: |
+    A group of ladies asks you to sing a love song.
+
+    SUCCESS: A passable performance. Gain Singing trait.
+    CRITICAL SUCCESS: The ladies clap merrily. +1 Geniality. Gain Singing trait.
+    FUMBLE: You sing so badly the dogs howl. -2 Geniality.
 "128":
   name: A Faux Pas
+  full: |
+    You notice a guest about to take a seat above their station.
+
+    MERCIFUL WINS: You point out the error before it occurs. +2 Geniality. Gain Merciful trait.
+    CRUEL WINS: You laugh with others at the other guest's expense. +1 Geniality. Gain Cruel trait.
 "129":
   name: Something Shiny
+  full: |
+    You find an expensive piece of jewelry.
+
+    HONEST WINS: You announce your find and ensure the proper owner is found. +2 Geniality.
+    DECEITFUL WINS: You may keep the trinket (worth £1). If you return it anyway, gain Honest trait.
 "130":
   name: Stewardship
+  full: |
+    Some knights are talking about the management of their estates.
+
+    STEWARDSHIP WINS: You impress the others with your knowledge. Gain Stewardship trait.
+    ORATE WINS: You boast about your estate and how it makes you a rich man. Gain Proud trait (if you are indeed Rich), or Deceitful trait (if Ordinary or worse).
 "131":
   name: Story Request
+  full: |
+    A lady requests you tell a story of your daring skills.
+
+    SUCCESS: The lady enjoys your tale. +2 Geniality.
+    CRITICAL SUCCESS: Enrapt, she touches your cheek. +3 Geniality.
+    FAILURE: She doesn't credit your claims. -2 Geniality.
+    FUMBLE: You make a fool of yourself. She laughs and tells her friends. -5 Geniality.
 "132":
   name: Strange Crone
+  full: |
+    An old woman speaks aloud with an odd observation about your features. Choose a weapon Skill, or else choose Folk Lore or Orate. Roll on the chosen Skill. On a success, gain the Skill.
 "133":
   name: The Best Weapon
+  full: |
+    Several knights are arguing about their favorite weapons.
+
+    SUCCESS: You know what you're talking about. +1 Geniality. Gain Weapon skill.
+    CRITICAL SUCCESS: The knights are impressed and want to learn more, sparring with you tomorrow. +2 Geniality.
 "134":
   name: Host Calls for a Dance
+  full: |
+    The host asks you and your friends to join him in a hunt or at falconry the day after the feast.
+
+    Anyone who agrees to join the hunt receives +1 to Falconry or Hunting (player's choice).
+    A character may decline this offer, but suffers -3 Geniality.
 "135":
   name: Host Calls for a Hunt
+  full: |
+    The host asks you and your friends to join him in a hunt or at falconry the day after the feast.
+
+    Anyone who agrees to join receives +1 to Falconry or Hunting (player's choice).
+    A character may decline this offer, but suffers -3 Geniality.
 "136":
   name: Host Calls for a Song
+  full: |
+    The host rises and calls for everyone to join him in a song.
+
+    PARTIAL SUCCESS: +1 Geniality.
+    SUCCESS: +2 Geniality.
+    CRITICAL SUCCESS: +3 Geniality and Singing trait.
+    FUMBLE: You mumble along, off-key. -4 Geniality.
 "137":
   name: Host Calls for a Toast
   tags:
     - "host"
+  full: |
+    The host calls for a toast.
+
+    PARTIAL SUCCESS: +1 Geniality.
+    SUCCESS: +2 Geniality.
+    CRITICAL SUCCESS: +3 Geniality and Courtesy trait.
+    FUMBLE: Other guests glower at your impropriety. -4 Geniality.
 "138":
   name: Host Calls for a Toast
   tags:
     - "host"
+  full: |
+    The host calls for a toast.
+
+    PARTIAL SUCCESS: +1 Geniality.
+    SUCCESS: +2 Geniality.
+    CRITICAL SUCCESS: +3 Geniality and Courtesy trait.
+    FUMBLE: Other guests glower at your impropriety. -4 Geniality.
 "139":
   name: Host Calls for a Toast
   tags:
     - "host"
+  full: |
+    The host calls for a toast.
+
+    PARTIAL SUCCESS: +1 Geniality.
+    SUCCESS: +2 Geniality.
+    CRITICAL SUCCESS: +3 Geniality and Courtesy trait.
+    FUMBLE: Other guests glower at your impropriety. -4 Geniality.
 "140":
   name: Host Passes By
+  geniality: 1
+  tags:
+    - "host"
+  text: "The host comes by and speaks with you about a topic dear to your heart."
+  full: |
+    The host comes by and speaks with you about a topic dear to your heart.
+
+    SUCCESS: Well put! +1 Geniality.
+    CRITICAL SUCCESS: Everyone at the table is impressed. +2 Geniality.
+    FAILURE: You and the host agree to disagree. -1 Geniality.
+    FUMBLE: He vehemently disagrees with you. -2 Geniality.
 "141":
   name: Host Passes By
+  geniality: 1
+  tags:
+    - "host"
+  text: "The host passes by your table, offering a gracious nod and warm smile. His favor is brief but noticeable — an opportunity for a courteous exchange or a subtle request for attention."
+  full: |
+    The host comes by and speaks with you about a topic dear to your heart.
+
+    SUCCESS: Well put! +1 Geniality.
+    CRITICAL SUCCESS: Everyone at the table is impressed. +2 Geniality.
+    FAILURE: You and the host agree to disagree. -1 Geniality.
+    FUMBLE: He vehemently disagrees with you. -2 Geniality.
 "142":
   name: Host Speaks at Length
+  full: |
+    The host rises and drones on about the current political environment.
+
+    ENERGETIC WINS: You listen carefully. Roll Intrigue.
+      SUCCESS: You get a glimpse of what is to come. Gain +5 to your Intrigue for the rest of the feast.
+    LAZY WINS: Who cares about politics, anyway? Gain Lazy trait.
 "143":
   name: Host Needs Advice
+  full: |
+    The hostess desires to speak with you about some problems involving another lady.
+
+    SUCCESS: The hostess nods at your advice. +1 Geniality.
+    CRITICAL SUCCESS: The hostess is impressed with your perspicacity. +1 Geniality and gain Intrigue trait.
+    FUMBLE: You manage to insult her. She glowers and stalks away. -5 Geniality.
 "144":
   name: The Merchant of Venom
+  full: |
+    The court jester has singled you out for lampooning.
+
+    MODEST WINS: You laugh along with everyone else. +1 Geniality.
+    CRITICAL (MODEST): You trade some repartee with the jester and make others laugh. +2 Geniality.
+    PROUD WINS: Your embarrassment is clear for all to see. -1 Geniality.
+    CRITICAL (PROUD): You cuff the jester, knocking him to the floor as the hall descends into awkward silence. -3 Geniality.
 "145":
   name: Those Bandits
+  full: |
+    A local knight mentions having trouble with bandits.
+
+    SUCCESS: You discuss the problem at length and he is glad for your advice. Gain Hunting trait.
+    CRITICAL SUCCESS: You give him some sound advice and he asks you to assist him with the matter in the days following the feast. +1 Geniality and Hunting trait.
 "146":
   name: Time to Share
+  full: |
+    Suddenly your affairs seem inconsequential, and you want your friends to enjoy themselves.
+
+    Keep this card. Whenever you draw a card during this feast, you may give it to another player.
+
+    For every card given away, gain +1 Geniality.
+
+    If you do not distribute any cards by the end of the feast, gain the Selfish trait.
 "147":
   name: Tired
+  full: |
+    You feel exhausted and think about retiring.
+
+    Keep this card. Each round, roll Energetic vs Lazy.
+    ENERGETIC WINS: You muster up the endurance to stay for one more round.
+    LAZY WINS: There will be other opportunities. You say your farewells and depart the feast.
 "148":
   name: Wallflower
+  full: |
+    You notice a shy young lady sitting alone.
+
+    SUCCESS: The lonely lady thanks you for your kind attention, but insists she would rather be alone. Gain Flirting trait.
+    CRITICAL SUCCESS: The lady sees in you a kindred spirit and stays with you until you are called away (by drawing a Host card or being forced to depart). Keep this card. +1 Geniality per round.
+    FUMBLE: You unwittingly insult your would-be companion. -3 Geniality.
 "149":
   name: Wayward Wife
+  full: |
+    Another knight is looking for his wife—who just walked away after propositioning you.
+
+    HONEST WINS: You point the knight towards his wife. Gain the knight's thanks. +2 Geniality.
+    DECEITFUL WINS: You tell the knight nothing. You may choose to miss the next round of the feast. If you do, gain Lustful trait; roll for childbirth next Winter Phase.
 "150":
   name: Well-Dressed
+  full: |
+    A lady passes and comments on your clothing.
+
+    SUCCESS: She notes your choice of courtly garb. Gain Fashion trait.
+    CRITICAL SUCCESS: She spends a while talking with you about your attire. Gain Fashion trait or choose Flirting trait instead.
+    FUMBLE: Her unkind comments make others laugh. -2 Geniality.
 "151":
   name: Who Are You?
+  full: |
+    An unknown lady asks you to entertain her during the feast.
+
+    SUCCESS: You identify that she is an important lady in disguise. Roll Intrigue.
+      SUCCESS: Gain 10 Glory for keeping her secret.
+    FUMBLE: She is annoyed you blew her cover. -2 Geniality.
 "152":
   name: Who Was That?
+  full: |
+    Another knight vies to identify another knight first.
+
+    To determine the knight's Recognize if unknown, roll 1d6 + 5.
+
+    YOU WIN: You identify the knight. Gain Recognize trait.
+    CRITICAL SUCCESS: You tell of the mystery knight's deeds. +1 Geniality.
+    HE WINS: You get it completely wrong. -2 Geniality.
 "153":
   name: Wifely Woes
+  full: |
+    Your wife feels tired and says it is time to depart.
+
+    MERCIFUL WINS: You say your farewells and depart the feast. Gain Love (Wife) trait.
+    SELFISH WINS: You stay but your wife is unhappy. -1 Geniality.
+
+    Married only; unmarried knights must discard and draw again.
 "154":
   name: Young Braggarts
+  full: |
+    Several young knights are becoming progressively wilder trying to one-up each other.
+
+    SUCCESS: You tell some juicy stories of your own and they give you another drink. +1 Geniality.
+    FAILURE: The knights laugh at your ridiculous ideas and continue without you. -1 Geniality.

@@ -35,8 +35,12 @@ class Feast:
             c = Character.get_by_id(cid)
             significant = []
             for i in c.data['stats']:
-                if c.data['stats'][i]>=16:
-                    significant.push(i)
+                try:
+                    if c.data['stats'][i] >= 16:
+                        significant.append(i)
+                except Exception:
+                    # ignore non-numeric or missing stats
+                    pass
             print(f"Adding participiant with cid: {cid}")
             if cid not in self.data['participiants']:
                 self.data['participiants'][cid] = {
@@ -46,7 +50,7 @@ class Feast:
                     'rounds': {}, 
                     'activeCards':[],
                     'tags': [],
-                    'significant': [],
+                    'significant': significant,
                     }
                 print(f"participiants {cid} added with initial score and empty cards.")
             else:
@@ -180,6 +184,7 @@ class Feast:
             FeastTable().updateData(self)
         else:
             print(f"participiants {cid} does not exist.")
+
     def set_round_action(self, action, pid):
         print(f"Setting round action for round {self.data['round']}: {action}")
 
