@@ -87,11 +87,12 @@ def main():
                 url = f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}'
                 await event.member.send(url)
                 if event.emoji.name == '🗺️':
-                    map = MapsTable.get_by_url(url)
+                    map = MapsTable().get_by_url(url)
                     if not map:
-                        MapsTable.add(url, 'UnSorted', 10, fileName)
+                        MapsTable().add(url, 'UnSorted', 10, fileName)
 
     Config.reload()
+    print(f"{Config.config['token']}", flush=True)
     client.run(Config.config['token'])
 
 ###############################################################################
