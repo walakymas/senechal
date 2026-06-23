@@ -69,7 +69,7 @@ def main():
     @client.event
     async def on_raw_reaction_add(event):
         print(f"reaction {event.channel_id}::{event.emoji.name}")
-        if event.emoji.name == '👀' or event.emoji.name == ':map:':
+        if event.emoji.name == '👀' or event.emoji.name == '🗺️':
             dir = os.path.join("/var/www/senechalPictures", f"{event.channel_id}")
             from pathlib import Path
             Path(dir).mkdir(parents=True, exist_ok=True)
@@ -86,7 +86,7 @@ def main():
                     print('exists')
                 url = f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}'
                 await event.member.send(url)
-                if event.emoji.name == ':map:':
+                if event.emoji.name == '🗺️':
                     map = MapsTable.get_by_url(url)
                     if not map:
                         MapsTable.add(url, 'UnSorted', 10, fileName)
