@@ -452,6 +452,43 @@ def feast(request):
 
 @never_cache
 def maps(request):
-    # Return all available maps
+     # Return all available maps
     list = MapsTable().list()
     return JsonResponse(convert(list, MAP_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+def add_map(request):
+    # expects POST with url, category, ord, name
+    try:
+        url = request.POST['url']
+        category = request.POST.get('category','')
+        ord = int(request.POST.get('ord','0'))
+        name = request.POST.get('name','')
+        MapsTable().add(url, category, ord, name)
+        return maps(request)
+    except Exception as ex:
+        return JsonResponse({'error':str(ex)}, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+def update_map(request):
+    # expects POST with id, url, category, ord, name
+    try:
+        id = int(request.POST['id'])
+        url = request.POST['url']
+        category = request.POST.get('category','')
+        ord = int(request.POST.get('ord','0'))
+        name = request.POST.get('name','')
+        MapsTable().update(id, url, category, ord, name)
+        return maps(request)
+    except Exception as ex:
+        return JsonResponse({'error':str(ex)}, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+def delete_map(request):
+    # expects GET or POST with id
+    try:
+        id = int(request.POST.get('id', request.GET.get('id')))
+        MapsTable().remove(id)
+        return maps(request)
+    except Exception as ex:
+        return JsonResponse({'error':str(ex)}, safe=False, json_dumps_params={'ensure_ascii': False})

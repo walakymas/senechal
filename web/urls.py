@@ -42,10 +42,11 @@ urlpatterns = [
     path('checks', views.checks, name='checks'),
     path('feast', views.feast, name='feast'),
     path('feastConfig', views.feastConfig, name='feastConfig'),
+    path('maps', views.maps, name='maps'),
+    path('add_map', views.add_map, name='add_map'),
+    path('update_map', views.update_map, name='update_map'),
+    path('delete_map', views.delete_map, name='delete_map'),
     path('addC2C', views.addC2C, name='addC2C'),
     path('connections', views.connections, name='connections'),
-    path('maps', views.maps, name='maps'), 
-
-
-
 ]
+
