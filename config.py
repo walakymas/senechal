@@ -68,8 +68,8 @@ class Config:
 
             with open(r'senechal.yml') as file:
                 Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
-            with open(r'feast.json') as file:
-                Config.feastConfig = json.load(file)
+            with open(r'feast.yml') as file:
+                Config.feastConfig = yaml.load(file, Loader=yaml.FullLoader)
 
             Config.hook = PropertiesTable().getValue('hook')
             
