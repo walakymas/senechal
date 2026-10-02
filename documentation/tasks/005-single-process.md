@@ -20,7 +20,7 @@
 ## Scope
 - **In scope:** `server.py`, `api/` (aiohttp port of `web/views.py`), `senechal.py`
   (`build_client()` split), DB lock + commit-after-fetch, `Procfile`.
-- **Out of scope:** removing `web/` (kept, unused by `server.py`), DB pool, async DB driver,
+- **Out of scope:** removing `web/` (done later in Task 007), DB pool, async DB driver,
   wrapping bot-command DB calls in threads, auth changes.
 
 ## Plan

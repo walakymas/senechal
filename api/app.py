@@ -1,4 +1,4 @@
-"""aiohttp application exposing the same HTTP API as the former Django app (web/).
+"""aiohttp application exposing the HTTP API formerly served by Django.
 
 Routes, request format (form-encoded POST) and JSON output are kept identical so the
 Angular frontend works unchanged. Views are synchronous (they use the shared psycopg2
@@ -12,7 +12,7 @@ from aiohttp import web
 from api import auth, views
 from api.compat import Request
 
-# Same list as CORS_ALLOWED_ORIGINS in web/settings.py
+# Origins allowed to call the API from the browser
 CORS_ALLOWED_ORIGINS = {
     "https://cdpn.io",
     "https://senechalweb.duckdns.org",
@@ -96,7 +96,7 @@ def create_app():
     app.router.add_get('/auth/callback', callback)
     app.router.add_route('*', '/favicon.ico',
                          lambda r: web.HTTPFound('/static/images/favicon.ico'))
-    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'web', 'static')
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')
     if os.path.isdir(static_dir):
         app.router.add_static('/static/', static_dir)
     return app

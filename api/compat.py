@@ -1,6 +1,6 @@
 """Minimal stand-ins for the few django.http pieces that views use.
 
-They let ``api/views.py`` stay a line-for-line port of ``web/views.py`` while running
+They let ``api/views.py`` stay a line-for-line port of the former Django ``web/views.py`` while running
 on aiohttp. A view is a plain synchronous function ``view(request) -> Response``;
 ``api/app.py`` runs it in a worker thread and converts the result to an aiohttp response.
 """

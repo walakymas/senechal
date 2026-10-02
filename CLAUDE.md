@@ -6,10 +6,10 @@ repository. Read it before making changes.
 ## Project in one line
 
 A *King Arthur Pendragon* tabletop-RPG campaign assistant: a **Discord bot**
-(`senechal.py`, run as the Heroku `worker`) plus a **Django web app** (`web/`, run as
-the `web` process via gunicorn), sharing a domain/data layer.
+plus an **aiohttp HTTP API** (`api/`), served together from one process by `server.py`
+(Heroku `web`), sharing a domain/data layer. Django has been removed.
 
-- Entry points: `senechal.py` (bot), `manage.py` / `web/wsgi.py` (web).
+- Entry points: `server.py` (API + bot, Procfile `web`), `senechal.py` (standalone bot).
 - Dispatcher: `message_handler.py`; commands are plugins under `commands/`.
 - Domain/core: `character.py`, `config.py`, `utils.py`, `feast.py`.
 - Data layer: `database/` (handler-per-table over `psycopg2`; parameterized queries).
@@ -59,8 +59,7 @@ Project status, roadmap, and the decision log live in `pm/`.
 
 - **Bot:** `python senechal.py` (Procfile `worker`). Needs the Discord bot token in the
   `token` environment variable (or in `config.yml`, which is gitignored).
-- **Web:** `python manage.py runserver` for development, or `gunicorn web.wsgi`
-  (Procfile `web`).
+- **API + bot:** `python3 server.py` (Procfile `web`). Static files are served from `static/`.
 - **Database:** both processes expect a PostgreSQL `DATABASE_URL` env var. The data
   layer connects on import, so it must be set before importing anything in `database/`.
 - Config is read from `config.yml` (optional, gitignored), `senechal.yml`, and
@@ -71,8 +70,8 @@ Project status, roadmap, and the decision log live in `pm/`.
 - `database/database.py` opens its PostgreSQL connection at **import time** from
   `DATABASE_URL` — importing `database/` without it set will fail.
 - `senechal.py` reads `os.environ['token']` directly at startup (no graceful fallback).
-- `web/views.py` uses raw `psycopg2`; the Django ORM/migrations exist but are largely
-  unused — match the existing data-layer style within a file rather than mixing.
+- `api/views.py` uses raw `psycopg2`; there is no ORM or migration system — match the
+  existing data-layer style within a file rather than mixing.
 - Known issues with exact `path:line` locations are catalogued in
   `documentation/01-code-review.md`.
 

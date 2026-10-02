@@ -3,7 +3,7 @@
 > **Snapshot of the current state.** Overwrite this to keep it accurate — it always
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
-**Last updated:** 2026-05-25
+**Last updated:** 2026-10-03
 **Active branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)
 **Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
 are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
@@ -23,6 +23,7 @@ for PRs, the bug-fix branch is committed locally.
 | 003 | Project-specific README | in-progress (ready for PR) | behaviour-preserving | readme | yes |
 | 004 | Bug fixes (base_command, utils) | in-progress (ready for PR) | behaviour-changing | bugfixes | no |
 | 005 | Single process (API + bot) | in-progress (unverified) | behaviour-changing | single-process | no |
+| 007 | Remove Django (code + local DB tables) | done (Heroku DB pending) | behaviour-changing | single-process | no |
 
 ## In progress
 
