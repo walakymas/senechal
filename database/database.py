@@ -11,7 +11,6 @@ class Database:
     lock = threading.RLock()
     conn = sqlite3.connect('senechal.db')
     pq = os.getenv('DATABASE_URL')
-    print('DATABASE_URL:'+ os.getenv('DATABASE_URL'), flush=True)
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],

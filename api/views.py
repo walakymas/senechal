@@ -231,7 +231,6 @@ def modify(request):
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
 
 def hasRight(token, cid):
-    print(f"to: {token}")
     return token != 'null'
 
 def pdfs(request):

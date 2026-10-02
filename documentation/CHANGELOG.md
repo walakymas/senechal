@@ -21,6 +21,8 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 - **Risk & rollback:** `git revert` restores the code; the tables can be recreated with
   Django `migrate`. **Heroku DB not touched** — owner drops the tables there.
 
+- **Follow-up (2026-10-03):** removed `print`s that logged secrets: `DATABASE_URL` (`database/database.py`), the bot token (`config.py`), session tokens (`api/views.py` `hasRight`, `database/tokenstable.py`).
+
 ---
 
 ## 2026-10-02 — Single process: API + bot on one loop (Task 005)
