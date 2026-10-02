@@ -21,7 +21,7 @@ class PlayerTable(BaseTableHandler):
         return BaseTableHandler.execute("SELECT * FROM player WHERE did=%s", param=[did], fetch='one')
 
     def get_by_cid(self, did):
-        return BaseTableHandler.execute("SELECT p.* FROM player p JOIN characters c ON c.memberid=p.did WHERE c.id=%s", param=[did], fetch='one')
+        return BaseTableHandler.execute("SELECT p.* FROM player p WHERE p.character=%s", param=[did], fetch='one')
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM player', fetch='all')

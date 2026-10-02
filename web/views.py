@@ -93,6 +93,9 @@ def pcs(request):
                 if g[0] == c.id:
                     d['Glory']=g[1]
             result.append(d)
+        if 'memberId' in c.data:
+            c.data['memberId'] = str(c.data['memberId'])
+
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def user(request):

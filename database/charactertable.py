@@ -23,20 +23,18 @@ class CharacterTable(BaseTableHandler):
         j['dbid'] = id
         if 'url' in j:
             url = j['url']
-        if 'memberId' in j:
-            memberid = j['memberId']
         if 'role' in j:
             role = j['role']
         if 'player' in j:
             player = j['player']
-        BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, memberid=%(memberid)s , role=%(role)s  WHERE id=%(id)s",
-                                 {'id': id, 'name': j['name'], 'data': data, 'url': url, 'memberid': memberid, 'role': role})
+        BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, role=%(role)s  WHERE id=%(id)s",
+                                 {'id': id, 'name': j['name'], 'data': data, 'url': url, 'role': role})
 
     def get_by_name(self, name):
         return BaseTableHandler.execute(f"SELECT * FROM characters WHERE name ILIKE '%{name}%'", fetch='one')
 
     def get_by_memberid(self, mid):
-        return BaseTableHandler.execute("SELECT * FROM characters WHERE memberid = %s", param=[mid], fetch='one')
+        return BaseTableHandler.execute("SELECT c.* FROM characters c join player p on p.character = c.id WHERE p.did = %s", param=[mid], fetch='one')
 
     def get_by_id(self, mid):
         return BaseTableHandler.execute("SELECT * FROM characters WHERE id = %s", param=[mid], fetch='one')

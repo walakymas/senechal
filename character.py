@@ -3,6 +3,7 @@ import json
 
 from config import Config
 from database.charactertable import CharacterTable
+from database.playertable import PlayerTable
 
 
 class Character:
@@ -10,11 +11,18 @@ class Character:
         self.id = record[0]
         self.created = record[1]
         self.modified = record[2]
-        self.memberid = record[3]
+        # self.memberid = record[3]
+        player = PlayerTable().get_by_cid(self.id)
+        print(f"player: {player}", flush=True)
         self.name = record[4]
         self.url = record[5]
         self.json = record[6]
         self.data = json.loads(self.json)
+        if (player != None) and (len(player) >= 8):
+            self.data['memberId'] = f'{player[8]}'
+        else:
+            self.data['memberId'] = None
+        print(f"memberId: {self.data['memberId']}", flush=True)
         self.data['dbid'] = self.id
         if not 'stats' in self.data:
             self.data['stats'] = {"siz": 10, "dex": 10, "str": 10, "con": 10, "app": 10}
@@ -76,12 +84,15 @@ class Character:
 
     def get_weapon(self, spec=None):
         if not spec:
-            if self.data['combat']['weapon'] == 'empty':
-                spec = 'Sword'
-            else:
-                spec = self.data['combat']['weapon']
+            spec = 'Sword'
+            try:
+                if self.data['combat']['weapon'] != 'empty':
+                   spec = self.data['combat']['weapon']
+            except:
+                pass            
+            
         weapon = Config.weapon(spec)
-        weapon['damage'] += round((int(self.data['stats']['str']) + int(self.data['stats']['siz'])) / 6)
+        weapon['damage'] += self.get_damage()
         return weapon
 
     def get_armor(self, spec):
@@ -128,6 +139,9 @@ class Character:
                 c = Character(record)
                 Character.cache[mid] = c
                 return c
+            else:
+                print(f"get_by_memberid db not found {mid}")
+                return None
 
     @staticmethod
     def get_by_id(mid, force=False):
@@ -163,16 +177,8 @@ class Character:
 
     @staticmethod
     def pcs(name=None, extra=None):
-        for c in Character.list_by_name(name):
-            if c.memberid and (extra or not (
-                    'role' in c.data
-                    and (
-                           c.data['role'] == 'Lord'
-                        or c.data['role'] == 'King'
-                        or c.data['role'] == 'Retired'
-                    )
-            )):
-                yield c
+        for c in CharacterTable().get_pcs():
+            yield Character(c)
 
     @staticmethod
     def npcs(name=None):

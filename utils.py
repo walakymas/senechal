@@ -319,12 +319,12 @@ def winterData(char):
             winter['stewardship'] = data['winter']['stewardship']
         if 'horses' in data['winter']:
             winter['horses'] = data['winter']['horses']
-    from database.lordtable import LordTable
-    for r in LordTable().list(char.memberid, 0):
-        if r[4] == 'winter.stewardship':
-            winter['stewardship'] = r[5]
-        elif r[4] == 'winter.horses':
-            winter['horses'] = r[5].strip().split(',')
+ #   from database.lordtable import LordTable
+ #   for r in LordTable().list(char.memberid, 0):
+ #       if r[4] == 'winter.stewardship':
+ #           winter['stewardship'] = r[5]
+ #       elif r[4] == 'winter.horses':
+ #           winter['horses'] = r[5].strip().split(',')
     return winter
 
 

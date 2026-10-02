@@ -44,7 +44,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         charId = int(char.id)
         msg = ""
         rows = MarksTable().list(dbid=charId, year=year)
-        msg += f"Modified   Spec              Dobás   Hatás\n";
+        msg += f"Spec              Dobás   Hatás\n";
         marks = []
         cnt = 0
         for row in rows:
@@ -57,7 +57,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                     cnt += 1
                     marks.append(name)
                     (color, text, ro, success) = check(value, 0)
-                    msg += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
+                    msg += f"{name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
         embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
         xp = 0
         for n, v in char.data['traits'].items():

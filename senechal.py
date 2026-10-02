@@ -93,7 +93,14 @@ def main():
 
     Config.reload()
     print(f"{Config.config['token']}", flush=True)
-    client.run(Config.config['token'])
+    while True:
+        try:
+            client.run(Config.config['token'])
+            break
+        except Exception as e:
+            print(f"Error: {e}. 10sec sleep Restarting bot...", flush=True)
+            datetime.time.sleep(10)
+
 
 ###############################################################################
 
