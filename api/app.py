@@ -9,7 +9,7 @@ import os
 
 from aiohttp import web
 
-from api import views
+from api import auth, views
 from api.compat import Request
 
 # Same list as CORS_ALLOWED_ORIGINS in web/settings.py
@@ -91,6 +91,9 @@ def create_app():
     app = web.Application(middlewares=[cors_middleware])
     for path, view in ROUTES:
         app.router.add_route('*', '/' + path, _handler(view))
+    login, callback = auth.make_handlers(CORS_ALLOWED_ORIGINS)
+    app.router.add_get('/auth/login', login)
+    app.router.add_get('/auth/callback', callback)
     app.router.add_route('*', '/favicon.ico',
                          lambda r: web.HTTPFound('/static/images/favicon.ico'))
     static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'web', 'static')
