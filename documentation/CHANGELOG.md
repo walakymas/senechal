@@ -9,6 +9,18 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-02 — Single process: API + bot on one loop (Task 005)
+
+- **Branch:** `collab/single-process` (off `main`)
+- **Type:** **behaviour-changing** (new start command, Procfile, aiohttp instead of Django)
+- **Summary:** added `server.py` and `api/` (aiohttp port of `web/views.py`); the bot client
+  is built by `senechal.build_client()`; DB access serialised by `Database.lock`.
+- **Files touched:** `server.py`, `api/*`, `senechal.py`, `database/database.py`,
+  `database/base_table_handler.py`, `Procfile`.
+- **Risk & rollback:** restore the old `Procfile`; not yet verified against a live DB.
+
+---
+
 ## 2026-05-25 — Bug fixes: base_command typo + utils.py de-duplication (Task 004)
 
 - **Branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)

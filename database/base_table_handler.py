@@ -40,19 +40,19 @@ class BaseTableHandler:
 
     @staticmethod
     def execute(sql, param=None, commit=None, fetch=None, many=0):
-        try:
-            with Database.db.cursor() as cur:
-                cur.execute(sql, vars=param)
-                if fetch == 'all':
-                    return cur.fetchall()
-                elif fetch == 'one':
-                    return cur.fetchone()
-                elif many:
-                    return cur.fetchmany(many)
-            Database.db.commit()
-        except psycopg2.Error as  ex:
-            print(f"db error {ex}")
-            Database.db.rollback();
-            
-
-
+        with Database.lock:
+            try:
+                result = None
+                with Database.db.cursor() as cur:
+                    cur.execute(sql, vars=param)
+                    if fetch == 'all':
+                        result = cur.fetchall()
+                    elif fetch == 'one':
+                        result = cur.fetchone()
+                    elif many:
+                        result = cur.fetchmany(many)
+                Database.db.commit()
+                return result
+            except psycopg2.Error as  ex:
+                print(f"db error {ex}")
+                Database.db.rollback();

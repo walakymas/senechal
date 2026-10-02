@@ -22,6 +22,7 @@ for PRs, the bug-fix branch is committed locally.
 | 002 | Security hardening (web app) | in-progress (ready for PR) | behaviour-changing | security-hardening | yes |
 | 003 | Project-specific README | in-progress (ready for PR) | behaviour-preserving | readme | yes |
 | 004 | Bug fixes (base_command, utils) | in-progress (ready for PR) | behaviour-changing | bugfixes | no |
+| 005 | Single process (API + bot) | in-progress (unverified) | behaviour-changing | single-process | no |
 
 ## In progress
 
