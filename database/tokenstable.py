@@ -7,10 +7,15 @@ class TokenTable(BaseTableHandler):
         super().__init__('tokens')
 
     def set(self, token, cid, expires, tokenstate):
-        print(f"{token} {cid} {expires} {tokenstate}")
         BaseTableHandler.execute('INSERT INTO tokens (modified, token, cid, expires) VALUES(now(),%(token)s,%(cid)s, now())'
                                  ' ON CONFLICT (token) DO UPDATE SET modified=now(), tokenstate=%(tokenstate)s', 
                                  {'token': token, 'cid': cid, 'tokenstate':tokenstate, 'expires':expires})
+
+    def issue(self, token, cid):
+        # Token that is already active (Discord OAuth login), valid for one day
+        BaseTableHandler.execute("INSERT INTO tokens (modified, token, cid, expires, tokenstate) "
+                                 "VALUES (now(), %s, %s, now() + INTERVAL '1 DAYS', 1)",
+                                 param=[token, cid], commit=True)
 
     def enable(self, token):
         BaseTableHandler.execute("UPDATE tokens SET tokenstate=1, expires = now() + INTERVAL '1 DAYS' WHERE token=%s", param=[token], commit=True)

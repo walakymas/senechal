@@ -9,6 +9,34 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-03 — Remove Django (Task 007)
+
+- **Branch:** `collab/single-process`
+- **Type:** **behaviour-changing** (database tables dropped, Django admin gone)
+- **Summary:** deleted `web/` and `manage.py`, moved `web/static/` to `static/`, removed
+  the five Django-only packages from `requirements.txt`, dropped the 10 Django tables from
+  the local database (backup taken first).
+- **Files touched:** `web/*`, `manage.py`, `static/*`, `api/app.py`, `api/compat.py`,
+  `requirements.txt`, `CLAUDE.md`.
+- **Risk & rollback:** `git revert` restores the code; the tables can be recreated with
+  Django `migrate`. **Heroku DB not touched** — owner drops the tables there.
+
+- **Follow-up (2026-10-03):** removed `print`s that logged secrets: `DATABASE_URL` (`database/database.py`), the bot token (`config.py`), session tokens (`api/views.py` `hasRight`, `database/tokenstable.py`).
+
+---
+
+## 2026-10-02 — Single process: API + bot on one loop (Task 005)
+
+- **Branch:** `collab/single-process` (off `main`)
+- **Type:** **behaviour-changing** (new start command, Procfile, aiohttp instead of Django)
+- **Summary:** added `server.py` and `api/` (aiohttp port of `web/views.py`); the bot client
+  is built by `senechal.build_client()`; DB access serialised by `Database.lock`.
+- **Files touched:** `server.py`, `api/*`, `senechal.py`, `database/database.py`,
+  `database/base_table_handler.py`, `Procfile`.
+- **Risk & rollback:** restore the old `Procfile`; not yet verified against a live DB.
+
+---
+
 ## 2026-05-25 — Bug fixes: base_command typo + utils.py de-duplication (Task 004)
 
 - **Branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)

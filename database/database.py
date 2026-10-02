@@ -3,11 +3,14 @@ import sqlite3
 from urllib.parse import urlparse
 import psycopg2
 import os
+import threading
 
 class Database:
+    # One shared connection is used by the bot (event loop) and by the API
+    # (worker threads) in the single-process setup: serialise access to it.
+    lock = threading.RLock()
     conn = sqlite3.connect('senechal.db')
     pq = os.getenv('DATABASE_URL')
-    print('DATABASE_URL:'+ os.getenv('DATABASE_URL'), flush=True)
     url = urlparse(pq)
     db = psycopg2.connect(
         database=url.path[1:],

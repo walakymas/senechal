@@ -14,8 +14,12 @@ from pathlib import Path
 this = sys.modules[__name__]
 this.running = False
 
-def main():
-    print("Starting up bot..."+os.environ['token'])
+def build_client():
+    """Create the Discord client with all event handlers registered.
+
+    Shared by the standalone bot (main) and the single-process server (server.py).
+    """
+    print("Starting up bot...")
     intents = discord.Intents.default()
     intents.guilds = True
     intents.members = True
@@ -40,7 +44,8 @@ def main():
             for m in guild.channels:
                 if m.id == Config.mainChannelId:
                     Config.mainChannel = m
-        Database.initiate()
+        with Database.lock:
+            Database.initiate()
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
@@ -91,8 +96,12 @@ def main():
                     if not map:
                         MapsTable().add(url, 'UnSorted', 10, fileName)
 
+    return client
+
+
+def main():
+    client = build_client()
     Config.reload()
-    print(f"{Config.config['token']}", flush=True)
     while True:
         try:
             client.run(Config.config['token'])

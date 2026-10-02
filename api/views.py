@@ -4,8 +4,8 @@ import re
 import uuid;
 from json import JSONDecodeError
 
-from django.http import HttpResponse, JsonResponse, FileResponse, HttpRequest
-from django.views.decorators.cache import never_cache
+from api.compat import HttpResponse, JsonResponse, FileResponse
+from api.compat import never_cache
 
 from character import Character
 from database.c2ctable import C2CTable
@@ -231,7 +231,6 @@ def modify(request):
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
 
 def hasRight(token, cid):
-    print(f"to: {token}")
     return token != 'null'
 
 def pdfs(request):
