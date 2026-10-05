@@ -104,7 +104,7 @@ def user(request):
     record = TokenTable().get_info_by_token(token)
     if record:
         if record[5]==1:
-            resp = {'name':record[6], 'id':record[7], 'expires':record[2], 'rights':record[4]}
+            resp = {'name':record[6], 'id':record[7], 'expires':record[2], 'rights':record[4], 'did':str(record[1])}
     return JsonResponse(resp, safe=False, json_dumps_params={'ensure_ascii': False})
     
 def token(request):
