@@ -145,6 +145,17 @@ label {color:var(--goldHighlight); }
     margin-left: 5px
 }
 
+#passions .passion-warn, .passion-warn {
+    color: red
+}
+
+#passions .passion-cat {
+    color: var(--goldHighlight);
+    font-weight: bold;
+    list-style: none;
+    margin-top: 4px
+}
+
 th
 {color:var(--goldHighlight);font-weight:bold;}
 

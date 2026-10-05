@@ -237,11 +237,14 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
         if 'passions' in data:
             embed = get_embed(char, 0)
             embed.description = ":crossed_swords:  **Passions**\n"
-            for name, value in sorted(data['passions'].items()):
-                if name in marks:
-                    embed.description += f"__{name}__: `{value}`  "
-                else:
-                    embed.description += f"{name}: `{value}`  "
+            from passions import group_passions
+            for category, items in group_passions(data['passions']):
+                embed.description += f"\n**{category}**\n"
+                for name, value in items:
+                    if name in marks:
+                        embed.description += f"__{name}__: `{value}`  "
+                    else:
+                        embed.description += f"{name}: `{value}`  "
             embeds.append(embed)
         else:
             print("no passions")
