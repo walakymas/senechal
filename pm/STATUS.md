@@ -3,8 +3,8 @@
 > **Snapshot of the current state.** Overwrite this to keep it accurate — it always
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
-**Last updated:** 2026-10-05
-**Active branch:** `collab/bugfixes` (off `collab/code-review-and-docs`)
+**Last updated:** 2026-10-05 (Tasks 009–011 added)
+**Active branch:** `main` (Tasks 009–011 merged via PR #7/#8)
 **Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
 are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
 not opened yet (the `gh` CLI isn't installed — open them from the GitHub links).
@@ -25,6 +25,9 @@ for PRs, the bug-fix branch is committed locally.
 | 005 | Single process (API + bot) | in-progress (unverified) | behaviour-changing | single-process | no |
 | 007 | Remove Django (code + local DB tables) | done (Heroku DB pending) | behaviour-changing | single-process | no |
 | 008 | Character ownership (My character / Activate) | in-review (UI unverified) | behaviour-changing | character-ownership | no |
+| 009 | Passion categories | done (frontend build unverified) | behaviour-changing | passion-categories | yes |
+| 010 | Admin rights, `setChannel`, remove `!admin save` | done (not run live) | behaviour-changing | passion-categories | yes |
+| 011 | Web dice/commands without the webhook | in-review (frontend fallback uncommitted, not run live) | behaviour-changing | passion-categories | partly |
 
 ## In progress
 
@@ -32,6 +35,9 @@ for PRs, the bug-fix branch is committed locally.
   any file the other PRs touch.
 
 ## Next up
+
+- Commit the `AngrySenechal2` webhook fallback (Task 011) and run its build/spec after `npm install` (the lockfile is out of sync).
+- Try Tasks 010–011 live: `!admin setChannel`, `!me setChannel`, a web dice roll and a skill check while logged in and logged out.
 
 - Open the PRs (links in the chat / `git ls-remote`): PR1 docs → `main`; PR2 readme,
   PR3 security, PR4 bugfixes — all based on the docs branch (they retarget to `main`

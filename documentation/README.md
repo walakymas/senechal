@@ -23,6 +23,7 @@ working principle is:
 |------|---------|
 | `README.md` | This file — conventions and ownership notes. |
 | `01-code-review.md` | A read-only review of the codebase (structure, quality, security, SWOT). No code was changed to produce it. |
+| `02-web-to-discord.md` | How the web page runs dice rolls and bot commands in the user's Discord channel (channels, `/roll`, `/command`, webhook fallback). |
 | `CHANGELOG.md` | A running, detailed log of every change made on a collaborator branch. |
 | `tasks/` | The **task system**: a reusable task template (with built-in documentation instructions) and one file per unit of work. See `tasks/README.md`. |
 

@@ -9,6 +9,37 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-05 — Web commands without the webhook (Task 011)
+
+- **Branch:** `collab/passion-categories` (+ `AngrySenechal2` `main`)
+- **Type:** **behaviour-changing** (new endpoints `/roll`, `/command`; the web page no longer posts through the webhook when the user is logged in)
+- **Summary:** a logged-in user's dice rolls and `c` / `check` / `team` commands from the character page are executed by the server and shown in the user's channel (player channel → default channel → main channel), preceded by the command that ran. Logged-out users and the login handshake keep the webhook. Dice code moved to `dicing.py`; `bot_bridge.py` connects API threads to the Discord client.
+- **Files touched:** `api/views.py`, `api/app.py`, `bot_bridge.py`, `dicing.py`, `message_handler.py`, `server.py`; `AngrySenechal2`: `character.service.ts`, `character-detail.component.ts`, `team.component.ts`. See `documentation/02-web-to-discord.md`.
+- **Operational impact:** the API must run in the bot process (`server.py`); backend and frontend deploy together.
+- **Risk & rollback:** token validity is the only authorisation; only `check` / `team` are whitelisted. `git revert a730ef2` (also reverts Task 010) and the frontend commit.
+
+---
+
+## 2026-10-05 — Admin rights, setChannel (Task 010)
+
+- **Branch:** `collab/passion-categories`
+- **Type:** **behaviour-changing** (`!admin save` removed, `!admin` rights-protected, new `properties` keys)
+- **Summary:** removed the `save` task and alias from `!admin`; added `!admin setChannel` (`<prefix>channel`) and `!me setChannel` (`<prefix>channel<player id>`); `!admin` now requires `playerrights > 0` with bit 0 set (`PlayerTable.rights`).
+- **Files touched:** `commands/admin.py`, `commands/me.py`, `database/playertable.py`.
+- **Risk & rollback:** nothing writes the yearly `history` snapshot any more. `git revert a730ef2`.
+
+---
+
+## 2026-10-05 — Passion categories (Task 009)
+
+- **Branch:** `collab/passion-categories`
+- **Type:** **behaviour-changing** (display only; stored data unchanged)
+- **Summary:** passions are grouped by Fidelitas / Fervor / Adoratio / Civilitas (derived from the first word of the name, with aliases); everything else, including `Honor`, is `Other`, shown first without a heading. Headings show the category sum in brackets, red above 40. Discord, PDF, static sheet and the Angular character, NPC and team views.
+- **Files touched:** `passions.py`, `tests/passions_test.py`, `utils.py`, `commands/check.py`, `commands/login.py`, `pdf/sheet.py`, `static/sheet.js`, `static/css/senechal.css`; `AngrySenechal2`: `passion-category.ts` (+ spec), `app.module.ts`, the four passion templates, `team.component.ts`, `styles.css`.
+- **Risk & rollback:** the PDF passion column is taller; the rules live in three places (Python, TS, `sheet.js`). `git revert 8e7865c` + the frontend commit.
+
+---
+
 ## 2026-10-05 — Character ownership: "My character" / "Activate" (Task 008)
 
 - **Branch:** `collab/character-ownership`
