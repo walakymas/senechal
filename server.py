@@ -12,6 +12,7 @@ from aiohttp import web
 from api.app import create_app
 from config import Config
 from database.database import Database
+import bot_bridge
 import senechal
 
 
@@ -31,6 +32,8 @@ async def main():
     print(f"API listening on :{port}", flush=True)
 
     client = senechal.build_client()
+    bot_bridge.client = client
+    bot_bridge.loop = asyncio.get_running_loop()
     try:
         await client.start(Config.config['token'])
     finally:

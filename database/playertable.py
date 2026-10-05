@@ -20,6 +20,10 @@ class PlayerTable(BaseTableHandler):
     def get_by_did(self, did):
         return BaseTableHandler.execute("SELECT * FROM player WHERE did=%s", param=[did], fetch='one')
 
+    def rights(self, did):
+        row = BaseTableHandler.execute("SELECT playerrights FROM player WHERE did=%s", param=[did], fetch='one')
+        return int(row[0]) if row and row[0] else 0
+
     def get_by_cid(self, did):
         return BaseTableHandler.execute("SELECT p.* FROM player p WHERE p.character=%s", param=[did], fetch='one')
 

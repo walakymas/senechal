@@ -40,7 +40,8 @@ ROUTES = [
     ('checks', views.checks), ('feast', views.feast), ('feastConfig', views.feastConfig),
     ('maps', views.maps), ('add_map', views.add_map), ('update_map', views.update_map),
     ('delete_map', views.delete_map), ('addC2C', views.addC2C),
-    ('connections', views.connections),
+    ('connections', views.connections), ('roll', views.roll),
+    ('command', views.command),
 ]
 
 
