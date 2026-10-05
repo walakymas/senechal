@@ -1,5 +1,6 @@
 from commands.base_command import BaseCommand
 from config import Config
+from passions import group_passions, passion_total, OTHER, PASSION_WARN_TOTAL
 from utils import *
 
 
@@ -40,8 +41,10 @@ class Check(BaseCommand):
                 embed.add_field(name=':hearts: Traits', value=s, inline=False);
             if 'passions' in data:
                 s = ""
-                for pn, pv in sorted(data['passions'].items()):
-                    s += pn + ': ' + str(pv) + "\n"
+                for category, items in group_passions(data['passions']):
+                    s += '**' + category + '**\n'
+                    for pn, pv in items:
+                        s += pn + ': ' + str(pv) + "\n"
                 embed.add_field(name=':homes: Passions', value=s, inline=False);
             if 'stats' in data:
                 s = ""

@@ -183,14 +183,43 @@ function redrawSkill() {
       }
 }
 
+// Mirrors passions.py: the category is derived from the first word of the passion name
+const PASSION_CATEGORIES = {
+    'Fidelitas': ['duty', 'fealty', 'homage', 'loyalty'],
+    'Fervor': ['hate', 'love'],
+    'Adoratio': ['adoration', 'devotion'],
+    'Civilitas': ['chivalry', 'hospitality', 'station'],
+};
+const PASSION_ALIASES = {'fealthy': 'fealty', 'hospitability': 'hospitality', 'amor': 'adoration'};
+
+function passionCategory(name) {
+    const m = /^\s*([A-Za-z]+)/.exec(name);
+    if (m) {
+        let word = m[1].toLowerCase();
+        word = PASSION_ALIASES[word] || word;
+        for (const [category, types] of Object.entries(PASSION_CATEGORIES)) {
+            if (types.includes(word)) return category;
+        }
+    }
+    return 'Other';
+}
+
 function redrawPassion() {
       $('#passions').html('')
       if ('passions' in char) {
           count = 0;
           passions = []
-          for (const [pn, pv] of Object.entries(char['passions'])) {
-              $('#passions').append('<li id="passion_'+count+'"><span class="ui-icon ui-icon-radio-off" mark="'+pn+'"></span><span class="gold">'+pn+'</span> '+pv+'</li>');
-              passions[count++]='passions.'+pn;
+          for (const category of ['Other', ...Object.keys(PASSION_CATEGORIES)]) {
+              const names = Object.keys(char['passions']).filter(pn => passionCategory(pn) === category).sort();
+              if (names.length === 0) continue;
+              if (category !== 'Other') {
+                  const total = names.reduce((sum, pn) => sum + (parseInt(char['passions'][pn]) || 0), 0);
+                  $('#passions').append('<li class="passion-cat">'+category+' (<span'+(total > 40 ? ' class="passion-warn"' : '')+'>'+total+'</span>)</li>');
+              }
+              for (const pn of names) {
+                  $('#passions').append('<li id="passion_'+count+'"><span class="ui-icon ui-icon-radio-off" mark="'+pn+'"></span><span class="gold">'+pn+'</span> '+char['passions'][pn]+'</li>');
+                  passions[count++]='passions.'+pn;
+              }
           }
       }
 }

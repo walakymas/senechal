@@ -176,13 +176,28 @@ class Sheet(FPDF):
     def passions(self):
         x = self.get_x()
         self.parchment('Passions', 50)
-        for name, value in self.data['passions'].items():
-            self.set_font('Lora', '', 8)
-            self.cell(42, 3, name, 0, 0)
-            self.cell(5, 3, str(value), 0, 0, align='R')
-            self.set_font('ZapfDingbats', '', 8)
-            self.cell(3, 3, "on"[name in self.marks], 0, 2)
-            self.set_x(x)
+        from passions import group_passions, passion_total, OTHER, PASSION_WARN_TOTAL
+        for category, items in group_passions(self.data['passions']):
+            if category != OTHER:
+                total = passion_total(items)
+                self.set_font('Lora', '', 8)
+                label = category + ' ('
+                width = self.get_string_width(label + str(total) + ')')
+                self.set_x(x + (50 - width) / 2)
+                self.cell(self.get_string_width(label), 3, label, 0, 0)
+                if total > PASSION_WARN_TOTAL:
+                    self.set_text_color(200, 0, 0)
+                self.cell(self.get_string_width(str(total)), 3, str(total), 0, 0)
+                self.set_text_color(0, 0, 0)
+                self.cell(self.get_string_width(')'), 3, ')', 0, 2)
+                self.set_x(x)
+            for name, value in items:
+                self.set_font('Lora', '', 8)
+                self.cell(42, 3, name, 0, 0)
+                self.cell(5, 3, str(value), 0, 0, align='R')
+                self.set_font('ZapfDingbats', '', 8)
+                self.cell(3, 3, "on"[name in self.marks], 0, 2)
+                self.set_x(x)
 
     def combat(self):
         x = self.get_x()
