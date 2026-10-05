@@ -9,6 +9,16 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-05 — Character ownership: "My character" / "Activate" (Task 008)
+
+- **Branch:** `collab/character-ownership`
+- **Type:** **behaviour-changing** (`characters.player` is now written; `/user` returns `did`)
+- **Summary:** two new items in the character-sheet menu. "My character" sets the owner of an unowned character; "Activate" sets the owner if empty and links the character to the user in `player.character`.
+- **Files touched:** `database/charactertable.py`, `character.py`, `api/views.py`, `AngrySenechal2/src/app/character.service.ts`, `character-detail.component.{ts,html}`.
+- **Risk & rollback:** `modify` authorisation is still token-presence only. `git revert`.
+
+---
+
 ## 2026-10-03 — Remove Django (Task 007)
 
 - **Branch:** `collab/single-process`

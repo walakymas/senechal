@@ -23,6 +23,8 @@ class Character:
         else:
             self.data['memberId'] = None
         print(f"memberId: {self.data['memberId']}", flush=True)
+        if len(record) > 8 and record[8]:
+            self.data['player'] = record[8]
         self.data['dbid'] = self.id
         if not 'stats' in self.data:
             self.data['stats'] = {"siz": 10, "dex": 10, "str": 10, "con": 10, "app": 10}

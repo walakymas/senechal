@@ -29,6 +29,9 @@ class CharacterTable(BaseTableHandler):
             player = j['player']
         BaseTableHandler.execute("UPDATE characters SET modified=now(), data=%(data)s, name=%(name)s, url=%(url)s, role=%(role)s  WHERE id=%(id)s",
                                  {'id': id, 'name': j['name'], 'data': data, 'url': url, 'role': role})
+        if player is not None and str(player).strip() != '':
+            BaseTableHandler.execute("UPDATE characters SET player=%(player)s WHERE id=%(id)s",
+                                     {'id': id, 'player': int(player)})
 
     def get_by_name(self, name):
         return BaseTableHandler.execute(f"SELECT * FROM characters WHERE name ILIKE '%{name}%'", fetch='one')
