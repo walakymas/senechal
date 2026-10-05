@@ -230,6 +230,72 @@ def modify(request):
         print("modification prohibited")
     return pcresponse(Character.get_by_id(request.POST['id'], force=True))
 
+def _discord_channel(record):
+    """Channel for the user's messages: `<prefix>channel<player id>`, else `<prefix>channel`, else the main channel."""
+    for key in (f"{Config.prefix}channel{record[7]}", f"{Config.prefix}channel"):
+        row = PropertiesTable().get(key)
+        if row and row[3]:
+            return row[3]
+    return Config.mainChannel.id if Config.mainChannel is not None else None
+
+
+def _send_to_discord(action, *args):
+    try:
+        return action(*args)
+    except BaseException as ex:
+        print(f"discord send failed: {ex}", flush=True)
+        return False
+
+
+def roll(request):
+    """Dice roll from the character page, shown in Discord as if the '!4d20' command was typed."""
+    import bot_bridge
+    from dicing import dicePattern, roll_dice
+    record = TokenTable().get_info_by_token(request.POST['token'])
+    if not record or record[5] != 1:
+        return JsonResponse({'result': 'fail'}, status=403)
+    spec = request.POST['dice'].strip()
+    m = dicePattern.fullmatch(spec)
+    if not m or int(m.group(1) or 1) > 100 or int(m.group(2)) < 1 or int(m.group(2)) > 1000:
+        return JsonResponse({'result': 'fail'}, status=400)
+    text, result = roll_dice(*m.groups())
+    name = record[6]
+    if request.POST.get('id'):
+        result['char'] = int(request.POST['id'])
+        CheckTable().add(character=result['char'], command=Config.prefix + spec,
+                         result=json.dumps(result, indent=4, ensure_ascii=False))
+        char = Character.get_by_id(result['char'])
+        if char:
+            name = char.name
+    channel_id = _discord_channel(record)
+    sent = channel_id is not None and _send_to_discord(
+        bot_bridge.send, channel_id, f"{name} (`{Config.prefix}{spec}`): {text}")
+    return JsonResponse({'result': 'ok' if sent else 'not sent', 'text': text}, safe=False,
+                        json_dumps_params={'ensure_ascii': False})
+
+
+# Commands the web page may run (by command name); anything else (db, admin, ...) is refused
+WEB_COMMANDS = ('check', 'team')
+
+
+def command(request):
+    """Runs a bot command from the web page in the user's channel, instead of posting it through a webhook.
+    `command` is the text without the prefix, e.g. 'c Sword 0 cid:5'."""
+    import bot_bridge
+    import message_handler
+    record = TokenTable().get_info_by_token(request.POST['token'])
+    if not record or record[5] != 1:
+        return JsonResponse({'result': 'fail'}, status=403)
+    text = request.POST['command'].strip()
+    handler = message_handler.COMMAND_ALIASES.get(text.split(' ')[0].lower()) if text else None
+    if handler is None or handler.name not in WEB_COMMANDS:
+        return JsonResponse({'result': 'refused'}, status=400)
+    channel_id = _discord_channel(record)
+    sent = channel_id is not None and _send_to_discord(
+        bot_bridge.run_command, channel_id, Config.prefix + text, record[1], record[6])
+    return JsonResponse({'result': 'ok' if sent else 'not sent'}, safe=False)
+
+
 def hasRight(token, cid):
     return token != 'null'
 
