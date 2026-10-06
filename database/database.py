@@ -205,6 +205,6 @@ class Database:
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_maps_ord ON maps (ord);")
                 v = 17
 
-            cur.execute(f"UPDATE properties  SET value = {v}, modified=now() WHERE key = 'dbversion'")
+            cur.execute("UPDATE properties  SET value = %s, modified=now() WHERE key = 'dbversion'", (v,))
             Database.db.commit()                      
 

@@ -33,8 +33,15 @@ class CharacterTable(BaseTableHandler):
             BaseTableHandler.execute("UPDATE characters SET player=%(player)s WHERE id=%(id)s",
                                      {'id': id, 'player': int(player)})
 
+    @staticmethod
+    def like_pattern(text):
+        """Substring pattern for ILIKE; \\, % and _ in the text match literally."""
+        escaped = str(text).replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
+        return f"%{escaped}%"
+
     def get_by_name(self, name):
-        return BaseTableHandler.execute(f"SELECT * FROM characters WHERE name ILIKE '%{name}%'", fetch='one')
+        return BaseTableHandler.execute("SELECT * FROM characters WHERE name ILIKE %s",
+                                        param=[CharacterTable.like_pattern(name)], fetch='one')
 
     def get_by_memberid(self, mid):
         return BaseTableHandler.execute("SELECT c.* FROM characters c join player p on p.character = c.id WHERE p.did = %s", param=[mid], fetch='one')
