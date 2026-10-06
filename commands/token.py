@@ -1,8 +1,11 @@
+import logging
 from commands.base_command import BaseCommand
 from config import Config
 from utils import *
 from database.tokenstable import TokenTable
 import asyncio
+
+log = logging.getLogger(__name__)
 
 class Token(BaseCommand):
 
@@ -12,10 +15,7 @@ class Token(BaseCommand):
                          longdescription='''Token engedélyezés''')
 
     async def handle(self, params, message, client):
-        print(f"params: {params[0]}")
         record = TokenTable().get_info_by_id(params[0])
-        print(f"record: {record}")
-        print(f"guild: {message.guild}") 
         if record :
           if message.guild:           
             for m in message.guild.members:
@@ -36,16 +36,16 @@ class Token(BaseCommand):
                         timeout=20,
                     )
                 except asyncio.TimeoutError:
-                    print(f"timeout")
+                    log.debug("timeout")
                 finally:
                     try:
                         await message.clear_reactions()
                     except discord.Forbidden:
-                        print("Ooops")
+                        log.warning("could not clear the reactions")
                         pass
                 if reaction :
                     if reaction.emoji.name == "✅":
-                        print("SetEnable")
+                        log.debug("token enabled")
                         TokenTable().enable(record[0])
                         await message.delete()    
                 exit

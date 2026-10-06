@@ -26,7 +26,7 @@
 
 ## Scope
 - **Done:**
-  - **Python dependencies**: `requirements.txt` fully pinned (direct + transitive) for Python 3.12; installed in a clean `python:3.12-slim`, all unit tests pass there, `pip-audit`: **no known vulnerabilities** (before: only `aiohttp` 3.12.14, 64 advisories, fixed in 3.14.3). `psycopg2-binary` kept (the slim image has no compiler/libpq headers).
+  - **Python dependencies** (pin set corrected in Task 021: `fpdf2` 2.8.3 could not embed the variable font, the file now has the versions of the working container): `requirements.txt` fully pinned (direct + transitive) for Python 3.12; installed in a clean `python:3.12-slim`, all unit tests pass there, `pip-audit`: **no known vulnerabilities** (before: only `aiohttp` 3.12.14, 64 advisories, fixed in 3.14.3). `psycopg2-binary` kept (the slim image has no compiler/libpq headers).
   - **`Dockerfile.senechal`** (workspace root, not in a repo): Python 3.12, user `app`, writable `/var/www/senechalPictures` (the `picturesDir` default), `PYTHONUNBUFFERED=1`; `Dockerfile.senechal.dockerignore` excludes `.env*`, `*.db`, `*.dmp`, `*.zip`, `*.tgz`, `*.pkl`, `.claude`. Verified: `docker build`, `id` = `app`, the pictures directory is writable, `import server` works, and **all 62 tests pass inside the image against a PostgreSQL 14 container, including the 12 database tests**.
   - **`docker-compose.yml`** (workspace root): Postgres on `127.0.0.1:5432`.
   - **Tests**: the `database.database` stub is gone from the test files (the connection has been lazy since Task 017); the stub made the database tests use a fake `Database` when everything ran in one `unittest discover`.

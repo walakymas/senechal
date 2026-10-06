@@ -1,7 +1,10 @@
+import logging
 from commands.base_command import BaseCommand
 from config import Config
 from database.c2ctable import C2CTable
 from utils import *
+
+log = logging.getLogger(__name__)
 
 
 class Winter(BaseCommand):
@@ -20,7 +23,6 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         if me:
             await self.winter(me, message)
         elif len(params) > 0:
-            print(params[0])
             for pc in Character.pcs():
                 await self.winter(pc, message)
 

@@ -1,3 +1,4 @@
+import logging
 from commands.base_command import BaseCommand
 
 # This, in addition to tweaking __all__ on commands/__init__.py, 
@@ -16,6 +17,8 @@ from utils import *
 from dicing import dicePattern, roll_dice
 from permissions import has_rights, NO_RIGHTS
 
+log = logging.getLogger(__name__)
+
 # Register all available commands
 COMMAND_HANDLERS = {c.__name__.lower(): c()
                     for c in BaseCommand.__subclasses__()}
@@ -24,7 +27,7 @@ for c in COMMAND_HANDLERS.values():
     if (c.aliases):
         for a in c.aliases:
             if a in COMMAND_ALIASES:  # the last registered command wins; make the clash visible
-                print(f"WARNING: alias '{a}' of {c.name} replaces {COMMAND_ALIASES[a].name}", flush=True)
+                log.warning("alias '%s' of %s replaces %s", a, c.name, COMMAND_ALIASES[a].name)
             COMMAND_ALIASES[a] = c
 COMMAND_ALIASES.update(COMMAND_HANDLERS)
 
@@ -48,13 +51,13 @@ async def handle_command(command, args, message, bot_client, mid=0):
                 return
             if (char!=None and message!=None) :
                 toJson['char']=char.data['dbid']
-                print(json.dumps(toJson, indent=4, ensure_ascii=False))
+                log.debug(json.dumps(toJson, ensure_ascii=False))
                 CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
             await message.channel.send(message.author.display_name + ': ' + text)
         return
 
-    print(f"{message.author.name}: {Config.prefix}{command} "
-          + " ".join(args))
+    log.info("%s: %s%s", message.author.name, Config.prefix, command)
+    log.debug("arguments: %s", args)
 
     # Retrieve the command
     cmd_obj = COMMAND_ALIASES[command]

@@ -1,3 +1,4 @@
+import logging
 import asyncio
 import os
 import subprocess
@@ -6,6 +7,8 @@ import sys
 from commands.base_command import BaseCommand
 from config import Config
 from permissions import ADMIN
+
+log = logging.getLogger(__name__)
 
 
 class Reload(BaseCommand):
@@ -22,5 +25,5 @@ class Reload(BaseCommand):
     async def handle(self, params, message, client):
         if ("pull" in Config.config):
             process = await asyncio.to_thread(subprocess.run, ["git", "pull"], stdout=subprocess.PIPE)
-            print(process.stdout)
+            log.info("git pull: %s", process.stdout)
         os.execv(sys.executable, ['python3'] + sys.argv)

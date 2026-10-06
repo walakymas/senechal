@@ -1,5 +1,6 @@
 from database.database import Database
 import datetime
+import time
 import psycopg2 
 
 class BaseTableHandler:
@@ -28,12 +29,26 @@ class BaseTableHandler:
     def now():
         return str(datetime.datetime.now())
 
+    # The game year is read all the time and changes rarely: it is cached for YEAR_TTL seconds, and
+    # PropertiesTable.set / remove drop the cache when the `year` property is written.
+    YEAR_TTL = 30
+    _year_cache = None  # (value, expires)
+
     @staticmethod
     def year():
+        cached = BaseTableHandler._year_cache
+        if cached and cached[1] > time.monotonic():
+            return cached[0]
         try:
-            return int(BaseTableHandler.execute("SELECT value FROM properties WHERE key = 'year'", fetch='one')[0])
+            value = int(BaseTableHandler.execute("SELECT value FROM properties WHERE key = 'year'", fetch='one')[0])
         except TypeError:
-            return 481
+            value = 481
+        BaseTableHandler._year_cache = (value, time.monotonic() + BaseTableHandler.YEAR_TTL)
+        return value
+
+    @staticmethod
+    def clear_year_cache():
+        BaseTableHandler._year_cache = None
 
     def db(self):
         with Database.lock:

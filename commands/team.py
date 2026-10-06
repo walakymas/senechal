@@ -1,5 +1,8 @@
+import logging
 from commands.base_command import BaseCommand
 from utils import *
+
+log = logging.getLogger(__name__)
 
 
 class Team(BaseCommand):
@@ -11,7 +14,6 @@ class Team(BaseCommand):
     async def handle(self, params, message, client):
         s = "Sir        Skill Dice Result\n"
         (spec, modifier) = extract(params, ['---', 0])
-        print(modifier)
         if len(params) > 0:
             for char in Character.pcs():
                 data = char.get_data()

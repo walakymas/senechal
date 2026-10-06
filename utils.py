@@ -1,3 +1,4 @@
+import logging
 import datetime
 import re
 from os import remove
@@ -15,6 +16,8 @@ from database.markstable import MarksTable
 from database.checktable import CheckTable
 import json
 from json import JSONDecodeError
+
+log = logging.getLogger(__name__)
 
 
 # Returns a path relative to the bot directory
@@ -144,23 +147,23 @@ def strip_mention(words):
 
 def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
-    print('get_me', flush=True)
+    log.debug('get_me')
     me = None
     last = cmd_split[-1] if cmd_split else ''
     mention = MENTION.fullmatch(last)
     if mention:
-        print(f'get_me 1 "{mention.group(1)}"', flush=True)
+        log.debug('get_me 1 %s', mention.group(1))
         me = Character.get_by_memberid(mention.group(1), force=force)
     elif last.startswith('!') and len(last) > 1:
-        print(f'get_me 3: {last[1:]}', flush=True)
+        log.debug('get_me 3: %s', last[1:])
         me = Character.get_by_name(last[1:], force=force)
     elif last.startswith('cid:') and last[4:].isdigit():
-        print(f'get_me 4: {last[4:]}', flush=True)
+        log.debug('get_me 4: %s', last[4:])
         me = Character.get_by_id(int(last[4:]), force=force)
     else:
-        print(f'get_me else: {last}', flush=True)
+        log.debug('get_me else: %s', last)
 
-    print(f'me:{me}', flush=True)
+    log.debug('me: %s', me)
 
     if me:
         return me
@@ -336,7 +339,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
                         embed.description += f"{name}: `{value}`  "
             embeds.append(embed)
         else:
-            print("no passions")
+            log.debug("no passions")
     if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in data:
             embed = get_embed(char, 0)
@@ -468,7 +471,7 @@ async def embed_check(ctx, data, name, base, modifier, message=None, char:Charac
         c['text']=text
         c['ro']=ro
         c['success']=successes[success]
-        print(json.dumps(toJson, indent=4, ensure_ascii=False))
+        log.debug(json.dumps(toJson, ensure_ascii=False))
         CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
@@ -518,7 +521,7 @@ async def embed_trait(ctx, data, name, base, modifier, name2, message=None, char
         add_field(embed, name=name2, value=f"{text} ({r}  vs {20 -base})",
                   inline=False)
     if (char!=None and message!=None) :
-        print(json.dumps(toJson, indent=4, ensure_ascii=False))
+        log.debug(json.dumps(toJson, ensure_ascii=False))
         CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
 
     await ctx.send(embed=embed)

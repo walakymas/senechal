@@ -1,8 +1,11 @@
+import logging
 import yaml
 import os
 import json
 import psycopg2
 from database.proptable import PropertiesTable
+
+log = logging.getLogger(__name__)
 class Config:
     inited = False
 
@@ -59,7 +62,6 @@ class Config:
             except IOError:
                 Config.config = {'token': None}
                 if 'token' in os.environ:
-                    print("exist")
                     Config.config['token'] = os.environ['token']
                 if 'prefix' in os.environ:
                     Config.prefix = os.environ['prefix']
@@ -74,6 +76,6 @@ class Config:
             try:
                 Config.hook = PropertiesTable().getValue('hook')
             except psycopg2.Error as ex:  # e.g. the schema is not created yet on a fresh database
-                print(f"hook not loaded: {ex}")
+                log.warning("hook not loaded: %s", ex)
             
             Config.inited = True

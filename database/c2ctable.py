@@ -1,4 +1,7 @@
+import logging
 from database.base_table_handler import BaseTableHandler
+
+log = logging.getLogger(__name__)
 
 
 class C2CTable(BaseTableHandler):
@@ -7,7 +10,6 @@ class C2CTable(BaseTableHandler):
         super().__init__('c2c')
 
     def add(self, c0, c1, connection, comment):
-        print('addC2C:'+c0+':'+c1+':'+connection+':'+comment+':')
         BaseTableHandler.execute('INSERT INTO c2c (modified, c0, c1, connection, comment) VALUES(now(),'
                                  ' %(c0)s, %(c1)s, %(connection)s, %(comment)s)'
                                  ' ON CONFLICT (c0, c1) DO UPDATE SET connection=%(connection)s, comment=%(comment)s',

@@ -37,7 +37,7 @@ for PRs, the bug-fix branch is committed locally.
 | 018 | Functional bug fixes | in-review (54 unit tests pass; not run on a live server) | behaviour-changing | functional-bugs | no |
 | 019 | Frontend and Express hardening | in-review (production build and server tests in containers; not run in a browser) | behaviour-changing | frontend-hardening | no |
 | 020 | Infra, dependencies, repo hygiene | in-review (verified in containers; not deployed) | behaviour-preserving | infra-and-deps | no |
-| 021 | Performance and logging | proposed | behaviour-preserving | performance | no |
+| 021 | Performance and logging | in-review (91 tests pass in the 3.12 image with PostgreSQL; not run on a live server) | behaviour-preserving | performance | no |
 
 ## In progress
 

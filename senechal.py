@@ -1,3 +1,4 @@
+import logging
 import discord
 from database.mapstable import MapsTable
 import message_handler
@@ -10,7 +11,10 @@ import time
 from config                         import Config
 from database.database              import Database
 from utils                          import is_archivable, pictures_dir, strip_mention
+from logs                           import setup_logging
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
@@ -27,7 +31,7 @@ def build_client():
 
     Shared by the standalone bot (main) and the single-process server (server.py).
     """
-    print("Starting up bot...")
+    log.info("Starting up bot...")
     intents = discord.Intents.default()
     intents.guilds = True
     intents.members = True
@@ -46,7 +50,7 @@ def build_client():
 
         await client.change_presence(
                 activity=discord.Game(name=f"{Config.prefix}senechal since {datetime.datetime.now()}"))
-        print("Logged in!", flush=True)
+        log.info("Logged in!")
 
         for guild in client.guilds:
             for m in guild.channels:
@@ -69,22 +73,20 @@ def build_client():
                 await message_handler.handle_command(cmd_split[0].lower(), 
                                       cmd_split[1:], message, client)
             except:
-                print("Error while handling message", flush=True)
+                log.error("Error while handling a message")
                 raise
 
     @client.event
     async def on_message(message):
-        print(message.content)
         await common_handle_message(message)
 
     @client.event
     async def on_message_edit(before, after):
-        print(after.content)
         await common_handle_message(after)
 
     @client.event
     async def on_raw_reaction_add(event):
-        print(f"reaction {event.channel_id}::{event.emoji.name}")
+        log.debug("reaction %s::%s", event.channel_id, event.emoji.name)
         if event.emoji.name == '👀' or event.emoji.name == '🗺️':
             ch = client.get_channel(event.channel_id)
             if ch is None or event.member is None:  # e.g. a reaction in a DM: nobody to send the link to
@@ -95,16 +97,16 @@ def build_client():
             msg = await ch.fetch_message(event.message_id)
             for at in msg.attachments:
                 if not is_archivable(at.filename):
-                    print(f'skipped {at.filename}')
+                    log.debug('skipped %s', at.filename)
                     continue
                 fileName = f"{at.id}_{os.path.basename(at.filename)}"
                 tempImage = os.path.join(dir, fileName)
                 if not os.path.isfile(tempImage):
                     await at.save(fp=tempImage)
                     os.utime(tempImage, (msg.created_at.timestamp(), msg.created_at.timestamp()))
-                    print(f'saved {tempImage}')
+                    log.debug('saved %s', tempImage)
                 else:
-                    print('exists')
+                    log.debug('exists')
                 url = f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}'
                 await event.member.send(url)
                 if event.emoji.name == '🗺️':
@@ -116,15 +118,16 @@ def build_client():
 
 
 def main():
+    setup_logging()
     client = build_client()
     init_database()  # before Config.reload(), which reads a property
     Config.reload()
     while True:
         try:
-            client.run(Config.config['token'])
+            client.run(Config.config['token'], log_handler=None)  # logging is set up above
             break
         except Exception as e:
-            print(f"Error: {e}. 10sec sleep Restarting bot...", flush=True)
+            log.error("%s. Restarting the bot in 10 seconds...", e)
             time.sleep(10)
 
 

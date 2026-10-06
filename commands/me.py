@@ -36,7 +36,8 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
             if "pdf" == task:
                 from pdf.sheet import Sheet
                 pdf = Sheet(me)
-                fp = os.path.join(tempfile.gettempdir(), next(tempfile._get_candidate_names())+"_tmp.pdf")
+                fd, fp = tempfile.mkstemp(suffix='_tmp.pdf')
+                os.close(fd)
                 await asyncio.to_thread(pdf.output, fp)
                 await try_upload_file(client, message.author, file_path=fp, filename=str(me.name)+'.pdf', delete_after_send=True)
             else:

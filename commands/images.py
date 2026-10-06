@@ -1,7 +1,10 @@
+import logging
 from commands.base_command import BaseCommand
 from utils import *
 from permissions import ADMIN
 import os
+
+log = logging.getLogger(__name__)
 class Images(BaseCommand):
     required_rights = ADMIN
 
@@ -26,13 +29,13 @@ class Images(BaseCommand):
             for at in msg.attachments:
 #                print(f"{at.id} ... {at.filename} {at.content_type} ::: {at.url}")
                 if not is_archivable(at.filename):
-                    print(f'skipped {at.filename}')
+                    log.debug('skipped %s', at.filename)
                     continue
                 tempImage = os.path.join(dir, f"{at.id}_{os.path.basename(at.filename)}")
                 if not os.path.isfile(tempImage):
                     await at.save(fp=tempImage)
                     os.utime(tempImage, (msg.created_at.timestamp(), msg.created_at.timestamp()))
-                    print(f'saved {tempImage}')
+                    log.debug('saved %s', tempImage)
                 else:
-                    print('exists')
+                    log.debug('exists')
 

@@ -9,9 +9,13 @@ class PropertiesTable(BaseTableHandler):
     def set(self, key, value):
         BaseTableHandler.execute('INSERT INTO properties (modified, key, value) VALUES(now(),%(key)s,%(value)s)'
                                  ' ON CONFLICT (key) DO UPDATE SET value=%(value)s', {'key': key, 'value': value})
+        if key == 'year':
+            BaseTableHandler.clear_year_cache()
 
     def remove(self, key):
         BaseTableHandler.execute("DELETE FROM properties WHERE key=%s", param=[key], commit=True)
+        if key == 'year':
+            BaseTableHandler.clear_year_cache()
 
     def get(self, key):
         row =  BaseTableHandler.execute("SELECT * FROM properties WHERE key=%s", param=[key], fetch='one')

@@ -1,8 +1,11 @@
+import logging
 import os
 import threading
 import time
 
 import psycopg2
+
+log = logging.getLogger(__name__)
 
 
 class Database:
@@ -56,7 +59,7 @@ class Database:
     @staticmethod
     def initiate():
         """Creates / migrates the schema; callers hold Database.lock. A failed step rolls everything back."""
-        print("initiate")
+        log.info("initiate")
         conn = Database.get()
         try:
             Database._migrate(conn)
@@ -81,7 +84,7 @@ class Database:
             else:
                 cur.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'dbversion',0)")
                 cur.execute("INSERT INTO properties(created, modified, key, value) VALUES(now(), now(),'year',481)")
-            print(f"PG version: {v}")
+            log.info("PG version: %s", v)
             if v == 0:
                 cur.execute("""CREATE TABLE IF NOT EXISTS events (
                         id SERIAL PRIMARY KEY,

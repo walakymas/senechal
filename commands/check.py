@@ -1,7 +1,10 @@
+import logging
 from commands.base_command import BaseCommand
 from config import Config
 from passions import group_passions, passion_total, OTHER, PASSION_WARN_TOTAL
 from utils import *
+
+log = logging.getLogger(__name__)
 
 
 class Check(BaseCommand):
@@ -19,11 +22,11 @@ class Check(BaseCommand):
     async def handle(self, params, message, client):
         char = get_me(message)
         if char:
-            print("check.handle:hasChar", flush=True)
+            log.debug("check.handle: has a character")
             (spec, modifier) = extract(params, ["---", 0])
             await self.check(message.channel, char, spec, modifier, message)
         else:
-            print("check.handle:noChar", flush=True)
+            log.debug("check.handle: no character")
             (name, spec, modifier) = extract(params, ["---", "---", 0])
             for char in Character.pcs(None if name == '---' else name):
                 await self.check(message.channel, char, spec, modifier, message)

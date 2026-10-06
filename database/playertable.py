@@ -1,4 +1,7 @@
+import logging
 from database.base_table_handler import BaseTableHandler
+
+log = logging.getLogger(__name__)
 
 # TODO
 class PlayerTable(BaseTableHandler):
@@ -14,7 +17,6 @@ class PlayerTable(BaseTableHandler):
 
     def get(self, id):
         r = BaseTableHandler.execute("SELECT * FROM player WHERE cid=%s", param=[id], fetch='one')
-        print(f"player get:{r}")
         return r
 
     def get_by_did(self, did):

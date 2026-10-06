@@ -62,6 +62,7 @@ Project status, roadmap, and the decision log live in `pm/`.
 - **API + bot:** `python3 server.py`. Static files are served from `static/`.
 - **Database:** both processes expect a PostgreSQL `DATABASE_URL` env var. The data
   layer connects on first use and fails with a clear error if it is missing.
+- Logging: `logs.setup_logging()`; `LOG_LEVEL` (default `INFO`; `DEBUG` also shows command arguments). Do not log message content, tokens or personal data.
 - Config is read from `config.yml` (optional, gitignored), `senechal.yml`, and
   `feast.json`.
 
