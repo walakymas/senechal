@@ -1,30 +1,44 @@
+import logging
 import discord
 from database.mapstable import MapsTable
 import message_handler
+import asyncio
 import datetime
 import sys
 import os
+import time
 
 from config                         import Config
 from database.database              import Database
+from utils                          import is_archivable, pictures_dir, strip_mention
+from logs                           import setup_logging
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 # Set to remember if the bot is already running, since on_ready may be called
 # more than once on reconnects
 this = sys.modules[__name__]
 this.running = False
 
+def init_database():
+    with Database.lock:
+        Database.initiate()
+
+
 def build_client():
     """Create the Discord client with all event handlers registered.
 
     Shared by the standalone bot (main) and the single-process server (server.py).
     """
-    print("Starting up bot...")
+    log.info("Starting up bot...")
     intents = discord.Intents.default()
     intents.guilds = True
     intents.members = True
     intents.message_content = True
-    client = discord.Client(intents=intents)
+    # No @everyone / @here / role pings from echoed user input; plain user mentions still notify
+    client = discord.Client(intents=intents,
+                            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=True))
 
     # Define event handlers for the client
     # on_ready may be called multiple times in the event of a reconnect,
@@ -34,61 +48,65 @@ def build_client():
         if this.running:
             return
 
-        this.running = True
-
         await client.change_presence(
                 activity=discord.Game(name=f"{Config.prefix}senechal since {datetime.datetime.now()}"))
-        print("Logged in!", flush=True)
+        log.info("Logged in!")
 
         for guild in client.guilds:
             for m in guild.channels:
                 if m.id == Config.mainChannelId:
                     Config.mainChannel = m
-        with Database.lock:
-            Database.initiate()
+        # the schema step blocks (and may fail: then on_ready runs again on the next reconnect)
+        await asyncio.to_thread(init_database)
+        this.running = True
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
+        if message.author.bot:
+            return
         text = message.content
         if text.startswith(Config.prefix) and text != Config.prefix:
-            cmd_split = text[len(Config.prefix):].split()
-            if cmd_split[-1].startswith('<@!'):
-                cmd_split = cmd_split[0:-1]
+            cmd_split = strip_mention(text[len(Config.prefix):].split())
+            if not cmd_split:
+                return
             try:
                 await message_handler.handle_command(cmd_split[0].lower(), 
                                       cmd_split[1:], message, client)
             except:
-                print("Error while handling message", flush=True)
+                log.error("Error while handling a message")
                 raise
 
     @client.event
     async def on_message(message):
-        print(message.content)
         await common_handle_message(message)
 
     @client.event
     async def on_message_edit(before, after):
-        print(after.content)
         await common_handle_message(after)
 
     @client.event
     async def on_raw_reaction_add(event):
-        print(f"reaction {event.channel_id}::{event.emoji.name}")
+        log.debug("reaction %s::%s", event.channel_id, event.emoji.name)
         if event.emoji.name == '👀' or event.emoji.name == '🗺️':
-            dir = os.path.join("/var/www/senechalPictures", f"{event.channel_id}")
+            ch = client.get_channel(event.channel_id)
+            if ch is None or event.member is None:  # e.g. a reaction in a DM: nobody to send the link to
+                return
+            dir = pictures_dir(event.channel_id)
             from pathlib import Path
             Path(dir).mkdir(parents=True, exist_ok=True)
-            ch = client.get_channel(event.channel_id)
             msg = await ch.fetch_message(event.message_id)
             for at in msg.attachments:
-                fileName = f"{at.id}_{at.filename}"
+                if not is_archivable(at.filename):
+                    log.debug('skipped %s', at.filename)
+                    continue
+                fileName = f"{at.id}_{os.path.basename(at.filename)}"
                 tempImage = os.path.join(dir, fileName)
                 if not os.path.isfile(tempImage):
                     await at.save(fp=tempImage)
                     os.utime(tempImage, (msg.created_at.timestamp(), msg.created_at.timestamp()))
-                    print(f'saved {tempImage}')
+                    log.debug('saved %s', tempImage)
                 else:
-                    print('exists')
+                    log.debug('exists')
                 url = f'https://senechalweb.duckdns.org/attachments/{event.channel_id}/{fileName}'
                 await event.member.send(url)
                 if event.emoji.name == '🗺️':
@@ -100,15 +118,17 @@ def build_client():
 
 
 def main():
+    setup_logging()
     client = build_client()
+    init_database()  # before Config.reload(), which reads a property
     Config.reload()
     while True:
         try:
-            client.run(Config.config['token'])
+            client.run(Config.config['token'], log_handler=None)  # logging is set up above
             break
         except Exception as e:
-            print(f"Error: {e}. 10sec sleep Restarting bot...", flush=True)
-            datetime.time.sleep(10)
+            log.error("%s. Restarting the bot in 10 seconds...", e)
+            time.sleep(10)
 
 
 ###############################################################################

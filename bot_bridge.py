@@ -51,9 +51,10 @@ async def _run_command(channel, content, did, author_name):
     import message_handler
     from utils import get_me
     message = WebMessage(content, channel, WebAuthor(did, author_name))
-    cmd_split = content[len(Config.prefix):].split()
-    if cmd_split[-1].startswith('<@!'):
-        cmd_split = cmd_split[0:-1]
+    from utils import strip_mention
+    cmd_split = strip_mention(content[len(Config.prefix):].split())
+    if not cmd_split:
+        return
     char = get_me(message)
     await channel.send(f"{char.name if char else author_name}: `{shown_command(content)}`")
     await message_handler.handle_command(cmd_split[0].lower(), cmd_split[1:], message, client)

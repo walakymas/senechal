@@ -13,12 +13,10 @@ traits = [
     [ 'Trusting', 'Suspicious' ],
     [ 'Valorous', 'Cowardly' ],
     ];
-var surl = 'https://senechal.herokuapp.com'
-var hurl = 'https://discord.com/api/webhooks/822974917816483870/J5FB3eGrDP1xJ9FYeZaVIISz8YEHEl2b7rLZN8i0sc1OE4NQ-DVh41e_DUH3Saw7LabU'
+var surl = '..'  // the API is on the same server (the page is served from /static/)
+var hurl = null  // Discord webhook URL for the bot buttons: set it here locally, never commit it
 var prefix = "!"
 if (window.location.href.indexOf('localhost')>0) {
-    surl = '..';
-    hurl = 'https://discord.com/api/webhooks/824616310029418498/wFNAgUSKl22K69U4fai1k5exyeqnXx9XbCTDa9xVk2CBb36n0cItFF_KF1CUhbNWejBz'
     cid = 63;
     prefix = "?"
 }
@@ -112,7 +110,9 @@ function redraw() {
     addBlock('other', function(i) { return pcs[i]['skills']['Other']},'--')
     addBlock('passions', function(i) { return pcs[i]['passions']},'--')
     $('[bot]').click(function(){
-        $.post(hurl, {username: 'WebHook', content:$(this).attr('bot').replace(/^./,prefix)})
+        if (hurl) {
+            $.post(hurl, {username: 'WebHook', content:$(this).attr('bot').replace(/^./,prefix)})
+        }
     })
     $('[title]').tooltip()
 }

@@ -14,9 +14,8 @@ modes: ['code', 'form', 'text', 'tree', 'view', 'preview']
 }
 editor = {}
 
-var surl = 'https://senechal.herokuapp.com'
+var surl = '..'  // the API is on the same server (the page is served from /static/)
 if (window.location.href.indexOf('localhost')>0) {
-    surl = '..';
     cid = 63;
 }
 if (localStorage.getItem('cid')) {

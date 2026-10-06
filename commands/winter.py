@@ -1,7 +1,10 @@
+import logging
 from commands.base_command import BaseCommand
 from config import Config
 from database.c2ctable import C2CTable
 from utils import *
+
+log = logging.getLogger(__name__)
 
 
 class Winter(BaseCommand):
@@ -20,8 +23,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
         if me:
             await self.winter(me, message)
         elif len(params) > 0:
-            print(params[0])
-            for pc in Config.pcs():
+            for pc in Character.pcs():
                 await self.winter(pc, message)
 
     async def winter(self, char, message):
@@ -114,7 +116,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                 else:
                     if 'skills' in f:
                         for n, v in f['skills'].items():
-                            if v < 15 or (v <= 20 and randint(1, 6) == 6) or (v > 20 and randint(1, 20) == 20):
+                            if v < 15 or (v <= 20 and dice(6) == 6) or (v > 20 and dice(20) == 20):
                                 s += f"{n} `{v}` -> `{v+1}`\n"
                     if s != "":
                         embed.add_field(name=f"{nf} ({f['connection']})", value=s, inline=False)

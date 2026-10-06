@@ -9,6 +9,92 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Performance and logging (Task 021)
+
+- **Branch:** `collab/performance` (from `collab/infra-and-deps`)
+- **Type:** behaviour-preserving (same answers, fewer queries), plus three small flagged changes
+- **Summary:** measured first (`tests/query_count_test.py`), then removed the N+1 queries. SQL statements per call, 6 / 24 characters: `/players` 5 / 14 → **2 / 2**; `Character.pcs()` 4 / 13 → **1 / 1**; `/connections` (hub) 17 / 71 → **4 / 4**; `/pdfs` 19 / 73 → **5 / 5**; `/json?id=` 5 → 4; an unregistered Discord user's 5 commands 5 → **1**. How: `CharacterTable` records carry the player's `did` (no query per `Character`), `Character.get_many_by_id`, batch marks/events/glory, `CharacterTable.list_summary()` (no JSON blob) for the lists, a cached game year (`PropertiesTable.set/remove` drop it), a locked character cache with one key per kind and a 10 s negative entry. PDF: project-relative fonts/images, in-memory `/pdf` and `/pdfs` (no temp files), one team-zip build at a time reused for 30 s, sanitised zip names, safe `Content-Disposition` (ASCII `filename` + RFC 5987 `filename*`). Logging: `logs.setup_logging()` (`LOG_LEVEL`), every `print()` became a log call or was removed; message content, command arguments (at INFO), token and player records are no longer logged.
+- **Behaviour changes:** `/pdfs` selects the team from the `player` table (the legacy `characters.memberid` column selected nobody for newer data); the team zip can be 30 s old; `get_by_name` / `get_by_id` pick the first player deterministically.
+- **Found while testing:** the Task 020 pins (`fpdf2` 2.8.3, from the dev venv) cannot embed the sheet's variable font (`KeyError: 'fvar'`: every PDF would have failed). `requirements.txt` is re-pinned to the versions the working container ran (`fpdf2` 2.8.9, `fonttools` 4.65.0, `discord.py` 2.7.1, …); `pip check` / `pip-audit` clean, tests pass on Python 3.12.
+- **Files touched:** `character.py`, `database/{charactertable,base_table_handler,proptable,markstable,eventstable}.py`, `api/views.py`, `api/compat.py`, `pdf/sheet.py`, `commands/me.py`, `logs.py` (new), `server.py`, `senechal.py`, `message_handler.py`, `utils.py`, `config.py`, `feast.py`, other `database/*.py` and `commands/*.py` (logging), `requirements.txt`, `tests/query_count_test.py` (new), `tests/performance_test.py` (new).
+- **Left open:** fonts are still parsed per sheet; cached `Character` objects are still mutated in place by a few callers; the synchronous DB calls on the event loop; the Angular `trackBy` / `OnPush` (after the Angular upgrade).
+- **Risk & rollback:** 91 tests pass in the Python 3.12 image against PostgreSQL 14 (none skipped); not run on a live Discord session. `git revert`.
+
+---
+
+## 2026-10-06 — Infrastructure, dependencies and repo hygiene (Task 020)
+
+- **Branch:** `collab/infra-and-deps` in `senechal` and in `AngrySenechal2` (both from `collab/frontend-hardening`)
+- **Type:** behaviour-preserving for the application, but it changes the build / runtime (Python 3.12, `aiohttp` 3.14.3, non-root containers)
+- **Summary:** `requirements.txt` fully pinned for Python 3.12 (`pip-audit`: no known vulnerabilities; the old `aiohttp` 3.12.14 had 64; **the pin set was corrected in Task 021**: `fpdf2` 2.8.3 broke the PDFs); `Dockerfile.senechal` on `python:3.12-slim` as user `app`; Postgres published on `127.0.0.1` only; deleted `senechal_old.py` and the `.pkl` font caches (owner-approved), untracked `senechal.db*`, extended the ignore files; test stubs for `database.database` removed (they made the database tests use a fake when everything ran together). Frontend: `Dockerfile.dev` as `node`, `Dockerfile` is now a production multi-stage image serving `dist` with `server.js` (user `node`), dropped the `compression` package (known DoS advisory), removed the misnamed `dockerignore`. `npm audit` of the whole frontend recorded: 113 advisories, almost all Angular 14 (EOL) and dev tooling. Workspace `CLAUDE.md` updated.
+- **Files touched:** `senechal`: `requirements.txt`, `.gitignore`, `tests/*_test.py`, deleted files; `AngrySenechal2`: `Dockerfile`, `Dockerfile.dev`, `.dockerignore`, `server.js`, `package.json`, `README.md`; workspace root: `Dockerfile.senechal`, `Dockerfile.senechal.dockerignore`, `docker-compose.yml`, `CLAUDE.md`.
+- **Follow-up (owner: Heroku is gone, remove its leftovers; remove stray files; sync the lock):** deleted `Procfile` and `runtime.txt`; `static/sheet.js` / `static/team.js` use the same server instead of `senechal.herokuapp.com`, and two more hardcoded Discord webhook URLs in `static/team.js` were removed; Heroku mentions removed from `senechal/CLAUDE.md` and `server.js`; `#build#` and `AngrySenechal2.iml` removed from git; `package-lock.json` regenerated and in sync, the Dockerfiles use `npm ci`.
+- **Operational impact:** rebuild the images (`docker compose build`); the old Heroku deployment files are gone.
+- **Left open:** Python/Node targets and the Angular upgrade series, the systemd frontend service that runs `ng serve`, `disableHostCheck` — see the task file.
+- **Risk & rollback:** verified in containers only: backend image + 62 tests including the database tests, frontend dev and production images, server tests; not deployed. `git revert` in each repo.
+
+---
+
+## 2026-10-06 — Frontend and Express hardening (Task 019)
+
+- **Branch:** `collab/frontend-hardening` in `senechal` (from `collab/functional-bugs`) and in `AngrySenechal2` (from `main`)
+- **Type:** **behaviour-changing** (CORS / login-return origins, map URL validation, `server.js` behaviour, build defaults)
+- **Summary:** backend: allowed origins from `CORS_ORIGINS` (default list without codepen / cdpn / LAN IP; it also limits where the Discord login may return the token); the maps endpoints refuse non-http(s) URLs. Frontend: token no longer logged, failed calls show a snackbar (throttled), null-safe `setUser`, guarded `JSON.parse`, subscriptions released. `server.js`: `trust proxy`, no redirect to an unvalidated host, `helmet` with a report-only CSP, `compression`, long cache only for hashed bundles, 404 for missing assets, tests (`npm run test:server`). `ng build` defaults to production; budgets 2.2 / 3 MB.
+- **Files touched:** `api/app.py`, `api/views.py`, `tests/api_hardening_test.py` (new); `AngrySenechal2`: `server.js`, `server.test.js`, `package.json`, `angular.json`, `README.md`, `src/app/app.component.ts`, `character.service.ts`, `feast-seating/feast-seating.component.ts`, `src/environments/environment.prod.ts.example`; workspace root: `docker-compose.yml`, `.env.example`.
+- **Operational impact:** run `npm install` (new `helmet`, `compression`; the lockfile was not regenerated); the production build needs a local `environment.prod.ts` (git-ignored, copy the `.example`); set `CORS_ORIGINS` if a removed origin is still needed.
+- **Left open:** production API URL, token storage / `Authorization` header (after Task 015), CSP enforcement, Angular performance (`trackBy` / `OnPush` / lazy routes) — see the task file.
+- **Risk & rollback:** 62 backend tests pass; `server.js` tested in a `node:16-alpine` container; the production build succeeds in a container (1.96 MB initial); not run in a browser. `git revert` in both repos.
+
+---
+
+## 2026-10-06 — Functional bug fixes (Task 018)
+
+- **Branch:** `collab/functional-bugs` (branched from `collab/data-layer-stability`)
+- **Type:** **behaviour-changing** (`!weapon` wounds, `!c <name> …` / `!pc <name>` filtering, `!lord` values, `!lakoma` card range, aliases `!l` → Feast only, `!tel` → Winter only)
+- **Summary:** `!weapon` keeps the attacker's and the opponent's damage separate (no more `UnboundLocalError`; wound = opponent's damage minus the character's protection; knocked-down / major-wound text is no longer lost). Feast: the new row's id is used, round keys are strings (an action could be repeated after a reload), `select_card` / `setAction` / `card_enabled` fixed, `!lakoma` draws 1..154. `Character.pcs(name)` filters by name; removed the harmless-by-accident `"stewardship_"` default. Mentions `<@id>` are stripped, `get_me` survives empty commands / `cid:abc` / role mentions / a lone `!`; a command that raises `ValueError` / `IndexError` answers with a hint. Stale `Config.characters` code repaired (`!db list lord|mark`, `!mark`, `!me`, `!winter <arg>`, `!lord`; removed `Config.pcs` / `Config.npcs`). discord.py 2 / emoji 2 drift fixed; `winter` uses `dice()`. The clashing aliases were removed (`l` from Lord, `tel` from Token; owner decision) and a clash is logged at start-up. The `check2` rule (skill above 20 always succeeds; total ≥ 20 is a critical, +4d6) is pinned by tests.
+- **Files touched:** `commands/weapon.py`, `feast.py`, `database/feasttable.py`, `commands/feast.py`, `character.py`, `utils.py`, `senechal.py`, `bot_bridge.py`, `message_handler.py`, `config.py`, `commands/check.py`, `login.py`, `winter.py`, `me.py`, `db.py`, `mark.py`, `lord.py`, `tests/functional_bugs_test.py` (new), `tests/database_integration_test.py`.
+- **Open (owner):** unused `Character.effective_dexterity` (`str` + armor + shield looks wrong), confirm the `!weapon` wound rule and the `card_enabled` rule.
+- **Risk & rollback:** 54 unit tests pass (12 more with a database); not run on a live Discord server. `git revert`.
+
+---
+
+## 2026-10-06 — Data layer stability (Task 017)
+
+- **Branch:** `collab/data-layer-stability` (branched from `collab/bot-permissions`)
+- **Type:** **behaviour-changing** (database errors now raise instead of returning `None`; the connection is opened lazily; schema migration 18 adds unique indexes)
+- **Summary:** `Database` opens the PostgreSQL connection on first use from the whole `DATABASE_URL` (keeps `?sslmode=`), reconnects when it is closed or dead (ping after 60 s idle), and fails with a clear error when `DATABASE_URL` is missing; the unused `sqlite3.connect('senechal.db')` is gone. `BaseTableHandler.execute` rolls back and re-raises. `initiate()` rolls back a failed migration; fresh installs no longer break at v13/v14 (`player.name`, duplicate `did`); migration 18 collapses duplicate `c2c` / `p2c` rows (newest kept) and adds the unique indexes the `ON CONFLICT` upserts need. Invalid SQL fixed in `lordtable`, `markstable`, `p2ctable`, `c2ctable`, `checktable`, `tokenstable`, `feasttable`, `playertable`, and `cleanupTokens` (`api/views.py`). `PropertiesTable.getValue` returns `None` for a missing key; `Config.reload` tolerates an empty schema, uses `yaml.safe_load` and UTF-8, and converts the `mainChannel` env var to int. `senechal.py`: `time.sleep` bug, the `running` flag is set only after the schema step succeeded, the schema step runs before `Config.reload()` and off the event loop. `!reload` (`git pull`) and `!me pdf` no longer block the event loop; `!db download` explains when there is no SQLite file.
+- **Removed:** `database/p2ptable.py` (`P2PTable`; owner approved: its table `p2p` was never created and nothing used it).
+- **Files touched:** `database/*.py` (see Task 017), `config.py`, `senechal.py`, `commands/reload.py`, `commands/me.py`, `commands/db.py`, `api/views.py`, `tests/database_integration_test.py` (new), `CLAUDE.md`s.
+- **Operational impact:** **back up the database before the first start** (migration 18 deletes duplicate `c2c` / `p2c` rows). `DATABASE_URL` is now passed to libpq as is: a password with special characters must be percent-encoded. Failed writes now surface as errors in the console / HTTP 500 instead of a fake "ok".
+- **Not changed:** hardcoded admin Discord ids in migration 14 (fresh installs only; owner's call), the many short synchronous DB calls on the event loop (needs an async data layer).
+- **Risk & rollback:** tested against a throwaway PostgreSQL 14 (11 integration tests, plus a startup smoke test on an empty database); not run against the production data or a live Discord server. `git revert`; migration 18 is not reverted automatically (drop `idx_c2c_c0_c1`, `idx_p2c_player_character`, set `dbversion` back to 17).
+
+---
+
+## 2026-10-06 — Bot permission checks, dice limits, mention safety (Task 016)
+
+- **Branch:** `collab/bot-permissions` (branched from `collab/sql-injection-fix`)
+- **Type:** **behaviour-changing** (`!reload`, `!set`, `!info`, `!images` and most of `!db` need admin rights; out-of-range dice are refused; the archiver skips non-image files)
+- **Summary:** `permissions.has_rights()` plus an optional `required_rights` command attribute enforced in `message_handler.handle_command` (`BaseCommand` untouched). Dice count/size limits (100 / 1000) in `dicing.roll_dice`, damage dice capped at 100. `AllowedMentions` blocks `@everyone` / roles; bot authors are ignored; the 👀/🗺️ handler and `!images` only archive image/pdf/video files, guard `None`, and read the directory from `picturesDir` (same default).
+- **Files touched:** `permissions.py` (new), `message_handler.py`, `dicing.py`, `utils.py`, `senechal.py`, `commands/reload.py`, `set.py`, `info.py`, `images.py`, `db.py`, `weapon.py`, `tests/bot_permissions_test.py` (new).
+- **Operational impact:** the owner needs `playerrights` with bit 0 to keep using `!reload`.
+- **Open (owner decisions):** `!event remove|modify` / `!mark remove` for anyone; `on_message_edit` re-running commands; 🗺️ reaction open to all.
+- **Risk & rollback:** not run on a live Discord server (17 unit tests pass). `git revert`.
+
+---
+
+## 2026-10-06 — Fix SQL injection in `get_by_name` (Task 014)
+
+- **Branch:** `collab/sql-injection-fix`
+- **Type:** **behaviour-changing** (a name search containing `%`, `_`, `\` or `'` now matches those characters literally)
+- **Summary:** `CharacterTable.get_by_name` no longer builds the SQL with an f-string; the name is a bound parameter and LIKE wildcards are escaped (`CharacterTable.like_pattern`). The `dbversion` update in `database/database.py` is parameterised too.
+- **Motivation:** `03-security-audit.md` §3 — the name came unauthenticated from `GET /json?ch=`, from `newchar` and from Discord (`!c … !name`).
+- **Files touched:** `database/charactertable.py`, `database/database.py`, `tests/character_table_test.py` (new).
+- **Verification:** `python -m unittest tests.character_table_test` (3 tests, stubbed driver). Not run against a live DB.
+- **Risk & rollback:** a player relying on `%` as a wildcard in a name search. `git revert`.
+
+---
+
 ## 2026-10-06 — Remove stale secrets, add audit tasks (Task 013; tasks 014-021 proposed)
 
 - **Branch:** `main` (not committed yet)

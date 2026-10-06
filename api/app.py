@@ -12,20 +12,29 @@ from aiohttp import web
 from api import auth, views
 from api.compat import Request
 
-# Origins allowed to call the API from the browser
-CORS_ALLOWED_ORIGINS = {
-    "https://cdpn.io",
+# Origins allowed to call the API from the browser (they are also the only places the Discord login may
+# send the token back to). Set CORS_ORIGINS (comma separated) to replace this list.
+DEFAULT_CORS_ORIGINS = (
     "https://senechalweb.duckdns.org",
     "http://senechalweb.duckdns.org",
     "http://senechallocal.duckdns.org",
     "http://localhost:8000",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
-    "https://codepen.io",
     "http://localhost:4200",
-    "http://192.168.1.131",
     "http://senechaldev.duckdns.org",
-}
+)
+
+
+def cors_origins(value=None):
+    """The allowed origins: the comma separated `value` (default: the CORS_ORIGINS env var) or the default list."""
+    value = os.environ.get('CORS_ORIGINS') if value is None else value
+    if value and value.strip():
+        return {o.strip().rstrip('/') for o in value.split(',') if o.strip()}
+    return set(DEFAULT_CORS_ORIGINS)
+
+
+CORS_ALLOWED_ORIGINS = cors_origins()
 CORS_ALLOW_METHODS = 'DELETE, GET, OPTIONS, PATCH, POST, PUT'
 CORS_ALLOW_HEADERS = ('accept, accept-encoding, authorization, content-type, dnt, origin, '
                       'user-agent, x-csrftoken, x-requested-with')

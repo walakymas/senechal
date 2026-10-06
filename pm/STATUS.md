@@ -23,21 +23,21 @@ for PRs, the bug-fix branch is committed locally.
 | 003 | Project-specific README | in-progress (ready for PR) | behaviour-preserving | readme | yes |
 | 004 | Bug fixes (base_command, utils) | in-progress (ready for PR) | behaviour-changing | bugfixes | no |
 | 005 | Single process (API + bot) | in-progress (unverified) | behaviour-changing | single-process | no |
-| 007 | Remove Django (code + local DB tables) | done (Heroku DB pending) | behaviour-changing | single-process | no |
+| 007 | Remove Django (code + local DB tables) | done | behaviour-changing | single-process | no |
 | 008 | Character ownership (My character / Activate) | in-review (UI unverified) | behaviour-changing | character-ownership | no |
 | 009 | Passion categories | done (frontend build unverified) | behaviour-changing | passion-categories | yes |
 | 010 | Admin rights, `setChannel`, remove `!admin save` | done (not run live) | behaviour-changing | passion-categories | yes |
 | 011 | Web dice/commands without the webhook | in-review (frontend fallback uncommitted, not run live) | behaviour-changing | passion-categories | partly |
 | 012 | systemd services + deploy script (`deploy/`) | done (not run on the host yet) | behaviour-preserving | main | no |
 | 013 | Remove stale secrets (`settings.py`, `environment.prod.ts`) | in-review (not committed) | behaviour-preserving | remove-stale-secrets | no |
-| 014 | SQL injection in `get_by_name` | proposed | behaviour-changing | sql-injection-fix | no |
+| 014 | SQL injection in `get_by_name` | in-review (unit tests pass; not run on a live DB) | behaviour-changing | sql-injection-fix | no |
 | 015 | API authentication and authorisation (blocked: confirm login for all players first; reads stay open) | blocked | behaviour-changing | api-auth | no |
-| 016 | Bot permission checks, dice limits | proposed | behaviour-changing | bot-permissions | no |
-| 017 | Data layer stability | proposed | behaviour-changing | data-layer-stability | no |
-| 018 | Functional bug fixes | proposed | behaviour-changing | functional-bugs | no |
-| 019 | Frontend and Express hardening | proposed | behaviour-changing | frontend-hardening | no |
-| 020 | Infra, dependencies, repo hygiene | proposed | behaviour-preserving | infra-and-deps | no |
-| 021 | Performance and logging | proposed | behaviour-preserving | performance | no |
+| 016 | Bot permission checks, dice limits | in-review (17 unit tests pass; not run on a live server) | behaviour-changing | bot-permissions | no |
+| 017 | Data layer stability | in-review (11 integration tests on a throwaway PostgreSQL; not run on production data) | behaviour-changing | data-layer-stability | no |
+| 018 | Functional bug fixes | in-review (54 unit tests pass; not run on a live server) | behaviour-changing | functional-bugs | no |
+| 019 | Frontend and Express hardening | in-review (production build and server tests in containers; not run in a browser) | behaviour-changing | frontend-hardening | no |
+| 020 | Infra, dependencies, repo hygiene | in-review (verified in containers; not deployed) | behaviour-preserving | infra-and-deps | no |
+| 021 | Performance and logging | in-review (91 tests pass in the 3.12 image with PostgreSQL; not run on a live server) | behaviour-preserving | performance | no |
 
 ## In progress
 

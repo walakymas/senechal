@@ -8,6 +8,7 @@ import datetime
 import decimal
 import functools
 import json
+import urllib.parse
 import uuid
 
 NO_CACHE = 'max-age=0, no-cache, no-store, must-revalidate, private'
@@ -56,11 +57,21 @@ class JsonResponse(HttpResponse):
                          'application/json', status)
 
 
+def content_disposition(filename, disposition='inline'):
+    """A Content-Disposition header value that is safe for any file name: an ASCII `filename` (quotes, semicolons,
+    backslashes and control characters replaced) plus the real name as RFC 5987 `filename*` when it differs."""
+    fallback = ''.join(c if 32 <= ord(c) < 127 and c not in '"\\;' else '_' for c in filename) or 'download'
+    header = f'{disposition}; filename="{fallback}"'
+    if fallback != filename:
+        header += "; filename*=UTF-8''" + urllib.parse.quote(filename, safe='')
+    return header
+
+
 class FileResponse(HttpResponse):
     def __init__(self, fileobj, filename=None, status=200):
         super().__init__(fileobj, 'application/octet-stream', status)
         if filename:
-            self['Content-Disposition'] = f'inline; filename="{filename}"'
+            self['Content-Disposition'] = content_disposition(filename)
 
 
 def never_cache(view):

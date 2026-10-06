@@ -1,7 +1,11 @@
+import logging
 import yaml
 import os
 import json
+import psycopg2
 from database.proptable import PropertiesTable
+
+log = logging.getLogger(__name__)
 class Config:
     inited = False
 
@@ -49,8 +53,8 @@ class Config:
     def reload(force=False):
         if force or not Config.inited:
             try:
-                with open(r'config.yml') as file:
-                    Config.config.update(yaml.load(file, Loader=yaml.FullLoader))
+                with open(r'config.yml', encoding='utf-8') as file:
+                    Config.config.update(yaml.safe_load(file) or {})
                     if ('prefix' in Config.config):
                         Config.prefix = Config.config['prefix']
                     if ('mainChannel' in Config.config): 
@@ -58,33 +62,20 @@ class Config:
             except IOError:
                 Config.config = {'token': None}
                 if 'token' in os.environ:
-                    print("exist")
                     Config.config['token'] = os.environ['token']
                 if 'prefix' in os.environ:
                     Config.prefix = os.environ['prefix']
                 if 'mainChannel' in os.environ:
-                    Config.mainChannelId = os.environ['mainChannel']
+                    Config.mainChannelId = int(os.environ['mainChannel'])
 
-            with open(r'senechal.yml') as file:
-                Config.senechalConfig = yaml.load(file, Loader=yaml.FullLoader)
-            with open(r'feast.yml') as file:
-                Config.feastConfig = yaml.load(file, Loader=yaml.FullLoader)
+            with open(r'senechal.yml', encoding='utf-8') as file:
+                Config.senechalConfig = yaml.safe_load(file)
+            with open(r'feast.yml', encoding='utf-8') as file:
+                Config.feastConfig = yaml.safe_load(file)
 
-            Config.hook = PropertiesTable().getValue('hook')
+            try:
+                Config.hook = PropertiesTable().getValue('hook')
+            except psycopg2.Error as ex:  # e.g. the schema is not created yet on a fresh database
+                log.warning("hook not loaded: %s", ex)
             
             Config.inited = True
-
-    @staticmethod
-    def pcs(name=None):
-        Config.reload()
-        for c in Config.characters.values():
-            if ("memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
-                print(f"{name} {c['name']}")
-                yield c
-
-    @staticmethod
-    def npcs(name=None):
-        Config.reload()
-        for c in Config.characters.values():
-            if ("memberId" not in c) and ((not name) or (name.lower() in c['name'].lower())):
-                yield c

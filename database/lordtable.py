@@ -13,13 +13,13 @@ class LordTable(BaseTableHandler):
                                  {'lord': lord, 'year': year, 'key': key, 'value': value})
   
     def remove(self, lord, year, key):
-        BaseTableHandler.execute("DELETE FROM lord WHERE lord=%s, year=%s, key=%s", param=[lord, year, key], commit=True)
+        BaseTableHandler.execute("DELETE FROM lord WHERE lord=%s AND year=%s AND key=%s", param=[lord, year, key], commit=True)
 
     def get(self, lord, year, key):
-        return BaseTableHandler.execute("SELECT * FROM lord WHERE lord=%s, year=%s, key = %s", param=[lord, year, key])
+        return BaseTableHandler.execute("SELECT * FROM lord WHERE lord=%s AND year=%s AND key = %s", param=[lord, year, key], fetch='one')
 
     def get_by_value(self, year, key, value):
-        return BaseTableHandler.execute("SELECT * FROM lord WHERE year=%s AND key = %s AND value=%s", param=[year, key, value])
+        return BaseTableHandler.execute("SELECT * FROM lord WHERE year=%s AND key = %s AND value=%s", param=[year, key, value], fetch='all')
 
     def list(self, lord=-1, year=-1):
         return BaseTableHandler.execute('SELECT * FROM lord WHERE (-1=%(lord)s::bigint OR lord=%(lord)s::bigint) AND (-1=%(year)s OR year=%(year)s) ORDER BY lord, year, key', {'lord': lord, 'year': year}, fetch='all')

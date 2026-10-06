@@ -1,29 +1,39 @@
+import logging
 from fpdf import FPDF
 from config import Config
 from database.markstable import MarksTable
 from database.eventstable import EventsTable
+import os
 import unicodedata
+
+log = logging.getLogger(__name__)
+
+# fonts and images are found relative to the project, not to the working directory
+PDF_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(os.path.dirname(PDF_DIR), 'images')
 
 
 class Sheet(FPDF):
-    def __init__(self, char):
+    def __init__(self, char, year=None, marks=None, events=None, glory=None):
+        """`year`, `marks` (list of specs), `events` (event rows) and `glory` may be passed in when many sheets are
+        made at once, so that each sheet needs no queries of its own."""
         self.char = char
+        self.glory = glory
         self.data = char.get_data()
         super().__init__()
-        self.add_font('Sofia', '', 'pdf/GISMONDA.TTF', uni=True)
-        self.add_font('Lora', '', 'pdf/Lora-VariableFont_wght.ttf', uni=True)
-        self.add_font('LoraB', '', 'pdf/static/Lora-Bold.ttf', uni=True)
+        self.add_font('Sofia', '', os.path.join(PDF_DIR, 'GISMONDA.TTF'))
+        self.add_font('Lora', '', os.path.join(PDF_DIR, 'Lora-VariableFont_wght.ttf'))
+        self.add_font('LoraB', '', os.path.join(PDF_DIR, 'static', 'Lora-Bold.ttf'))
         self.add_page()
-        self.year = int(MarksTable.year())
+        self.year = int(MarksTable.year()) if year is None else year
         self.set_font('Sofia', '', 22)
         self.cell(180, 10, self.data['name'], 0, 1, align='C')
-        self.marks = []
-        mark_list = MarksTable().list(dbid=char.id, year=self.year)
-        for row in mark_list:
-            self.marks.append(row[5])
+        if marks is None:
+            marks = [row[5] for row in MarksTable().list(dbid=char.id, year=self.year)]
+        self.marks = list(marks)
         self.events = []
         if char.memberid:
-            self.events = EventsTable().list(dbid=char.id)
+            self.events = EventsTable().list(dbid=char.id) if events is None else events
         self.fill()
 
     def defa(self, data, field, default='???'):
@@ -36,7 +46,7 @@ class Sheet(FPDF):
         y = self.get_y()
         x = self.get_x()
         self.set_xy(x, y + 1)
-        self.image('images/pdfpart.png', w=width, h=10)
+        self.image(os.path.join(IMAGES_DIR, 'pdfpart.png'), w=width, h=10)
         self.set_xy(x, y + 2.5)
         self.set_font('Sofia', '', 10)
         self.cell(width, 5, text, 0, 2, align='C')
@@ -152,7 +162,6 @@ class Sheet(FPDF):
             for name, value in Config.senechal()['virtues'].items():
                 if name in self.data['main']['Culture']:
                     virtues = value
-        print(virtues)
         self.parchment('Traits', 50)
         for row in Config.senechalConfig['traits']:
             self.set_font('ZapfDingbats', '', 8)
@@ -242,7 +251,7 @@ class Sheet(FPDF):
     def main(self):
         self.parchment('Knight', 80)
         from database.eventstable import EventsTable
-        self.data['main']['Glory'] = EventsTable().glory(self.data['dbid'])
+        self.data['main']['Glory'] = EventsTable().glory(self.data['dbid']) if self.glory is None else self.glory
 
         x = self.get_x()
         y = self.get_y()

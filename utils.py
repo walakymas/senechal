@@ -1,6 +1,8 @@
+import logging
 import datetime
+import re
 from os import remove
-from os.path import join
+from os.path import join, splitext
 from random import randint
 
 import discord
@@ -15,6 +17,8 @@ from database.checktable import CheckTable
 import json
 from json import JSONDecodeError
 
+log = logging.getLogger(__name__)
+
 
 # Returns a path relative to the bot directory
 def get_rel_path(rel_path):
@@ -28,7 +32,7 @@ def get_rel_path(rel_path):
 def get_emoji(emoji_name, fail_silently=False):
     alias = emoji_name if emoji_name[0] == emoji_name[-1] == ":" \
         else f":{emoji_name}:"
-    the_emoji = emojize(alias, use_aliases=True)
+    the_emoji = emojize(alias, language='alias')
 
     if the_emoji == alias and not fail_silently:
         raise ValueError(f"Emoji {alias} not found!")
@@ -52,7 +56,7 @@ def get_channel(client, value, attribute="name"):
 # Uses get_channel, so you should be sure that the bot has access to only
 # one channel with such name
 async def send_in_channel(client, channel_name, *args):
-    await client.send_message(get_channel(client, channel_name), *args)
+    await get_channel(client, channel_name).send(*args)
 
 
 # Attempts to upload a file in a certain channel
@@ -72,7 +76,7 @@ async def try_upload_file(client, channel, file_path, content=None,
         remove(file_path)
 
     if not sent_msg:
-        await client.send_message(channel, "Oops, something happened. Please try again.")
+        await channel.send("Oops, something happened. Please try again.")
 
     return sent_msg
 
@@ -99,6 +103,31 @@ def get_checkable(data, spec):
 def tr(a):
     return str(a) + '/' + str(20 - a)
 
+# Attachments the bot archives (served from the web origin, so no html/svg/js)
+PICTURE_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.pdf', '.mp4', '.webm')
+
+
+def is_archivable(filename):
+    return splitext(filename)[1].lower() in PICTURE_EXTENSIONS
+
+
+def pictures_dir(channel_id):
+    """Directory of the archived attachments of a channel (base: `picturesDir` in the config)."""
+    return join(Config.config.get('picturesDir', '/var/www/senechalPictures'), str(channel_id))
+
+
+MAX_DICE_COUNT = 100
+MAX_DIE_SIZE = 1000
+
+
+def check_dice_limits(count, size):
+    """Raises ValueError (with a user-facing text) unless 1 <= count <= MAX_DICE_COUNT and 1 <= size <= MAX_DIE_SIZE."""
+    if not 1 <= count <= MAX_DICE_COUNT:
+        raise ValueError(f"A kockák száma 1 és {MAX_DICE_COUNT} között lehet")
+    if not 1 <= size <= MAX_DIE_SIZE:
+        raise ValueError(f"A kocka mérete 1 és {MAX_DIE_SIZE} között lehet")
+
+
 def dice(size):
     return int(overwrite('debugdice', randint(1, size)))
 
@@ -108,26 +137,33 @@ def overwrite(cname, orig):
     else:
         return orig
 
+MENTION = re.compile(r'<@!?(\d+)>')
+
+
+def strip_mention(words):
+    """Drops a trailing user mention (<@id> or <@!id>) from the command words."""
+    return words[:-1] if words and MENTION.fullmatch(words[-1]) else words
+
+
 def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
-    print('get_me', flush=True)
+    log.debug('get_me')
     me = None
-    if cmd_split[-1].startswith('<@!'):
-        print(f'get_me 1 "{cmd_split[-1][3:-1]}"', flush=True)
-        me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
-    elif cmd_split[-1].startswith('<@'):
-        print(f'get_me 2 "{cmd_split[-1][3:-1]}"', flush=True)
-        me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
-    elif cmd_split[-1].startswith('!'):
-        print(f'get_me 3: {cmd_split[-1][1:]}', flush=True)
-        me = Character.get_by_name(cmd_split[-1][1:], force=force)
-    elif cmd_split[-1].startswith('cid:'):
-        print(f'get_me 4: {cmd_split[-1][4:]}', flush=True)
-        me = Character.get_by_id(int(cmd_split[-1][4:]), force=force)
+    last = cmd_split[-1] if cmd_split else ''
+    mention = MENTION.fullmatch(last)
+    if mention:
+        log.debug('get_me 1 %s', mention.group(1))
+        me = Character.get_by_memberid(mention.group(1), force=force)
+    elif last.startswith('!') and len(last) > 1:
+        log.debug('get_me 3: %s', last[1:])
+        me = Character.get_by_name(last[1:], force=force)
+    elif last.startswith('cid:') and last[4:].isdigit():
+        log.debug('get_me 4: %s', last[4:])
+        me = Character.get_by_id(int(last[4:]), force=force)
     else:
-        print(f'get_me else: {cmd_split[-1]}', flush=True)
+        log.debug('get_me else: %s', last)
 
-    print(f'me:{me}', flush=True)
+    log.debug('me: %s', me)
 
     if me:
         return me
@@ -303,7 +339,7 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
                         embed.description += f"{name}: `{value}`  "
             embeds.append(embed)
         else:
-            print("no passions")
+            log.debug("no passions")
     if task == "*" or "skills".startswith(task.lower()):
         if 'skills' in data:
             embed = get_embed(char, 0)
@@ -393,6 +429,9 @@ def check(base, modifier=0, emoji=True):
     return [color, text, r, success]
 
 def check2(base, modifier=0, emoji=True):
+    # Pendragon rule (confirmed by the owner): a skill raised above 20 by a modifier always succeeds;
+    # the part above 20 is added to the rolled value, and a total of 20 or more is a critical success
+    # (which adds 4d6 damage in attacks, see embed_attack / Weapon.embed).
     ro = dice(20)
     r = ro
     c = base + int(modifier)
@@ -432,7 +471,7 @@ async def embed_check(ctx, data, name, base, modifier, message=None, char:Charac
         c['text']=text
         c['ro']=ro
         c['success']=successes[success]
-        print(json.dumps(toJson, indent=4, ensure_ascii=False))
+        log.debug(json.dumps(toJson, ensure_ascii=False))
         CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
 
     embed = discord.Embed(title=data['name'] + " " + name + " Check", timestamp=datetime.datetime.utcnow(), color=color)
@@ -482,7 +521,7 @@ async def embed_trait(ctx, data, name, base, modifier, name2, message=None, char
         add_field(embed, name=name2, value=f"{text} ({r}  vs {20 -base})",
                   inline=False)
     if (char!=None and message!=None) :
-        print(json.dumps(toJson, indent=4, ensure_ascii=False))
+        log.debug(json.dumps(toJson, ensure_ascii=False))
         CheckTable().add(character=char.id, command=message.content, result=json.dumps(toJson, indent=4, ensure_ascii=False))
 
     await ctx.send(embed=embed)
@@ -502,7 +541,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
         if success == 2:
             damage += 4
         s = ''
-        for x in range(damage):
+        for x in range(min(damage, MAX_DICE_COUNT)):
             d = dice(6)
             if sum > 0:
                 s += '+'
@@ -516,7 +555,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
             sum = 0
             if osuccess == 2:
                 odamage += 4
-            for x in range(odamage):
+            for x in range(min(odamage, MAX_DICE_COUNT)):
                 sum += dice(6)
             add_field(embed, name="Sebzés", value=str(sum))
 

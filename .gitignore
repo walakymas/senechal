@@ -114,3 +114,11 @@ Dockerfile.senechal
 docker-compose.yml
 .idea
 .git_
+# local data and archives (Task 020)
+*.pkl
+*.db
+*.db-journal
+*.dmp
+*.zip
+*.tgz
+.claude/

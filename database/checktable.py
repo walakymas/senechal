@@ -12,8 +12,8 @@ class CheckTable(BaseTableHandler):
                                  ' %(character)s, %(command)s, %(result)s)',
                                  {'character':character, 'command':command, 'result':result})
   
-    def remove(self, c0, c1):
-        BaseTableHandler.execute("DELETE FROM c2c WHERE playe0r=%s, c1=%s", param=[c0, c1], commit=True)
+    def remove(self, cid):
+        BaseTableHandler.execute("DELETE FROM checks WHERE cid=%s", param=[cid], commit=True)
 
     def list(self, plyr=None, limit=5 ):
         return BaseTableHandler.execute('SELECT *, (select name FROM characters chr WHERE chr.id = c.character) name '

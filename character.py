@@ -1,9 +1,13 @@
-from datetime import datetime
 import json
+import logging
+import threading
+import time
 
 from config import Config
 from database.charactertable import CharacterTable
 from database.playertable import PlayerTable
+
+log = logging.getLogger(__name__)
 
 
 class Character:
@@ -12,13 +16,16 @@ class Character:
         self.created = record[1]
         self.modified = record[2]
         # Discord id of the player of the character (the memberid column was replaced by the player table)
-        self.memberid = PlayerTable().did_by_character(self.id)
+        if len(record) > 9:  # CharacterTable records carry the player's did (index 9)
+            self.memberid = int(record[9]) if record[9] else None
+        else:
+            self.memberid = PlayerTable().did_by_character(self.id)
         self.name = record[4]
         self.url = record[5]
         self.json = record[6]
         self.data = json.loads(self.json)
         self.data['memberId'] = f'{self.memberid}' if self.memberid else None
-        print(f"memberId: {self.data['memberId']}", flush=True)
+        log.debug("memberId: %s", self.data['memberId'])
         if len(record) > 8 and record[8]:
             self.data['player'] = record[8]
         self.data['dbid'] = self.id
@@ -50,8 +57,7 @@ class Character:
             }
         if not 'winter' in self.data:
             self.data['winter'] = {
-                "stewardship_": 13,
-                "horses": [
+                "horses": [  # no stewardship here: winterData falls back to the character's own skill
                     "charger",
                     "rouncy",
                     "rouncy",
@@ -86,8 +92,8 @@ class Character:
             try:
                 if self.data['combat']['weapon'] != 'empty':
                    spec = self.data['combat']['weapon']
-            except:
-                pass            
+            except (KeyError, TypeError):
+                pass
             
         weapon = Config.weapon(spec)
         weapon['damage'] += self.get_damage()
@@ -113,59 +119,92 @@ class Character:
 
         return self.data
 
+    # Cache of loaded characters: a positive entry lives CACHE_TTL seconds, "not found" only NEGATIVE_TTL seconds
+    # (so that a player who has just got a character is not "unknown" for long). The API and the bot share it.
+    CACHE_TTL = 60
+    NEGATIVE_TTL = 10
     cache = {}
-    cache_timeline = 0
+    cache_lock = threading.RLock()
+    MISSING = object()
+
     @staticmethod
-    def check_cache():
-        now = datetime.timestamp(datetime.now())
-        if now > Character.cache_timeline:
-            Character.cache = {}
-            Character.cache_timeline = 60+now ## Egy perc cache
+    def _cache_get(key):
+        with Character.cache_lock:
+            entry = Character.cache.get(key)
+            if entry is None:
+                return Character.MISSING
+            value, expires = entry
+            if time.monotonic() > expires:
+                del Character.cache[key]
+                return Character.MISSING
+            return value
+
+    @staticmethod
+    def _cache_put(key, value):
+        with Character.cache_lock:
+            ttl = Character.CACHE_TTL if value is not None else Character.NEGATIVE_TTL
+            Character.cache[key] = (value, time.monotonic() + ttl)
 
     @staticmethod
     def get_by_memberid(mid, force=False):
-        print(f"get_by_memberid {mid} {force}")
+        mid = int(mid)
+        key = ('member', mid)
         if not force:
-            Character.check_cache()
-        if not force and mid in Character.cache:
-            return Character.cache[mid]
-        else:
-            print(f"get_by_memberid db")
-            record = CharacterTable().get_by_memberid(mid)
-            if record:
-                print(f"get_by_memberid db")
-                c = Character(record)
-                Character.cache[mid] = c
-                return c
-            else:
-                print(f"get_by_memberid db not found {mid}")
-                return None
+            cached = Character._cache_get(key)
+            if cached is not Character.MISSING:
+                return cached
+        log.debug("get_by_memberid %s from the database", mid)
+        record = CharacterTable().get_by_memberid(mid)
+        c = Character(record) if record else None
+        Character._cache_put(key, c)
+        return c
 
     @staticmethod
     def get_by_id(mid, force=False):
+        mid = int(mid)
+        key = ('id', mid)
         if not force:
-            Character.check_cache()
-        if not force and mid in Character.cache:
-            return Character.cache[mid]
-        else:
-            record = CharacterTable().get_by_id(mid)
-            if record:
-                c = Character(record)
-                Character.cache[mid] = c
-                return c
+            cached = Character._cache_get(key)
+            if cached is not Character.MISSING:
+                return cached
+        record = CharacterTable().get_by_id(mid)
+        c = Character(record) if record else None
+        Character._cache_put(key, c)
+        return c
+
+    @staticmethod
+    def get_many_by_id(ids):
+        """{id: Character} for the existing ones among `ids`: the cached ones are reused, the rest is loaded
+        with a single query."""
+        found = {}
+        missing = []
+        for mid in {int(i) for i in ids}:
+            cached = Character._cache_get(('id', mid))
+            if cached is Character.MISSING:
+                missing.append(mid)
+            elif cached is not None:
+                found[mid] = cached
+        if missing:
+            records = CharacterTable().get_by_ids(missing)
+            for mid in missing:
+                record = records.get(mid)
+                c = Character(record) if record else None
+                Character._cache_put(('id', mid), c)
+                if c:
+                    found[mid] = c
+        return found
 
     @staticmethod
     def get_by_name(name, force=False):
+        key = ('name', name.lower())
         if not force:
-            Character.check_cache()
-        if not force and name in Character.cache:
-            return Character.cache[name]
-        else:
-            record = CharacterTable().get_by_name(name)
-            if record:
-                c = Character(record)
-                Character.cache[name] = c
-                return c
+            cached = Character._cache_get(key)
+            if cached is not Character.MISSING:
+                return cached
+        record = CharacterTable().get_by_name(name)
+        c = Character(record) if record else None
+        Character._cache_put(key, c)
+        return c
 
     @staticmethod
     def list_by_name(name=None):
@@ -175,12 +214,13 @@ class Character:
 
     @staticmethod
     def pcs(name=None, extra=None):
+        """The player characters; with a name only those whose name contains it (None / '*': all)."""
         for c in CharacterTable().get_pcs():
-            yield Character(c)
+            if (not name) or (name == '*') or (name.lower() in c[4].lower()):
+                yield Character(c)
 
     @staticmethod
     def npcs(name=None):
         for c in Character.list_by_name(name):
             if not c.memberid:
                 yield c
-

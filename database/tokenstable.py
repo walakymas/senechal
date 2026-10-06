@@ -21,10 +21,10 @@ class TokenTable(BaseTableHandler):
         BaseTableHandler.execute("UPDATE tokens SET tokenstate=1, expires = now() + INTERVAL '1 DAYS' WHERE token=%s", param=[token], commit=True)
 
     def remove(self, token):
-        BaseTableHandler.execute("DELETE FROM tokens set  WHERE key=%s", param=[token], commit=True)
+        BaseTableHandler.execute("DELETE FROM tokens WHERE token=%s", param=[token], commit=True)
 
-    def get(self, id):
-        return BaseTableHandler.execute("SELECT * FROM tokens t LEFT JOIN player p ON p.id = t.cid WHERE token=%s", param=[token], fetch='one')
+    def get(self, token):
+        return BaseTableHandler.execute("SELECT * FROM tokens t LEFT JOIN player p ON p.cid = t.cid WHERE t.token=%s", param=[token], fetch='one')
 
     def get_info_by_id(self, id):
         return BaseTableHandler.execute("""SELECT token, p.did, expires, tokenstate, p.playerrights,
