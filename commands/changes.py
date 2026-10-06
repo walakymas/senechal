@@ -12,4 +12,12 @@ class Changes(BaseCommand):
 
     async def handle(self, params, message, client):
         if 'changes' in Config.senechalConfig:
-            await message.channel.send(Config.senechalConfig['changes'])
+            # Discord messages are limited to 2000 characters: send the entries (separated by blank lines) in chunks
+            chunk = ''
+            for entry in Config.senechalConfig['changes'].strip().split('\n\n'):
+                if chunk and len(chunk) + len(entry) + 2 > 1900:
+                    await message.channel.send(chunk)
+                    chunk = ''
+                chunk += ('\n\n' if chunk else '') + entry
+            if chunk:
+                await message.channel.send(chunk)

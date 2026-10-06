@@ -563,6 +563,11 @@ intro: |
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, ha trait és sikertelen, akkor dob az ellentétére is
 
 changes: |
+  **2026-10-05**
+  Passion kategóriák: a passionök Fidelitas, Fervor, Adoratio és Civilitas csoportokban jelennek meg. Ami nem illik sehova (pl. Honor), az Other, ez fejléc nélkül elöl áll. A fejlécben zárójelben a csoport összege, 40 fölött kiemelve.
+  *!me setChannel*: az aktuális csatorna lesz a neked szánt üzenetek helye. *!admin setChannel*: alapértelmezett csatorna (csak adminoknak). Az *!admin save* megszűnt, az *!admin* parancshoz jogosultság kell.
+  A weben bejelentkezve a kockadobások és a próbák (*!c*, *!team*) a saját csatornádban jelennek meg, a lefutott paranccsal együtt. Kijelentkezve marad a webhook.
+
   **2021-01-06**
   Refactor gyakorlatilag teljesen átsruktúráltam a kódot és új alapokra helyeztem a bot működését. Egyelőre csak a korábbi parancsokat éritek el, de már működő adatbázis kezdeményem van és néhány ide tartozó parancs is a működés jeleit mutatja. pl *!db prop set year 481*, *!mark Sword*, *!mark list*, *!lord setchannel*, *!lord list*
   !winter utasítás. egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
