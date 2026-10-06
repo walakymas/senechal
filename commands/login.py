@@ -36,7 +36,10 @@ class Login(BaseCommand):
             if 'passions' in data:
                 s = ""
                 for category, items in group_passions(data['passions']):
-                    s += '**' + category + '**\n'
+                    if category != OTHER:
+                        total = passion_total(items)
+                        total = ':red_circle: **' + str(total) + '**' if total > PASSION_WARN_TOTAL else str(total)
+                        s += '**' + category + '** (' + total + ')\n'
                     for pn, pv in items:
                         s += pn + ': ' + str(pv) + "\n"
                 embed.add_field(name=':homes: Passions', value=s, inline=False);

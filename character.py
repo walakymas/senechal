@@ -11,17 +11,13 @@ class Character:
         self.id = record[0]
         self.created = record[1]
         self.modified = record[2]
-        # self.memberid = record[3]
-        player = PlayerTable().get_by_cid(self.id)
-        print(f"player: {player}", flush=True)
+        # Discord id of the player of the character (the memberid column was replaced by the player table)
+        self.memberid = PlayerTable().did_by_character(self.id)
         self.name = record[4]
         self.url = record[5]
         self.json = record[6]
         self.data = json.loads(self.json)
-        if (player != None) and (len(player) >= 8):
-            self.data['memberId'] = f'{player[8]}'
-        else:
-            self.data['memberId'] = None
+        self.data['memberId'] = f'{self.memberid}' if self.memberid else None
         print(f"memberId: {self.data['memberId']}", flush=True)
         if len(record) > 8 and record[8]:
             self.data['player'] = record[8]

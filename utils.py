@@ -160,6 +160,57 @@ def add_field(embed, name=None, value=None, inline=False, formatted=False):
         embed.description += f"\n**{name}** {value}"
 
 
+class EmbedFields:
+    """Collects embed fields (same add_field signature as discord.Embed) so that send_embed_fields can
+    spread them over as many embeds as the Discord limits require."""
+
+    def __init__(self):
+        self.fields = []
+
+    def add_field(self, name, value, inline=False):
+        self.fields.append((name, value, inline))
+
+
+def split_field_value(value, limit=1024):
+    """Splits a field value into chunks of at most `limit` characters on line breaks; a ``` block stays a ``` block."""
+    fence = value.startswith('```') and value.endswith('```') and len(value) >= 6
+    body = value[3:-3] if fence else value
+    room = limit - (6 if fence else 0)
+    chunks, current = [], ''
+    for line in body.split('\n'):
+        while len(line) > room:
+            if current:
+                chunks.append(current)
+                current = ''
+            chunks.append(line[:room])
+            line = line[room:]
+        if current and len(current) + 1 + len(line) > room:
+            chunks.append(current)
+            current = line
+        else:
+            current = current + '\n' + line if current else line
+    chunks.append(current)
+    return [f"```{c}```" if fence else c for c in chunks]
+
+
+async def send_embed_fields(channel, char, fields, max_fields=25, max_total=5500):
+    """Sends the (name, value, inline) fields in as many embeds as needed: at most 25 fields and about
+    6000 characters per embed, 1024 characters per field value (longer values are split into more fields)."""
+    flat = []
+    for name, value, inline in fields:
+        for i, chunk in enumerate(split_field_value(str(value))):
+            flat.append(((name if i == 0 else f"{name} (folyt.)")[:256], chunk, inline))
+    embed, total = get_embed(char), 0
+    for name, value, inline in flat:
+        size = len(name) + len(value)
+        if len(embed.fields) > 0 and (len(embed.fields) >= max_fields or total + size > max_total):
+            await channel.send(embed=embed)
+            embed, total = get_embed(char), 0
+        embed.add_field(name=name, value=value, inline=inline)
+        total += size
+    await channel.send(embed=embed)
+
+
 async def embed_char(channel, char, task, param, ctx=None, message=None):
     embeds = []
     data = char.get_data()
@@ -237,9 +288,14 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
         if 'passions' in data:
             embed = get_embed(char, 0)
             embed.description = ":crossed_swords:  **Passions**\n"
-            from passions import group_passions
+            from passions import group_passions, passion_total, OTHER, PASSION_WARN_TOTAL
             for category, items in group_passions(data['passions']):
-                embed.description += f"\n**{category}**\n"
+                if category != OTHER:
+                    total = passion_total(items)
+                    total = f":red_circle: **{total}**" if total > PASSION_WARN_TOTAL else total
+                    embed.description += f"\n**{category}** ({total})\n"
+                else:
+                    embed.description += "\n"
                 for name, value in items:
                     if name in marks:
                         embed.description += f"__{name}__: `{value}`  "
@@ -308,8 +364,9 @@ async def embed_char(channel, char, task, param, ctx=None, message=None):
     elif len(embeds) == 1:
         await channel.send(embed=embeds[0])
     else:
-        paginator = EmbedPaginator(ctx, embeds)
-        await paginator.run([message.author], channel=channel)
+        # disputils (EmbedPaginator) does not work with discord.py 2: one message per embed
+        for embed in embeds:
+            await channel.send(embed=embed)
 
 def winterData(char):
     ss = 0

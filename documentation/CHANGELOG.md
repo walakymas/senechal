@@ -9,6 +9,17 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Fix: `Character.memberid` / memberId handling
+
+- **Branch:** `main` (not committed yet) + `AngrySenechal2`
+- **Type:** **behaviour-changing** (bug fix; the PDF sheet, `!me events`/`!me pdf`, `!lord`, `!db set lord` worked again)
+- **Summary:** Task 008 dropped `Character.memberid` (the `characters.memberid` column moved to the `player` table) but left its users behind: `pdf/sheet.py` (HTTP 500 on `/pdf`), `utils.embed_char` (`!me events`), `Character.npcs`, `get_memberid`, `commands/lord.py`, `commands/db.py`. `Character` now sets `memberid` from `PlayerTable.did_by_character` (an explicit `SELECT did`, instead of the fragile `player[8]` index) and `data['memberId']` from it (`None` when nobody plays the character). Also: `!me pdf` passed a data dict to `Sheet` (now the character), `!lord` read `me.memberid` before checking `me`, `me['name']` / `me['memberId']` on a `Character`, `/json` and `/players` turned a missing `memberId` into the string `'None'`; the Angular `bot()` treated `'None'` as a real member id (`<@!None>`) — it now uses `activeMemberId()`.
+- **Files touched:** `character.py`, `database/playertable.py`, `api/views.py`, `commands/me.py`, `commands/lord.py`, `commands/db.py`; `AngrySenechal2`: `character-detail.component.ts`.
+- **Not fixed:** `!lord stewardship|horses` store the word `stewardship`/`horses` (`params[0]`) as the value instead of `params[1]`.
+- **Risk & rollback:** untested against the database. `git revert`.
+
+---
+
 ## 2026-10-05 — Web commands without the webhook (Task 011)
 
 - **Branch:** `collab/passion-categories` (+ `AngrySenechal2` `main`)

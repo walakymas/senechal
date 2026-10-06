@@ -52,7 +52,7 @@ def pcresponse(pc):
     data = {'char': pc.get_data(False), 'modified':datetime.timestamp(pc.modified)}
     year = MarksTable().year()
     data['year'] = year
-    if 'memberId' in data['char']:
+    if data['char'].get('memberId') is not None:
         data['char']['memberId'] = str(data['char']['memberId'])
     data['events'] = []
     for r in EventsTable().list(data['char']['dbid']):
@@ -93,7 +93,7 @@ def pcs(request):
                 if g[0] == c.id:
                     d['Glory']=g[1]
             result.append(d)
-        if 'memberId' in c.data:
+        if c.data.get('memberId') is not None:
             c.data['memberId'] = str(c.data['memberId'])
 
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
@@ -309,7 +309,7 @@ def pdfs(request):
             sheet = Sheet(pc)
             fp = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")
             print(fp)
-            sheet.output(fp, 'F')
+            sheet.output(fp)
             zf.write(fp,f"{pc.name}.pdf")
     zf.close()
     response = FileResponse(open(fz, 'rb'), filename=f"teampdf.zip")
@@ -325,7 +325,7 @@ def pdf(request):
             sheet = Sheet(pc)
             fp = os.path.join(tempfile.gettempdir(), str(next(tempfile._get_candidate_names()))+"_tmp.pdf")
             print(fp)
-            sheet.output(fp, 'F')
+            sheet.output(fp)
             response = FileResponse(open(fp, 'rb'), filename=f"{pc.name}.pdf")
             response['Content-Type'] = 'application/pdf'
             return response

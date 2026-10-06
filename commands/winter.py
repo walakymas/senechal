@@ -1,5 +1,6 @@
 from commands.base_command import BaseCommand
 from config import Config
+from database.c2ctable import C2CTable
 from utils import *
 
 
@@ -26,7 +27,7 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
     async def winter(self, char, message):
         winter = winterData(char)
         year = MarksTable().year()
-        embed = get_embed(char)
+        embed = EmbedFields()
         major = dice(6)
         msg = f"Gazdaság: {('Terrible','Bad','Normal','Normal','Good','Excellent')[major-1]} ({major})\n"
         (c, t, dobas, siker) = check(int(winter['stewardship']), 0, False)
@@ -36,11 +37,11 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
             msg += f"Extra bevétel: {dice(20)} \n"
         elif major == 6:
             msg += f"Stewardship({winter['stewardship']}): {dobas} {t}  {('Gazdag lovag vagy','Nem sikerült kihasználni a remek időt')[siker>=3]} \n"
-        #embed.add_field(name=f"{year} tele", value=f"```{msg}```", inline=False)
+        embed.add_field(name=f"{year} tele", value=f"```{msg}```", inline=False)
         msg = ""
         for h in winter['horses']:
             msg += f"  {h}: {('Egészséges','Megdöglött vagy tönkrement')[dice(20)<3]}\n"
-        #embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
+        embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
         charId = int(char.id)
         msg = ""
         rows = MarksTable().list(dbid=charId, year=year)
@@ -70,12 +71,23 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                 xp += int(v)
         if xp > 0:
             embed.add_field(name="Extra Glory", value=f"`{xp}`", inline=False)
-        if 'npcs' in char.data:
-            for nf,  f in char.data['npcs'].items():
+        # connected characters: the 'npcs' block of the character plus the c2c connections (either direction)
+        npcs = dict(char.data.get('npcs', {}))
+        known = {int(f['dbid']) for f in npcs.values() if 'dbid' in f}
+        for row in C2CTable().list(charId):
+            other = int(row[4]) if int(row[3]) == charId else int(row[3])
+            if other != charId and other not in known:
+                known.add(other)
+                connection = row[5] or ''
+                npcs[f"c2c:{other}"] = {'dbid': other, 'connection': connection, 'role': connection.lower()}
+        if npcs:
+            for nf,  f in npcs.items():
                 s = ""
                 if 'dbid' in f:
                     npc = Character.get_by_id(f['dbid'])
-                    if 'Deceased' in npc.data['main']:
+                    if npc is None:
+                        continue
+                    if 'Deceased' in npc.data.get('main', {}):
                         s = f"NPC is dead ({npc.data['main']['Deceased']})\n"
                     else:
                         rows = MarksTable().list(dbid=f['dbid'], year=year)
@@ -106,4 +118,4 @@ Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasításs
                                 s += f"{n} `{v}` -> `{v+1}`\n"
                     if s != "":
                         embed.add_field(name=f"{nf} ({f['connection']})", value=s, inline=False)
-        await message.channel.send(embed=embed)
+        await send_embed_fields(message.channel, char, embed.fields)

@@ -24,6 +24,11 @@ class PlayerTable(BaseTableHandler):
         row = BaseTableHandler.execute("SELECT playerrights FROM player WHERE did=%s", param=[did], fetch='one')
         return int(row[0]) if row and row[0] else 0
 
+    def did_by_character(self, character):
+        """Discord id of the player who plays the character (None if nobody does)."""
+        row = BaseTableHandler.execute("SELECT did FROM player WHERE character=%s", param=[character], fetch='one')
+        return int(row[0]) if row and row[0] else None
+
     def get_by_cid(self, did):
         return BaseTableHandler.execute("SELECT p.* FROM player p WHERE p.character=%s", param=[did], fetch='one')
 

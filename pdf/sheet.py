@@ -263,9 +263,9 @@ class Sheet(FPDF):
             self.set_xy(x + 20, y)
             self.param("Born", self.data['main']['Born'])
             self.set_xy(x + 40, y)
-            self.param("Squired", self.data['main']['Squired'])
+            self.param("Squired", self.defa(self.data['main'], 'Squired', '-'))
             self.set_xy(x + 60, y)
-            self.param("Knighted", self.data['main']['Knighted'])
+            self.param("Knighted", self.defa(self.data['main'], 'Knighted', '-'))
 
         skipp = ['Homeland', 'Lord', 'Home', 'Culture', 'Glory', 'Born', 'Squired', 'Knighted']
         for name, value in self.data['main'].items():

@@ -41,7 +41,7 @@ prop adatbázis list, set, get és remove művelete valamint a lord és mark adt
             elif "lord" == params[1]:
                 me = get_me(message)
                 if me:
-                    LordTable().set(me['memberId'], 0, params[2], params[3])
+                    LordTable().set(me.memberid, 0, params[2], params[3])
                     msg = f"Set '{params[2]}' to '{params[3]}'"
                 else:
                     msg = f"Őnt nem ismerem sajnos"

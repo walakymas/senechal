@@ -13,11 +13,11 @@ class Lord(BaseCommand):
 
     async def handle(self, params, message, client):
         me = get_me(message)
-        i = me.memberid
         if me:
+            i = me.memberid
             if 'setchannel' == params[0].lower():
                 LordTable().set(i, 0, 'mychannel', message.channel.id)
-                await message.channel.send(me['name'])
+                await message.channel.send(me.name)
             elif 'stewardship' == params[0].lower():
                 LordTable().set(i, 0, 'winter.stewardship', params[0])
                 await message.channel.send("Stewardship set")
