@@ -38,7 +38,7 @@
   - **`package-lock.json` synchronised** (`npm install --package-lock-only` in `node:16-alpine`, lockfileVersion 2, same Angular 14.3.0 / CLI 13.3.11; `helmet` 7.2.0): the Dockerfiles use `npm ci`; verified by building both images from it (below).
   - Docs: workspace `CLAUDE.md` brought up to date (no Django, no `senechal2`, Python 3.12, tests, Docker).
 - **Left open (owner decisions or separate work):**
-  - **Python / Node targets**: I chose Python 3.12. Node stays at 16 because Angular 14's CLI does not run on newer Node; moving to Node 20+ means upgrading Angular (14 → 15 → 16 → 17 …, one major at a time with `ng update`, plus replacing `protractor`, `tslint` and `codelyzer`). That is a series of sub-tasks.
+  - **Python / Node targets**: I chose Python 3.12. Node stayed at 16 only because Angular 14's CLI does not run on newer Node; **Task 022 did the Angular upgrade (14 → 22) and moved the frontend to Node 22**, and replaced `protractor`, `tslint` and `codelyzer`.
   - **`deploy/setup-systemd.sh`** starts the Angular **dev server** (`ng serve`) as the production frontend service `senechal-ng`. Switching it to `npm run build` + `node server.js` (with `REQUIRE_HTTPS=false` behind your own TLS proxy) is an operations change for the host; I did not touch it because I cannot test it there. Also check that the sudoers rule it installs only allows the two `systemctl restart` commands.
   - **`disableHostCheck: true`** (`angular.json`, dev server) kept: replacing it by `allowedHosts` needs the host names you use for development.
   - Ports `8000` / `4200` are still published on all interfaces (you may use them from the LAN).
