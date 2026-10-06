@@ -11,6 +11,10 @@
 
 ## Next (highest value, smallest risk)
 
+- **Audit follow-up** — rotate secrets; fix the `get_by_name` SQL injection; API
+  authentication/authorisation; bot permission checks and dice limits; connection pool and
+  error handling. See `documentation/03-security-audit.md` §10 for the full order.
+
 - **Security hardening** — env-based `SECRET_KEY`, `DEBUG=False`, re-enable CSRF, real
   token validation. *(Task 002, proposed — behaviour-changing, needs owner approval)*
 - **Clear bug fixes** — broken `cleanupTokens` SQL (`web/views.py:339`), doubled embed

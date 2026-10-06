@@ -9,6 +9,29 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Remove stale secrets, add audit tasks (Task 013; tasks 014-021 proposed)
+
+- **Branch:** `main` (not committed yet)
+- **Type:** behaviour-preserving
+- **Summary:** removed the commented bot token from `settings.py` and the `hook` webhook URL from `AngrySenechal2/src/environments/environment.prod.ts` (both stale, confirmed by the collaborator; `environment.hook` was not referenced anywhere). `/base` still returns `Config.hook` on purpose, because the web page needs it for now. Added task files 013-021 for the audit's fix steps.
+- **Files touched:** `settings.py`, `AngrySenechal2/src/environments/environment.prod.ts`, `documentation/tasks/013-…021-*.md` (new), `pm/STATUS.md`.
+- **Not done:** the values remain in git history; verify that the live token and `properties.hook` differ from the removed ones, and rotate them if not.
+- **Risk & rollback:** none expected. `git revert`; the Angular build needs a rebuild to drop the webhook from `dist/`.
+
+---
+
+## 2026-10-06 — Security, bug and performance audit (docs only)
+
+- **Branch:** `main` (not committed yet)
+- **Type:** behaviour-preserving (documentation only; no source code touched)
+- **Summary:** added `documentation/03-security-audit.md`, a read-only audit of the API, the bot and data layer, the Angular frontend, Express and the Docker/deploy files, with `path:line` references and a suggested order of fixes.
+- **Motivation:** collaborator asked for a review for vulnerabilities, potential bugs and optimisation opportunities. Fixes are not made here; they should become separate tasks.
+- **Files touched:** `documentation/03-security-audit.md` (new), `documentation/README.md` (table row), `pm/STATUS.md`, `pm/ROADMAP.md`.
+- **Headlines:** SQL injection in `database/charactertable.py:37`; most API routes unauthenticated (`hasRight()`, `/token`, `adminList`); `reload` / `set` / `db` bot commands without permission checks; unbounded dice loops; a Discord webhook URL committed in the frontend and exposed by `/base`; a bot token in a comment in `settings.py`. **Rotate** the exposed secrets.
+- **Risk & rollback:** none to application behaviour. Delete the new file and revert the README / pm edits.
+
+---
+
 ## 2026-10-06 — systemd services and deploy script (Task 012)
 
 - **Branch:** `main`

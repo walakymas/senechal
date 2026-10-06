@@ -3,7 +3,7 @@
 > **Snapshot of the current state.** Overwrite this to keep it accurate — it always
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
-**Last updated:** 2026-10-06 (Task 012 added)
+**Last updated:** 2026-10-06 (Tasks 013-021 added)
 **Active branch:** `main` (Tasks 009–011 merged via PR #7/#8)
 **Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
 are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
@@ -29,6 +29,15 @@ for PRs, the bug-fix branch is committed locally.
 | 010 | Admin rights, `setChannel`, remove `!admin save` | done (not run live) | behaviour-changing | passion-categories | yes |
 | 011 | Web dice/commands without the webhook | in-review (frontend fallback uncommitted, not run live) | behaviour-changing | passion-categories | partly |
 | 012 | systemd services + deploy script (`deploy/`) | done (not run on the host yet) | behaviour-preserving | main | no |
+| 013 | Remove stale secrets (`settings.py`, `environment.prod.ts`) | in-review (not committed) | behaviour-preserving | remove-stale-secrets | no |
+| 014 | SQL injection in `get_by_name` | proposed | behaviour-changing | sql-injection-fix | no |
+| 015 | API authentication and authorisation (blocked: confirm login for all players first; reads stay open) | blocked | behaviour-changing | api-auth | no |
+| 016 | Bot permission checks, dice limits | proposed | behaviour-changing | bot-permissions | no |
+| 017 | Data layer stability | proposed | behaviour-changing | data-layer-stability | no |
+| 018 | Functional bug fixes | proposed | behaviour-changing | functional-bugs | no |
+| 019 | Frontend and Express hardening | proposed | behaviour-changing | frontend-hardening | no |
+| 020 | Infra, dependencies, repo hygiene | proposed | behaviour-preserving | infra-and-deps | no |
+| 021 | Performance and logging | proposed | behaviour-preserving | performance | no |
 
 ## In progress
 
@@ -36,6 +45,10 @@ for PRs, the bug-fix branch is committed locally.
   any file the other PRs touch.
 
 ## Next up
+
+- Read `documentation/03-security-audit.md` (2026-10-06) and **rotate the exposed secrets**
+  (bot token, client secret, Discord webhook, DB password). Then turn the audit's fix steps
+  1–3 into tasks (SQL injection, API auth, bot permission checks, dice limits, data layer).
 
 - Commit the `AngrySenechal2` webhook fallback (Task 011) and run its build/spec after `npm install` (the lockfile is out of sync).
 - Try Tasks 010–011 live: `!admin setChannel`, `!me setChannel`, a web dice roll and a skill check while logged in and logged out.

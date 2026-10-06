@@ -4,9 +4,6 @@ import os
 # It doesn't have to be a single character!
 # COMMAND_PREFIX = "."
 
-# The bot token. Keep this secret!
-# BOT_TOKEN = "Nzc4NzI2OTc3OTkzMzEwMjM4.X7WMAw.o361Dxk74WfAe39xHOfEdZwK8uM"
-
 # The now playing game. Set this to anything false-y ("", None) to disable it
 # NOW_PLAYING = COMMAND_PREFIX + "commands"
 NOW_PLAYING = None
