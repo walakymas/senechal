@@ -12,6 +12,7 @@
   - `package-lock.json` is regenerated: run `npm ci`.
   - Rebuild the frontend images (`docker compose build frontend`).
   - The pages look a little different (see below): please click through them once.
+  - `Dockerfile.dev` creates `/app/.angular` and `docker-compose.yml` mounts it as a volume: the dev server runs as the unprivileged user `node`, which could not write the Angular build cache into the bind-mounted project folder (`EACCES: mkdir '/app/.angular/cache/22.2.1'`). After pulling, recreate the frontend with fresh volumes: `docker compose up -d --force-recreate --renew-anon-volumes frontend` (an old anonymous `node_modules` volume would otherwise hide the new packages).
 
 ## Context
 - **Problem / motivation:** Angular 14 reached end of life long ago (`npm audit`: 113 advisories, 7 of them critical), Node 16 is EOL, and the dev tooling (`protractor`, `tslint`, `codelyzer`, a View Engine JSON editor) was dead or unmaintainable.
