@@ -9,6 +9,17 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — systemd services and deploy script (Task 012)
+
+- **Branch:** `main`
+- **Type:** behaviour-preserving (ops scripts only; no application code touched)
+- **Summary:** `deploy/setup-systemd.sh` replaces the crontab `@reboot` + `run.sh` startup with systemd units (`senechal`, `senechal-ng`), moves the secrets to `/etc/senechal.env`; `deploy/deploy.sh` does `git pull` + restart without a reboot.
+- **Files touched:** `deploy/setup-systemd.sh`, `deploy/deploy.sh`.
+- **Operational impact:** run the setup script once on the host as the service user (sudo needed); `run.sh` becomes `run.sh.old`; rotate the Discord token/secret.
+- **Risk & rollback:** not run on the host yet (`bash -n` only). `git revert`; host: disable the units, restore `run.sh` and the crontab backup.
+
+---
+
 ## 2026-10-06 — Fix: `Character.memberid` / memberId handling
 
 - **Branch:** `main` (not committed yet) + `AngrySenechal2`

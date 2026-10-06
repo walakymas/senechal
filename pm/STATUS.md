@@ -3,7 +3,7 @@
 > **Snapshot of the current state.** Overwrite this to keep it accurate — it always
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
-**Last updated:** 2026-10-05 (Tasks 009–011 added)
+**Last updated:** 2026-10-06 (Task 012 added)
 **Active branch:** `main` (Tasks 009–011 merged via PR #7/#8)
 **Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
 are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
@@ -28,6 +28,7 @@ for PRs, the bug-fix branch is committed locally.
 | 009 | Passion categories | done (frontend build unverified) | behaviour-changing | passion-categories | yes |
 | 010 | Admin rights, `setChannel`, remove `!admin save` | done (not run live) | behaviour-changing | passion-categories | yes |
 | 011 | Web dice/commands without the webhook | in-review (frontend fallback uncommitted, not run live) | behaviour-changing | passion-categories | partly |
+| 012 | systemd services + deploy script (`deploy/`) | done (not run on the host yet) | behaviour-preserving | main | no |
 
 ## In progress
 
