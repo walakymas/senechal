@@ -9,6 +9,18 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Angular upgrade 14 → 22 (Task 022)
+
+- **Branch:** `collab/angular-15` in `AngrySenechal2` (holds the whole series; from `collab/infra-and-deps`)
+- **Type:** behaviour-preserving for data and API; the look changes slightly (Angular Material MDC); needs **Node ≥ 22.22.3**
+- **Summary:** `ng update` one major at a time (15, 16, MDC migration, 17 … 22.2.1), each state built in production mode and walked through by a headless Chromium against the real API in throwaway containers (0 page errors; the logged-in JSON editor dialog included). Now: Angular / CLI / Material 22.2.1, TypeScript 6.0, zone.js 0.15, rxjs 7.8, Node 22 images. Fixes the migrations needed: the `Í*ngIf` typo that broke every NPC page, a leftover `HttpClientModule` provider, TypeScript 6's `strict` default (`strict: false` now explicit), deprecated tsconfig options. The View Engine `ang-jsoneditor` is replaced by an own small `JsonEditorComponent`. Dead tooling removed: `protractor`, `tslint`, `codelyzer`, `ts-node`, `jasmine-spec-reporter`, `e2e/`, four unused packages, the stale tracked `dist/`. `ng test` works again (18 tests, headless Chromium). `npm audit`: 113 (7 critical) → 12 (0 critical, all dev-time tools). Bundle 1.96 → 2.50 MB.
+- **Files touched:** `AngrySenechal2`: `package.json`, `package-lock.json`, `angular.json`, `tsconfig*.json`, `karma.conf.js`, `src/main.ts`, `src/test.ts`, `src/app/**` (Material imports, providers, `standalone: false`, JSON dialog, specs), `src/app/json-editor/` (new), `Dockerfile`, `Dockerfile.dev`; deleted `e2e/`, `tslint.json`, tracked `dist/`. Workspace `CLAUDE.md`.
+- **Operational impact:** Node 22.22.3+ on every host that builds or serves the frontend (`senechal-ng` runs `ng serve`); `npm ci`; rebuild the images; please look at the pages once (MDC form fields, checkboxes, tabs).
+- **Left open:** a human look at the UI and the real data, the `application` (esbuild) builder, ESLint, standalone components, lazy routes / `trackBy` (Task 019), the 8 `TODO(mdc-migration)` CSS markers.
+- **Risk & rollback:** not seen by a human; flows the smoke test does not reach (edits, dice, feast, admin writes) are unverified. `git revert` the branch's commits and `npm ci`.
+
+---
+
 ## 2026-10-06 — Performance and logging (Task 021)
 
 - **Branch:** `collab/performance` (from `collab/infra-and-deps`)

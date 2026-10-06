@@ -38,6 +38,7 @@ for PRs, the bug-fix branch is committed locally.
 | 019 | Frontend and Express hardening | in-review (production build and server tests in containers; not run in a browser) | behaviour-changing | frontend-hardening | no |
 | 020 | Infra, dependencies, repo hygiene | in-review (verified in containers; not deployed) | behaviour-preserving | infra-and-deps | no |
 | 021 | Performance and logging | in-review (91 tests pass in the 3.12 image with PostgreSQL; not run on a live server) | behaviour-preserving | performance | no |
+| 022 | Angular 14 → 22 (frontend repo, branch `collab/angular-15`) | in-review (builds, 18 unit tests, browser smoke test at every major; not seen by a human) | behaviour-preserving (look changes: MDC) | angular-15 | no |
 
 ## In progress
 
