@@ -7,6 +7,7 @@ import os
 
 from config                         import Config
 from database.database              import Database
+from utils                          import is_archivable, pictures_dir
 from pathlib import Path
 
 # Set to remember if the bot is already running, since on_ready may be called
@@ -24,7 +25,9 @@ def build_client():
     intents.guilds = True
     intents.members = True
     intents.message_content = True
-    client = discord.Client(intents=intents)
+    # No @everyone / @here / role pings from echoed user input; plain user mentions still notify
+    client = discord.Client(intents=intents,
+                            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=True))
 
     # Define event handlers for the client
     # on_ready may be called multiple times in the event of a reconnect,
@@ -49,6 +52,8 @@ def build_client():
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
+        if message.author.bot:
+            return
         text = message.content
         if text.startswith(Config.prefix) and text != Config.prefix:
             cmd_split = text[len(Config.prefix):].split()
@@ -75,13 +80,18 @@ def build_client():
     async def on_raw_reaction_add(event):
         print(f"reaction {event.channel_id}::{event.emoji.name}")
         if event.emoji.name == '👀' or event.emoji.name == '🗺️':
-            dir = os.path.join("/var/www/senechalPictures", f"{event.channel_id}")
+            ch = client.get_channel(event.channel_id)
+            if ch is None or event.member is None:  # e.g. a reaction in a DM: nobody to send the link to
+                return
+            dir = pictures_dir(event.channel_id)
             from pathlib import Path
             Path(dir).mkdir(parents=True, exist_ok=True)
-            ch = client.get_channel(event.channel_id)
             msg = await ch.fetch_message(event.message_id)
             for at in msg.attachments:
-                fileName = f"{at.id}_{at.filename}"
+                if not is_archivable(at.filename):
+                    print(f'skipped {at.filename}')
+                    continue
+                fileName = f"{at.id}_{os.path.basename(at.filename)}"
                 tempImage = os.path.join(dir, fileName)
                 if not os.path.isfile(tempImage):
                     await at.save(fp=tempImage)

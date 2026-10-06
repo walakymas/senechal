@@ -9,6 +9,30 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Bot permission checks, dice limits, mention safety (Task 016)
+
+- **Branch:** `collab/bot-permissions` (branched from `collab/sql-injection-fix`)
+- **Type:** **behaviour-changing** (`!reload`, `!set`, `!info`, `!images` and most of `!db` need admin rights; out-of-range dice are refused; the archiver skips non-image files)
+- **Summary:** `permissions.has_rights()` plus an optional `required_rights` command attribute enforced in `message_handler.handle_command` (`BaseCommand` untouched). Dice count/size limits (100 / 1000) in `dicing.roll_dice`, damage dice capped at 100. `AllowedMentions` blocks `@everyone` / roles; bot authors are ignored; the 👀/🗺️ handler and `!images` only archive image/pdf/video files, guard `None`, and read the directory from `picturesDir` (same default).
+- **Files touched:** `permissions.py` (new), `message_handler.py`, `dicing.py`, `utils.py`, `senechal.py`, `commands/reload.py`, `set.py`, `info.py`, `images.py`, `db.py`, `weapon.py`, `tests/bot_permissions_test.py` (new).
+- **Operational impact:** the owner needs `playerrights` with bit 0 to keep using `!reload`.
+- **Open (owner decisions):** `!event remove|modify` / `!mark remove` for anyone; `on_message_edit` re-running commands; 🗺️ reaction open to all.
+- **Risk & rollback:** not run on a live Discord server (17 unit tests pass). `git revert`.
+
+---
+
+## 2026-10-06 — Fix SQL injection in `get_by_name` (Task 014)
+
+- **Branch:** `collab/sql-injection-fix`
+- **Type:** **behaviour-changing** (a name search containing `%`, `_`, `\` or `'` now matches those characters literally)
+- **Summary:** `CharacterTable.get_by_name` no longer builds the SQL with an f-string; the name is a bound parameter and LIKE wildcards are escaped (`CharacterTable.like_pattern`). The `dbversion` update in `database/database.py` is parameterised too.
+- **Motivation:** `03-security-audit.md` §3 — the name came unauthenticated from `GET /json?ch=`, from `newchar` and from Discord (`!c … !name`).
+- **Files touched:** `database/charactertable.py`, `database/database.py`, `tests/character_table_test.py` (new).
+- **Verification:** `python -m unittest tests.character_table_test` (3 tests, stubbed driver). Not run against a live DB.
+- **Risk & rollback:** a player relying on `%` as a wildcard in a name search. `git revert`.
+
+---
+
 ## 2026-10-06 — Remove stale secrets, add audit tasks (Task 013; tasks 014-021 proposed)
 
 - **Branch:** `main` (not committed yet)

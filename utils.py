@@ -1,6 +1,6 @@
 import datetime
 from os import remove
-from os.path import join
+from os.path import join, splitext
 from random import randint
 
 import discord
@@ -98,6 +98,31 @@ def get_checkable(data, spec):
 
 def tr(a):
     return str(a) + '/' + str(20 - a)
+
+# Attachments the bot archives (served from the web origin, so no html/svg/js)
+PICTURE_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.pdf', '.mp4', '.webm')
+
+
+def is_archivable(filename):
+    return splitext(filename)[1].lower() in PICTURE_EXTENSIONS
+
+
+def pictures_dir(channel_id):
+    """Directory of the archived attachments of a channel (base: `picturesDir` in the config)."""
+    return join(Config.config.get('picturesDir', '/var/www/senechalPictures'), str(channel_id))
+
+
+MAX_DICE_COUNT = 100
+MAX_DIE_SIZE = 1000
+
+
+def check_dice_limits(count, size):
+    """Raises ValueError (with a user-facing text) unless 1 <= count <= MAX_DICE_COUNT and 1 <= size <= MAX_DIE_SIZE."""
+    if not 1 <= count <= MAX_DICE_COUNT:
+        raise ValueError(f"A kockák száma 1 és {MAX_DICE_COUNT} között lehet")
+    if not 1 <= size <= MAX_DIE_SIZE:
+        raise ValueError(f"A kocka mérete 1 és {MAX_DIE_SIZE} között lehet")
+
 
 def dice(size):
     return int(overwrite('debugdice', randint(1, size)))
@@ -502,7 +527,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
         if success == 2:
             damage += 4
         s = ''
-        for x in range(damage):
+        for x in range(min(damage, MAX_DICE_COUNT)):
             d = dice(6)
             if sum > 0:
                 s += '+'
@@ -516,7 +541,7 @@ async def embed_attack(ctx, character, name, base, modifier, damage=-1, obase=-1
             sum = 0
             if osuccess == 2:
                 odamage += 4
-            for x in range(odamage):
+            for x in range(min(odamage, MAX_DICE_COUNT)):
                 sum += dice(6)
             add_field(embed, name="Sebzés", value=str(sum))
 

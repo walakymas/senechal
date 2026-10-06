@@ -4,6 +4,7 @@ from config import Config
 from database.markstable import MarksTable
 from database.lordtable import LordTable
 from database.proptable import PropertiesTable
+from permissions import has_rights, NO_RIGHTS
 
 
 class Db(BaseCommand):
@@ -18,6 +19,11 @@ prop adatbázis list, set, get és remove művelete valamint a lord és mark adt
         ''')
 
     async def handle(self, params, message, client):
+        # Everything needs admin rights except a player setting their own lord data (`!db set lord`)
+        own_lord = len(params) > 1 and params[0] == "set" and params[1] == "lord"
+        if not own_lord and not has_rights(message.author.id):
+            await message.channel.send(message.author.mention + NO_RIGHTS)
+            return
         msg = None
         if "list" == params[0]:
             msg = ""

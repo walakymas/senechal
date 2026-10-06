@@ -36,7 +36,7 @@ Kritikus siker esetén mindkét oldal esetén automatikusan 4 kockával növeli 
             if success == 2:
                 damage += 4
             s = '';
-            for x in range(damage):
+            for x in range(min(damage, MAX_DICE_COUNT)):
                 d = dice(6);
                 if sum > 0:
                     s += '+'
@@ -53,7 +53,7 @@ Kritikus siker esetén mindkét oldal esetén automatikusan 4 kockával növeli 
                 if osuccess == 2:
                     odamage += 4
                 s = '';
-                for x in range(odamage):
+                for x in range(min(odamage, MAX_DICE_COUNT)):
                     d = dice(6);
                     if sum > 0:
                         s += '+'

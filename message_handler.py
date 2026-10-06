@@ -13,6 +13,7 @@ from database.checktable import CheckTable
 from utils import *
 
 from dicing import dicePattern, roll_dice
+from permissions import has_rights, NO_RIGHTS
 
 # Register all available commands
 COMMAND_HANDLERS = {c.__name__.lower(): c()
@@ -37,7 +38,11 @@ async def handle_command(command, args, message, bot_client, mid=0):
         if result:
             (db, size, modifier) = result.groups()
             char = get_me(message)
-            text, toJson = roll_dice(db, size, modifier)
+            try:
+                text, toJson = roll_dice(db, size, modifier)
+            except ValueError as ex:
+                await message.channel.send(f"{message.author.mention} {ex}")
+                return
             if (char!=None and message!=None) :
                 toJson['char']=char.data['dbid']
                 print(json.dumps(toJson, indent=4, ensure_ascii=False))
@@ -52,6 +57,8 @@ async def handle_command(command, args, message, bot_client, mid=0):
     cmd_obj = COMMAND_ALIASES[command]
     if len(args) > 0 and (args[0] == '?' or args[0] == 'help'):
         await cmd_obj.help(args, message, bot_client)
+    elif getattr(cmd_obj, 'required_rights', 0) and not has_rights(message.author.id, cmd_obj.required_rights):
+        await message.channel.send(message.author.mention + NO_RIGHTS)
     elif cmd_obj.params and len(args) < len(cmd_obj.params):
         await message.channel.send(message.author.mention + " Insufficient parameters!")
     else:

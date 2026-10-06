@@ -4,9 +4,11 @@ import sys
 
 from commands.base_command import BaseCommand
 from config import Config
+from permissions import ADMIN
 
 
 class Reload(BaseCommand):
+    required_rights = ADMIN
 
     def __init__(self):
         self.hidden = 1

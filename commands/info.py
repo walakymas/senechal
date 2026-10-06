@@ -1,7 +1,9 @@
 from commands.base_command import BaseCommand
+from permissions import ADMIN
 
 
 class Info(BaseCommand):
+    required_rights = ADMIN
 
     def __init__(self):
         description = "Channel információk magán üzenetben"

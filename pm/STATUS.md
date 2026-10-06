@@ -30,9 +30,9 @@ for PRs, the bug-fix branch is committed locally.
 | 011 | Web dice/commands without the webhook | in-review (frontend fallback uncommitted, not run live) | behaviour-changing | passion-categories | partly |
 | 012 | systemd services + deploy script (`deploy/`) | done (not run on the host yet) | behaviour-preserving | main | no |
 | 013 | Remove stale secrets (`settings.py`, `environment.prod.ts`) | in-review (not committed) | behaviour-preserving | remove-stale-secrets | no |
-| 014 | SQL injection in `get_by_name` | proposed | behaviour-changing | sql-injection-fix | no |
+| 014 | SQL injection in `get_by_name` | in-review (unit tests pass; not run on a live DB) | behaviour-changing | sql-injection-fix | no |
 | 015 | API authentication and authorisation (blocked: confirm login for all players first; reads stay open) | blocked | behaviour-changing | api-auth | no |
-| 016 | Bot permission checks, dice limits | proposed | behaviour-changing | bot-permissions | no |
+| 016 | Bot permission checks, dice limits | in-review (17 unit tests pass; not run on a live server) | behaviour-changing | bot-permissions | no |
 | 017 | Data layer stability | proposed | behaviour-changing | data-layer-stability | no |
 | 018 | Functional bug fixes | proposed | behaviour-changing | functional-bugs | no |
 | 019 | Frontend and Express hardening | proposed | behaviour-changing | frontend-hardening | no |
