@@ -2,6 +2,7 @@ import json
 import os
 import re
 import uuid;
+from urllib.parse import urlparse
 from json import JSONDecodeError
 
 from api.compat import HttpResponse, JsonResponse, FileResponse
@@ -525,10 +526,18 @@ def maps(request):
     return JsonResponse(convert(list, MAP_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
 
+def is_http_url(url):
+    """Only absolute http(s) addresses are stored for the maps (no javascript:, data:, file: ...)."""
+    parsed = urlparse(url or '')
+    return parsed.scheme in ('http', 'https') and bool(parsed.netloc)
+
+
 def add_map(request):
     # expects POST with url, category, ord, name
     try:
         url = request.POST['url']
+        if not is_http_url(url):
+            return JsonResponse({'error': 'url must be an http(s) address'}, status=400)
         category = request.POST.get('category','')
         ord = int(request.POST.get('ord','0'))
         name = request.POST.get('name','')
@@ -543,6 +552,8 @@ def update_map(request):
     try:
         id = int(request.POST['id'])
         url = request.POST['url']
+        if not is_http_url(url):
+            return JsonResponse({'error': 'url must be an http(s) address'}, status=400)
         category = request.POST.get('category','')
         ord = int(request.POST.get('ord','0'))
         name = request.POST.get('name','')

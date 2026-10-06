@@ -35,7 +35,7 @@ for PRs, the bug-fix branch is committed locally.
 | 016 | Bot permission checks, dice limits | in-review (17 unit tests pass; not run on a live server) | behaviour-changing | bot-permissions | no |
 | 017 | Data layer stability | in-review (11 integration tests on a throwaway PostgreSQL; not run on production data) | behaviour-changing | data-layer-stability | no |
 | 018 | Functional bug fixes | in-review (54 unit tests pass; not run on a live server) | behaviour-changing | functional-bugs | no |
-| 019 | Frontend and Express hardening | proposed | behaviour-changing | frontend-hardening | no |
+| 019 | Frontend and Express hardening | in-review (production build and server tests in containers; not run in a browser) | behaviour-changing | frontend-hardening | no |
 | 020 | Infra, dependencies, repo hygiene | proposed | behaviour-preserving | infra-and-deps | no |
 | 021 | Performance and logging | proposed | behaviour-preserving | performance | no |
 

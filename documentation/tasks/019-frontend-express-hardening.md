@@ -2,69 +2,92 @@
 
 ## Metadata
 - **ID:** 019
-- **Status:** `proposed`
+- **Status:** `in-review`  <!-- implemented; frontend builds, server.js tested in a container; not run in a browser, not committed -->
 - **Type:** `behaviour-changing`
-- **Branch:** `collab/frontend-hardening`  <!-- AngrySenechal2 repo + senechal repo for CORS -->
+- **Branch:** `collab/frontend-hardening` in **both** repos: `senechal` (backend, branched from `collab/functional-bugs`) and `AngrySenechal2` (frontend, branched from `main`)
 - **Created:** 2026-10-06
 - **Reviewed via PR:** <!-- link once opened -->
-- **Operational impact:** the CORS allow-list is loaded from an env var (new `CORS_ORIGINS`), so the owner must set it, otherwise the web page is blocked. `server.js` needs a canonical host env var. The hosting URL (`environment.prod.ts:3` still points at `senechal.herokuapp.com`) must be confirmed.
+- **Operational impact:**
+  - `npm install` is needed in `AngrySenechal2` (new dependencies `helmet`, `compression`; `package-lock.json` was **not** regenerated here, the lock was already out of sync and a regenerated one changes ~8000 lines — run `npm install` and commit the lock when you want it).
+  - The production build needs `src/environments/environment.prod.ts`, which is git-ignored (the owner untracked it): copy `environment.prod.ts.example` and set the API address.
+  - The default CORS / login-return origin list lost `https://codepen.io`, `https://cdpn.io` and `http://192.168.1.131`; set `CORS_ORIGINS` (comma separated) to replace the whole list (docker-compose passes it through; empty = default list).
+  - `ng build` now defaults to `production`; the initial-bundle budget is warning 2.2 MB / error 3 MB (the build is 1.96 MB).
 
 ## Context
-- **Problem / motivation:** token in `localStorage` and logged to the console; no central 401 handling; `server.js` redirects using the unvalidated `Host` header and has no security headers; the CORS list contains codepen, a LAN IP and `http://` origins; the Angular app has no `trackBy` / `OnPush`, leaks subscriptions and polls forever; the default build is unoptimised.
-- **Related review finding:** `03-security-audit.md` §7 (rows 15-17, 24) and §8.
-- **Definition of done:** token no longer logged; interceptor in place; `server.js` hardened; CORS configurable; the performance items below done on the heaviest components.
+- **Problem / motivation:** token logged to the console; `server.js` redirected to the unvalidated `Host`, had no security headers or compression and answered a missing asset with the app shell (status 200); the CORS list contained sandbox and LAN origins; the maps endpoints stored any URL; failures were swallowed silently; a few crashes on bad local data; subscriptions were never released.
+- **Related review finding:** `03-security-audit.md` §7 (rows 15-17) and §8.
+- **Definition of done:** see Scope; met except the items under *Left open*.
 
 ## Scope
-- **In scope:**
-  - Remove `logger.log('token:'+...)` (`app.component.ts:36`); `HttpInterceptor` for the `Authorization` header and 401 handling (shared with Task 015); decide cookie vs in-memory token with the owner.
-  - `server.js`: canonical host from env, `trust proxy`, `helmet` (CSP, HSTS), `compression`, 404 for missing assets, cache headers.
-  - CORS (`api/app.py:16-27`): origins from env; drop codepen, LAN IP, `http://`.
-  - `handleError` (`character.service.ts:370-380`) surfaces errors; `setUser` null-safe (`app.component.ts:83`); guarded `JSON.parse` (`feast-seating.component.ts:22`).
-  - Performance: `trackBy` and `OnPush` on `character-detail`, `chargen`, `team`; replace template method calls (`app.component.html:14-45`); `takeUntil` for subscriptions; stop the `interval(5000)` poll once the user is loaded (`app.component.ts:42-50`); lazy-load routes; `defaultConfiguration: production` and tighter budgets in `angular.json`.
-  - Maps: validate `url` scheme server-side (`api/views.py:531`).
-  - Replace the hardcoded `senechal.herokuapp.com` / duckdns URLs (`environment.prod.ts:3`, `character.service.ts:292`).
-- **Out of scope:** removing the webhook from `/base` (needs Task 011 to cover logged-out users first); Angular major upgrade (Task 020).
+- **Done (frontend, `AngrySenechal2`):**
+  - `app.component.ts`: the token is no longer logged; `setUser` accepts a failed `getUser` (`undefined`); `ngOnDestroy` releases the poll and the `listChanged` subscription.
+  - `character.service.ts`: `handleError` now tells the user (snackbar `Request failed: <operation>`, the same operation at most every 10 s, so the login poll cannot spam) instead of only logging.
+  - `feast-seating.component.ts`: guarded `JSON.parse` of the cached list.
+  - `server.js`: `trust proxy` (X-Forwarded-Proto is believed for the configured number of proxies only, `TRUST_PROXY`, default 1); the https redirect never uses an unvalidated host (`ALLOWED_HOSTS`, or a plain-host-name pattern → 400); `helmet` (HSTS, nosniff, frame options, referrer policy …) with a **report-only** CSP; `compression`; hashed bundles `immutable` for a year, everything else revalidated; a missing file with an extension is a 404; `x-powered-by` off; `REQUIRE_HTTPS=false` for local use; `DIST_DIR` for tests.
+  - `server.test.js` + `npm run test:server` (plain node): redirect, bad hosts, https behind the proxy, headers, 404 vs app shell, cache headers.
+  - `angular.json`: `build` defaults to production, budgets 2.2 MB / 3 MB. `ng serve` / `extract-i18n` now use a new `development` build configuration explicitly (otherwise `ng serve` inherited the production default and the docker-compose frontend crashed on the missing `environment.prod.ts`; found and fixed in the running container).
+  - `environment.prod.ts.example`, README section.
+- **Done (backend, `senechal`):**
+  - `api/app.py`: allowed origins from `CORS_ORIGINS`, default list without codepen / cdpn / LAN IP (the same set decides where the Discord login may return the token).
+  - `api/views.py`: `add_map` / `update_map` accept only absolute http(s) URLs (400 otherwise).
+  - `docker-compose.yml` (workspace root, not in a repo) passes `CORS_ORIGINS`; `.env.example` documents it.
+- **Left open:**
+  - **Production API URL**: `environment.prod.ts` (now local only) pointed at `https://senechal.herokuapp.com/`, and `character.service.ts:292` hardcodes the duckdns avatar URL. I did not change them: the real addresses are the owner's to give.
+  - **Token storage / `Authorization` header / HttpInterceptor**: depends on Task 015 (blocked until the login is confirmed for all players); the token still lives in `localStorage` and travels in POST bodies.
+  - **CSP enforcement**: first look for violations in the browser, then `reportOnly: false`.
+  - **Performance of the Angular views** (`trackBy` / `OnPush` for ~100 `*ngFor`, template method calls such as `myCharacters()`, lazy-loaded routes): not done. `OnPush` changes when views refresh and the components mutate their data in place, and routes are declared in one NgModule, so this needs a browser to verify; it deserves its own task.
+  - Remaining http origins in the default list (`senechalweb`, `senechallocal`, `senechaldev` duckdns, `localhost`): kept because they may be in use; trim with `CORS_ORIGINS`.
+- **Out of scope:** removing the webhook from `/base` (Task 011 must cover logged-out users first); Angular major upgrade (Task 020).
 
 ## Plan
-- [ ] Owner confirms the production URL, allowed origins and token storage approach.
-- [ ] Backend: CORS from env; maps URL validation.
-- [ ] `server.js` hardening.
-- [ ] Interceptor + error handling.
-- [ ] Performance items, component by component, with the existing specs.
+- [x] Backend: CORS from env; maps URL validation (+ tests).
+- [x] `server.js` hardening (+ tests in a node:16 container).
+- [x] Interceptor-free error handling, token logging, null-safety, JSON guard, subscriptions.
+- [x] `angular.json` defaults and budgets; production build verified.
+- [ ] Owner: production API URL; try the app in a browser (login, character page, maps, feast); check the CSP report-only messages.
+- [ ] Follow-up tasks: Angular performance (`trackBy` / `OnPush` / lazy routes); interceptor + token storage after Task 015.
 
 ## Respect-the-owner checklist
-- [ ] Dedicated branch, not `main`.
-- [ ] No unrelated reformatting.
-- [ ] No deletion of working code without flagging.
-- [ ] Behaviour change and operational impact flagged in the PR.
+- [x] Dedicated branch (`collab/frontend-hardening` in each repo), not `main`.
+- [x] No unrelated reformatting.
+- [x] No deletion of working code (the token log line; the old inline `requireHTTPS`).
+- [x] Behaviour change and operational impact flagged (above).
 
 ## DOCUMENTATION — required
-- [ ] `documentation/CHANGELOG.md` entry.
-- [ ] `pm/STATUS.md` refreshed.
-- [ ] *Outcome* filled.
-- [ ] *Files touched* filled.
-- [ ] README note for the new env vars.
+- [x] `documentation/CHANGELOG.md` entry.
+- [x] `pm/STATUS.md` refreshed.
+- [x] *Outcome* filled.
+- [x] *Files touched* filled.
+- [x] README note for the new env vars (`AngrySenechal2/README.md`, `.env.example`).
 
 ## Files touched
-| File | Lines | Change | Rationale |
-|------|-------|--------|-----------|
-| `AngrySenechal2/server.js`, `angular.json`, `src/app/*` | see Scope | hardening, performance | |
-| `api/app.py`, `api/views.py` | 16-27, 531 | CORS from env, URL check | |
+| Repo | File | Change |
+|------|------|--------|
+| AngrySenechal2 | `server.js`, `server.test.js`, `package.json` | hardened server, tests, `helmet` / `compression` |
+| AngrySenechal2 | `src/app/app.component.ts`, `character.service.ts`, `feast-seating/feast-seating.component.ts` | see Scope |
+| AngrySenechal2 | `angular.json`, `README.md`, `src/environments/environment.prod.ts.example` | defaults, budgets, docs |
+| senechal | `api/app.py`, `api/views.py` | CORS from env, map URL validation |
+| senechal | `tests/api_hardening_test.py` (new) | 6 unit tests |
+| workspace root (no repo) | `docker-compose.yml`, `.env.example` | `CORS_ORIGINS` |
 
 ## Before / after
 - **Before:** see Context.
-- **After:** see Definition of done.
+- **After:** see Scope.
 - **Behaviour-changing?** yes (see Operational impact).
 
 ## Verification
-- **How tested:** `npm run build`, `npm test`; browser network tab (no token in logs, 401 handling); `curl -H "Host: evil.example" -I` against `server.js` does not redirect there; `curl -H "Origin: https://codepen.io"` gets no CORS headers.
-- **How the owner can reproduce:** same steps.
+- **How tested:**
+  - Backend: `venv/Scripts/python.exe -m unittest discover -s tests -p "*_test.py"` — 62 tests pass (12 skipped without a database).
+  - `server.js`: `node server.test.js` in a throwaway `node:16-alpine` container (production dependencies installed there) — passes.
+  - Frontend: `ng build --configuration production` in a throwaway `node:16-alpine` container — succeeds, initial 1.96 MB (424 kB transferred), the 16-character bundle hash matches the cache rule. The Karma tests were not run (no Chrome); the existing `app.component.spec.ts` was already outdated (it does not provide the app's dependencies).
+  - Not run in a browser.
+- **How the owner can reproduce:** `cd AngrySenechal2 && npm install && npm run test:server && npm run build` (after copying the environment example); `curl -I http://localhost:8080/` with `REQUIRE_HTTPS=false`: security headers, `Content-Security-Policy-Report-Only`, no `x-powered-by`; `curl -I -H "Host: a/b" http://…` → 400; `curl -H "Origin: https://codepen.io" -i http://localhost:8000/base` → no CORS headers.
 
 ## Risk & rollback
-- **Risk:** blocking the web page if the CORS env var is wrong; CSP breaking Google Fonts or Material icons.
+- **Risk:** a legitimate origin missing from the list (the web page shows "Request failed" snackbars and the Discord login redirect is refused) — add it to `CORS_ORIGINS`; the report-only CSP does not block anything; `helmet`'s HSTS makes browsers insist on https for the host (that is the redirect's purpose anyway).
 - **Rollback:** `git revert <sha>` in both repos.
 
 ## Outcome  *(fill on completion)*
-- **Result:**
-- **CHANGELOG entry:**
-- **Commit(s):**
+- **Result:** implemented as in *Scope — Done*; the *Left open* items need the owner's input or a browser.
+- **CHANGELOG entry:** 2026-10-06 — Frontend and Express hardening (Task 019)
+- **Commit(s):** not committed yet

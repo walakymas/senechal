@@ -9,6 +9,18 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Frontend and Express hardening (Task 019)
+
+- **Branch:** `collab/frontend-hardening` in `senechal` (from `collab/functional-bugs`) and in `AngrySenechal2` (from `main`)
+- **Type:** **behaviour-changing** (CORS / login-return origins, map URL validation, `server.js` behaviour, build defaults)
+- **Summary:** backend: allowed origins from `CORS_ORIGINS` (default list without codepen / cdpn / LAN IP; it also limits where the Discord login may return the token); the maps endpoints refuse non-http(s) URLs. Frontend: token no longer logged, failed calls show a snackbar (throttled), null-safe `setUser`, guarded `JSON.parse`, subscriptions released. `server.js`: `trust proxy`, no redirect to an unvalidated host, `helmet` with a report-only CSP, `compression`, long cache only for hashed bundles, 404 for missing assets, tests (`npm run test:server`). `ng build` defaults to production; budgets 2.2 / 3 MB.
+- **Files touched:** `api/app.py`, `api/views.py`, `tests/api_hardening_test.py` (new); `AngrySenechal2`: `server.js`, `server.test.js`, `package.json`, `angular.json`, `README.md`, `src/app/app.component.ts`, `character.service.ts`, `feast-seating/feast-seating.component.ts`, `src/environments/environment.prod.ts.example`; workspace root: `docker-compose.yml`, `.env.example`.
+- **Operational impact:** run `npm install` (new `helmet`, `compression`; the lockfile was not regenerated); the production build needs a local `environment.prod.ts` (git-ignored, copy the `.example`); set `CORS_ORIGINS` if a removed origin is still needed.
+- **Left open:** production API URL, token storage / `Authorization` header (after Task 015), CSP enforcement, Angular performance (`trackBy` / `OnPush` / lazy routes) — see the task file.
+- **Risk & rollback:** 62 backend tests pass; `server.js` tested in a `node:16-alpine` container; the production build succeeds in a container (1.96 MB initial); not run in a browser. `git revert` in both repos.
+
+---
+
 ## 2026-10-06 — Functional bug fixes (Task 018)
 
 - **Branch:** `collab/functional-bugs` (branched from `collab/data-layer-stability`)
