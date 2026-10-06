@@ -1,15 +1,11 @@
 import os
 import sys
-import types
 import unittest
 from unittest import mock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-# database.database connects to PostgreSQL on import; replace it (and the driver) with stubs.
-_stub = types.ModuleType('database.database')
-_stub.Database = mock.MagicMock()
-sys.modules.setdefault('database.database', _stub)
+# The database connection is opened lazily, so importing the data layer needs no database.
 if 'psycopg2' not in sys.modules:
     try:
         import psycopg2  # noqa: F401

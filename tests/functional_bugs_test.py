@@ -1,17 +1,13 @@
 import json
 import os
 import sys
-import types
 import unittest
 from unittest import mock
 from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-# database.database connects to PostgreSQL on import; replace it with a stub.
-_stub = types.ModuleType('database.database')
-_stub.Database = MagicMock()
-sys.modules.setdefault('database.database', _stub)
+# The database connection is opened lazily, so importing the data layer needs no database.
 
 import feast as feast_module
 import message_handler

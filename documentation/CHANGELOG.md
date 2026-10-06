@@ -9,6 +9,19 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Infrastructure, dependencies and repo hygiene (Task 020)
+
+- **Branch:** `collab/infra-and-deps` in `senechal` and in `AngrySenechal2` (both from `collab/frontend-hardening`)
+- **Type:** behaviour-preserving for the application, but it changes the build / runtime (Python 3.12, `aiohttp` 3.14.3, non-root containers)
+- **Summary:** `requirements.txt` fully pinned for Python 3.12 (`pip-audit`: no known vulnerabilities; the old `aiohttp` 3.12.14 had 64); `Dockerfile.senechal` on `python:3.12-slim` as user `app`; Postgres published on `127.0.0.1` only; deleted `senechal_old.py` and the `.pkl` font caches (owner-approved), untracked `senechal.db*`, extended the ignore files; test stubs for `database.database` removed (they made the database tests use a fake when everything ran together). Frontend: `Dockerfile.dev` as `node`, `Dockerfile` is now a production multi-stage image serving `dist` with `server.js` (user `node`), dropped the `compression` package (known DoS advisory), removed the misnamed `dockerignore`. `npm audit` of the whole frontend recorded: 113 advisories, almost all Angular 14 (EOL) and dev tooling. Workspace `CLAUDE.md` updated.
+- **Files touched:** `senechal`: `requirements.txt`, `.gitignore`, `tests/*_test.py`, deleted files; `AngrySenechal2`: `Dockerfile`, `Dockerfile.dev`, `.dockerignore`, `server.js`, `package.json`, `README.md`; workspace root: `Dockerfile.senechal`, `Dockerfile.senechal.dockerignore`, `docker-compose.yml`, `CLAUDE.md`.
+- **Follow-up (owner: Heroku is gone, remove its leftovers; remove stray files; sync the lock):** deleted `Procfile` and `runtime.txt`; `static/sheet.js` / `static/team.js` use the same server instead of `senechal.herokuapp.com`, and two more hardcoded Discord webhook URLs in `static/team.js` were removed; Heroku mentions removed from `senechal/CLAUDE.md` and `server.js`; `#build#` and `AngrySenechal2.iml` removed from git; `package-lock.json` regenerated and in sync, the Dockerfiles use `npm ci`.
+- **Operational impact:** rebuild the images (`docker compose build`); the old Heroku deployment files are gone.
+- **Left open:** Python/Node targets and the Angular upgrade series, the systemd frontend service that runs `ng serve`, `disableHostCheck` — see the task file.
+- **Risk & rollback:** verified in containers only: backend image + 62 tests including the database tests, frontend dev and production images, server tests; not deployed. `git revert` in each repo.
+
+---
+
 ## 2026-10-06 — Frontend and Express hardening (Task 019)
 
 - **Branch:** `collab/frontend-hardening` in `senechal` (from `collab/functional-bugs`) and in `AngrySenechal2` (from `main`)

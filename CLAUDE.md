@@ -7,9 +7,9 @@ repository. Read it before making changes.
 
 A *King Arthur Pendragon* tabletop-RPG campaign assistant: a **Discord bot**
 plus an **aiohttp HTTP API** (`api/`), served together from one process by `server.py`
-(Heroku `web`), sharing a domain/data layer. Django has been removed.
+sharing a domain/data layer. Django has been removed; Heroku is no longer used.
 
-- Entry points: `server.py` (API + bot, Procfile `web`), `senechal.py` (standalone bot).
+- Entry points: `server.py` (API + bot), `senechal.py` (standalone bot).
 - Dispatcher: `message_handler.py`; commands are plugins under `commands/`.
 - Domain/core: `character.py`, `config.py`, `utils.py`, `feast.py`.
 - Data layer: `database/` (handler-per-table over `psycopg2`; parameterized queries).
@@ -57,9 +57,9 @@ Project status, roadmap, and the decision log live in `pm/`.
 
 ## Running it locally
 
-- **Bot:** `python senechal.py` (Procfile `worker`). Needs the Discord bot token in the
+- **Bot:** `python senechal.py`. Needs the Discord bot token in the
   `token` environment variable (or in `config.yml`, which is gitignored).
-- **API + bot:** `python3 server.py` (Procfile `web`). Static files are served from `static/`.
+- **API + bot:** `python3 server.py`. Static files are served from `static/`.
 - **Database:** both processes expect a PostgreSQL `DATABASE_URL` env var. The data
   layer connects on first use and fails with a clear error if it is missing.
 - Config is read from `config.yml` (optional, gitignored), `senechal.yml`, and
