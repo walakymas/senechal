@@ -17,7 +17,7 @@ class C2CTable(BaseTableHandler):
         BaseTableHandler.execute("DELETE FROM c2c WHERE c0=%(c0)s and c1=%(c1)s", param={'c0': c0, 'c1': c1}, commit=True)
 
     def get(self, c0,  c1):
-        return BaseTableHandler.execute("SELECT * FROM c2c WHERE c0=%(c0)s and c1=%(c1)s", param={'c0': c0, 'c1': c1})
+        return BaseTableHandler.execute("SELECT * FROM c2c WHERE c0=%(c0)s and c1=%(c1)s", param={'c0': c0, 'c1': c1}, fetch='one')
 
     def list(self, c=-1):
         return BaseTableHandler.execute('SELECT * FROM c2c '

@@ -36,14 +36,18 @@ class BaseTableHandler:
             return 481
 
     def db(self):
-        return Database.db
+        with Database.lock:
+            return Database.get()
 
     @staticmethod
     def execute(sql, param=None, commit=None, fetch=None, many=0):
+        """Runs one statement and commits. Database errors are rolled back and re-raised
+        (they used to be printed and turned into None, so failed writes looked successful)."""
         with Database.lock:
+            conn = Database.get()
             try:
                 result = None
-                with Database.db.cursor() as cur:
+                with conn.cursor() as cur:
                     cur.execute(sql, vars=param)
                     if fetch == 'all':
                         result = cur.fetchall()
@@ -51,8 +55,11 @@ class BaseTableHandler:
                         result = cur.fetchone()
                     elif many:
                         result = cur.fetchmany(many)
-                Database.db.commit()
+                conn.commit()
                 return result
-            except psycopg2.Error as  ex:
-                print(f"db error {ex}")
-                Database.db.rollback();
+            except Exception:
+                try:
+                    conn.rollback()
+                except psycopg2.Error:
+                    Database.reset()  # the connection is gone; the next call reconnects
+                raise

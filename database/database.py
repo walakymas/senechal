@@ -1,29 +1,72 @@
-import datetime
-import sqlite3
-from urllib.parse import urlparse
-import psycopg2
 import os
 import threading
+import time
+
+import psycopg2
+
 
 class Database:
     # One shared connection is used by the bot (event loop) and by the API
     # (worker threads) in the single-process setup: serialise access to it.
     lock = threading.RLock()
-    conn = sqlite3.connect('senechal.db')
-    pq = os.getenv('DATABASE_URL')
-    url = urlparse(pq)
-    db = psycopg2.connect(
-        database=url.path[1:],
-        user=url.username,
-        password=url.password,
-        host=url.hostname,
-        port=url.port
-    )
+
+    # The connection is opened on first use (not on import) and reopened when it is
+    # closed or found dead after being idle (e.g. the server dropped it).
+    _connection = None
+    _last_used = 0.0
+    IDLE_PING_SECONDS = 60
+
+    @staticmethod
+    def connect():
+        """Opens a new connection from DATABASE_URL (the whole URL is passed on, so ?sslmode=... is kept)."""
+        dsn = os.getenv('DATABASE_URL')
+        if not dsn:
+            raise RuntimeError("DATABASE_URL is not set")
+        return psycopg2.connect(dsn, connect_timeout=10, keepalives=1,
+                                keepalives_idle=60, keepalives_interval=10, keepalives_count=5)
+
+    @staticmethod
+    def get():
+        """The live connection; callers hold Database.lock. Reconnects if needed."""
+        conn = Database._connection
+        if conn is not None and not conn.closed and time.monotonic() - Database._last_used > Database.IDLE_PING_SECONDS:
+            try:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1")
+                conn.rollback()
+            except psycopg2.Error:
+                Database.reset()
+                conn = None
+        if conn is None or conn.closed:
+            Database.reset()
+            conn = Database._connection = Database.connect()
+        Database._last_used = time.monotonic()
+        return conn
+
+    @staticmethod
+    def reset():
+        """Drops the current connection (the next get() opens a new one)."""
+        conn, Database._connection = Database._connection, None
+        if conn is not None:
+            try:
+                conn.close()
+            except psycopg2.Error:
+                pass
 
     @staticmethod
     def initiate():
+        """Creates / migrates the schema; callers hold Database.lock. A failed step rolls everything back."""
         print("initiate")
-        with Database.db.cursor() as cur:
+        conn = Database.get()
+        try:
+            Database._migrate(conn)
+        except Exception:
+            conn.rollback()
+            raise
+
+    @staticmethod
+    def _migrate(conn):
+        with conn.cursor() as cur:
             cur.execute("""CREATE TABLE IF NOT EXISTS properties (
                 created timestamp without time zone NOT NULL DEFAULT now(), 
                 modified timestamp without time zone NOT NULL DEFAULT now(), 
@@ -131,8 +174,9 @@ class Database:
                         """)
                 v = 13
             if v == 13:
-#                cur.execute("""ALTER TABLE  player ADD name varchar NOT NULL DEFAULT 'a' """)
-#                cur.execute("""ALTER TABLE  player ADD CONSTRAINT uniq_name UNIQUE (name) """)
+                # `name` is used by the token queries and by the v14 insert below (the old ALTERs were commented out,
+                # which broke fresh installs); IF NOT EXISTS keeps already migrated databases untouched
+                cur.execute("""ALTER TABLE  player ADD COLUMN IF NOT EXISTS name varchar """)
                 cur.execute("""ALTER TABLE  player ADD character bigint """)
                 cur.execute("""ALTER TABLE  characters ADD player bigint """)
                 cur.execute("""CREATE TABLE IF NOT EXISTS checks (
@@ -168,7 +212,7 @@ class Database:
                         """)
                 cur.execute("""create sequence player_id_seq""")
                 cur.execute("""ALTER TABLE player ALTER COLUMN cid SET DEFAULT nextval('player_id_seq'::regclass)""")
-                cur.execute("""ALTER TABLE player ADD did bigint """)
+                cur.execute("""ALTER TABLE player ADD COLUMN IF NOT EXISTS did bigint """)
                 cur.execute("""INSERT INTO player (character,did, name) SELECT id, memberid, name from characters WHERE memberid IS NOT NULL """)
                 cur.execute("""UPDATE player set playerrights = 1023 WHERE did IN (470683159889969153, 778706677120892958)""")
                 cur.execute("""create sequence main_seq;""")
@@ -205,6 +249,15 @@ class Database:
                 cur.execute("CREATE INDEX IF NOT EXISTS idx_maps_ord ON maps (ord);")
                 v = 17
 
+            # c2c / p2c are written with ON CONFLICT (c0, c1) / (player, character), which needs these unique indexes.
+            # Duplicates (if any) are collapsed first: the newest row (highest cid) of a pair is kept.
+            if v == 17:
+                cur.execute("DELETE FROM c2c a USING c2c b WHERE a.c0 = b.c0 AND a.c1 = b.c1 AND a.cid < b.cid")
+                cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_c2c_c0_c1 ON c2c (c0, c1)")
+                cur.execute("DELETE FROM p2c a USING p2c b WHERE a.player = b.player AND a.character = b.character AND a.cid < b.cid")
+                cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_p2c_player_character ON p2c (player, character)")
+                v = 18
+
             cur.execute("UPDATE properties  SET value = %s, modified=now() WHERE key = 'dbversion'", (v,))
-            Database.db.commit()                      
+            conn.commit()                      
 

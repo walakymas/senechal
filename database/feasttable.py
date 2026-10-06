@@ -12,7 +12,7 @@ class FeastTable(BaseTableHandler):
             return BaseTableHandler.execute('SELECT * FROM feast WHERE cid=%s', [id], fetch='one')
 
     def remove(self, id):
-        return BaseTableHandler.execute('DELETE FROM feast WHERE id=%s', [id], commit=True)
+        return BaseTableHandler.execute('DELETE FROM feast WHERE cid=%s', [id], commit=True)
 
     def insert(self, feast):
         return BaseTableHandler.execute('INSERT INTO feast (created, modified, title, description, data, deck) '
@@ -27,7 +27,7 @@ class FeastTable(BaseTableHandler):
             [json.dumps(feast.deck.get_data(), ensure_ascii=False), feast.id], commit=True)
     
     def update(self, feast): 
-        return BaseTableHandler.execute('UPDATE feast SET modified=now(), title = %s, decription = %s WHERE cid=%s',
+        return BaseTableHandler.execute('UPDATE feast SET modified=now(), title = %s, description = %s WHERE cid=%s',
             [feast.title, feast.description, feast.id], commit=True)
     # Todo: 
 

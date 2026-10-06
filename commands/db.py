@@ -1,3 +1,5 @@
+import os
+
 from commands.base_command import BaseCommand
 from utils import *
 from config import Config
@@ -65,7 +67,10 @@ prop adatbázis list, set, get és remove művelete valamint a lord és mark adt
             else:
                 msg = 'Under Construction'
         elif "download" == params[0]:
-            await try_upload_file(client, message.channel, 'senechal.db', content='Ez itt a mentés')
+            if os.path.isfile('senechal.db'):
+                await try_upload_file(client, message.channel, 'senechal.db', content='Ez itt a mentés')
+            else:
+                msg = 'Nincs mentés: az adatbázis PostgreSQL, a mentéshez használd a pg_dump-ot'
         else:
             msg = 'Under Construction'
         if msg:

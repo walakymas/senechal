@@ -61,14 +61,18 @@ Project status, roadmap, and the decision log live in `pm/`.
   `token` environment variable (or in `config.yml`, which is gitignored).
 - **API + bot:** `python3 server.py` (Procfile `web`). Static files are served from `static/`.
 - **Database:** both processes expect a PostgreSQL `DATABASE_URL` env var. The data
-  layer connects on import, so it must be set before importing anything in `database/`.
+  layer connects on first use and fails with a clear error if it is missing.
 - Config is read from `config.yml` (optional, gitignored), `senechal.yml`, and
   `feast.json`.
 
 ## Gotchas worth knowing
 
-- `database/database.py` opens its PostgreSQL connection at **import time** from
-  `DATABASE_URL` — importing `database/` without it set will fail.
+- `database/database.py` opens its PostgreSQL connection lazily on first use (from
+  `DATABASE_URL`, the whole URL incl. `?sslmode=`), reconnects when it is closed or found dead,
+  and raises `RuntimeError` if `DATABASE_URL` is missing. `BaseTableHandler.execute` rolls back
+  and **re-raises** database errors.
+- `tests/database_integration_test.py` needs a real PostgreSQL (`TEST_DATABASE_URL`, wiped!);
+  without it the tests are skipped.
 - `senechal.py` reads `os.environ['token']` directly at startup (no graceful fallback).
 - `api/views.py` uses raw `psycopg2`; there is no ORM or migration system — match the
   existing data-layer style within a file rather than mixing.

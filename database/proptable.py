@@ -19,7 +19,7 @@ class PropertiesTable(BaseTableHandler):
  
     def getValue(self, key):
         value =  BaseTableHandler.execute("SELECT value FROM properties WHERE key=%s", param=[key], fetch='one')
-        return value[0]
+        return value[0] if value else None
 
     def list(self):
         return BaseTableHandler.execute('SELECT * FROM properties ORDER BY key', fetch='all')

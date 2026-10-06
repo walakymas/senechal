@@ -9,6 +9,19 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Data layer stability (Task 017)
+
+- **Branch:** `collab/data-layer-stability` (branched from `collab/bot-permissions`)
+- **Type:** **behaviour-changing** (database errors now raise instead of returning `None`; the connection is opened lazily; schema migration 18 adds unique indexes)
+- **Summary:** `Database` opens the PostgreSQL connection on first use from the whole `DATABASE_URL` (keeps `?sslmode=`), reconnects when it is closed or dead (ping after 60 s idle), and fails with a clear error when `DATABASE_URL` is missing; the unused `sqlite3.connect('senechal.db')` is gone. `BaseTableHandler.execute` rolls back and re-raises. `initiate()` rolls back a failed migration; fresh installs no longer break at v13/v14 (`player.name`, duplicate `did`); migration 18 collapses duplicate `c2c` / `p2c` rows (newest kept) and adds the unique indexes the `ON CONFLICT` upserts need. Invalid SQL fixed in `lordtable`, `markstable`, `p2ctable`, `c2ctable`, `checktable`, `tokenstable`, `feasttable`, `playertable`, and `cleanupTokens` (`api/views.py`). `PropertiesTable.getValue` returns `None` for a missing key; `Config.reload` tolerates an empty schema, uses `yaml.safe_load` and UTF-8, and converts the `mainChannel` env var to int. `senechal.py`: `time.sleep` bug, the `running` flag is set only after the schema step succeeded, the schema step runs before `Config.reload()` and off the event loop. `!reload` (`git pull`) and `!me pdf` no longer block the event loop; `!db download` explains when there is no SQLite file.
+- **Removed:** `database/p2ptable.py` (`P2PTable`; owner approved: its table `p2p` was never created and nothing used it).
+- **Files touched:** `database/*.py` (see Task 017), `config.py`, `senechal.py`, `commands/reload.py`, `commands/me.py`, `commands/db.py`, `api/views.py`, `tests/database_integration_test.py` (new), `CLAUDE.md`s.
+- **Operational impact:** **back up the database before the first start** (migration 18 deletes duplicate `c2c` / `p2c` rows). `DATABASE_URL` is now passed to libpq as is: a password with special characters must be percent-encoded. Failed writes now surface as errors in the console / HTTP 500 instead of a fake "ok".
+- **Not changed:** hardcoded admin Discord ids in migration 14 (fresh installs only; owner's call), the many short synchronous DB calls on the event loop (needs an async data layer).
+- **Risk & rollback:** tested against a throwaway PostgreSQL 14 (11 integration tests, plus a startup smoke test on an empty database); not run against the production data or a live Discord server. `git revert`; migration 18 is not reverted automatically (drop `idx_c2c_c0_c1`, `idx_p2c_player_character`, set `dbversion` back to 17).
+
+---
+
 ## 2026-10-06 — Bot permission checks, dice limits, mention safety (Task 016)
 
 - **Branch:** `collab/bot-permissions` (branched from `collab/sql-injection-fix`)

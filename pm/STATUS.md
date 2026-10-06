@@ -33,7 +33,7 @@ for PRs, the bug-fix branch is committed locally.
 | 014 | SQL injection in `get_by_name` | in-review (unit tests pass; not run on a live DB) | behaviour-changing | sql-injection-fix | no |
 | 015 | API authentication and authorisation (blocked: confirm login for all players first; reads stay open) | blocked | behaviour-changing | api-auth | no |
 | 016 | Bot permission checks, dice limits | in-review (17 unit tests pass; not run on a live server) | behaviour-changing | bot-permissions | no |
-| 017 | Data layer stability | proposed | behaviour-changing | data-layer-stability | no |
+| 017 | Data layer stability | in-review (11 integration tests on a throwaway PostgreSQL; not run on production data) | behaviour-changing | data-layer-stability | no |
 | 018 | Functional bug fixes | proposed | behaviour-changing | functional-bugs | no |
 | 019 | Frontend and Express hardening | proposed | behaviour-changing | frontend-hardening | no |
 | 020 | Infra, dependencies, repo hygiene | proposed | behaviour-preserving | infra-and-deps | no |

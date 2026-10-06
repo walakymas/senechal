@@ -1,9 +1,11 @@
 import discord
 from database.mapstable import MapsTable
 import message_handler
+import asyncio
 import datetime
 import sys
 import os
+import time
 
 from config                         import Config
 from database.database              import Database
@@ -14,6 +16,11 @@ from pathlib import Path
 # more than once on reconnects
 this = sys.modules[__name__]
 this.running = False
+
+def init_database():
+    with Database.lock:
+        Database.initiate()
+
 
 def build_client():
     """Create the Discord client with all event handlers registered.
@@ -37,8 +44,6 @@ def build_client():
         if this.running:
             return
 
-        this.running = True
-
         await client.change_presence(
                 activity=discord.Game(name=f"{Config.prefix}senechal since {datetime.datetime.now()}"))
         print("Logged in!", flush=True)
@@ -47,8 +52,9 @@ def build_client():
             for m in guild.channels:
                 if m.id == Config.mainChannelId:
                     Config.mainChannel = m
-        with Database.lock:
-            Database.initiate()
+        # the schema step blocks (and may fail: then on_ready runs again on the next reconnect)
+        await asyncio.to_thread(init_database)
+        this.running = True
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
@@ -111,6 +117,7 @@ def build_client():
 
 def main():
     client = build_client()
+    init_database()  # before Config.reload(), which reads a property
     Config.reload()
     while True:
         try:
@@ -118,7 +125,7 @@ def main():
             break
         except Exception as e:
             print(f"Error: {e}. 10sec sleep Restarting bot...", flush=True)
-            datetime.time.sleep(10)
+            time.sleep(10)
 
 
 ###############################################################################

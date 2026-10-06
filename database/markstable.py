@@ -17,7 +17,7 @@ class MarksTable(BaseTableHandler):
         BaseTableHandler.execute("DELETE FROM marks WHERE dbid=%(dbid)s AND year=%(year)s AND spec=%(spec)s", {'dbid':dbid, 'year':year, 'spec':value})
 
     def get(self, dbid, year):
-        return BaseTableHandler.execute("SELECT * FROM marks WHERE dbid=%s, year=%s", [dbid, year], fetch='all')
+        return BaseTableHandler.execute("SELECT * FROM marks WHERE dbid=%s AND year=%s", [dbid, year], fetch='all')
 
     def list(self, dbid=-1, year=-1):
         return BaseTableHandler.execute('SELECT * FROM marks WHERE (-1=%(dbid)s::bigint OR dbid=%(dbid)s::bigint) AND (-1=%(year)s OR year=%(year)s) ORDER BY dbid, year, spec', {'dbid': dbid, 'year': year}, fetch='all')

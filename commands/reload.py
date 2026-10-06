@@ -1,3 +1,4 @@
+import asyncio
 import os
 import subprocess
 import sys
@@ -20,6 +21,6 @@ class Reload(BaseCommand):
     # It will be called every time the command is received
     async def handle(self, params, message, client):
         if ("pull" in Config.config):
-            process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-            print(process.communicate()[0])
+            process = await asyncio.to_thread(subprocess.run, ["git", "pull"], stdout=subprocess.PIPE)
+            print(process.stdout)
         os.execv(sys.executable, ['python3'] + sys.argv)

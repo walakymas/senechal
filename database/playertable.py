@@ -10,7 +10,7 @@ class PlayerTable(BaseTableHandler):
         BaseTableHandler.execute('INSERT INTO player (modified, name) VALUES(now(),  %(name)s)', {'name': name})
 
     def remove(self, id):
-        BaseTableHandler.execute("DELETE FROM properties WHERE id=%s", param=[id], commit=True)
+        BaseTableHandler.execute("DELETE FROM player WHERE cid=%s", param=[id], commit=True)
 
     def get(self, id):
         r = BaseTableHandler.execute("SELECT * FROM player WHERE cid=%s", param=[id], fetch='one')

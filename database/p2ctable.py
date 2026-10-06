@@ -8,15 +8,15 @@ class P2CTable(BaseTableHandler):
 
     def add(self, player, character, connection, comment):
         BaseTableHandler.execute('INSERT INTO p2c (modified, player, character, connection, comment) VALUES(now(),'
-                                 ' %(player)d, %(character)d, %(connection)s, %(comment)s)'
+                                 ' %(player)s, %(character)s, %(connection)s, %(comment)s)'
                                  ' ON CONFLICT (player, character) DO UPDATE SET connection=%(connection)s, comment=%(comment)s',
                                  {'player': player, 'character': character, 'connection': connection, 'comment': comment})
   
     def remove(self, player, character):
-        BaseTableHandler.execute("DELETE FROM p2c WHERE player=%s, character=%s", param=[player, character], commit=True)
+        BaseTableHandler.execute("DELETE FROM p2c WHERE player=%s AND character=%s", param=[player, character], commit=True)
 
     def get(self, player, character):
-        return BaseTableHandler.execute("SELECT * FROM p2c WHERE player=%s, character=%s", param=[player, character])
+        return BaseTableHandler.execute("SELECT * FROM p2c WHERE player=%s AND character=%s", param=[player, character], fetch='one')
 
     def list(self, player=-1, character=-1):
         return BaseTableHandler.execute('SELECT * FROM p2c '

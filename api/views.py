@@ -419,7 +419,7 @@ def updatePlayer(request):
 
 def cleanupTokens(request):
     BaseTableHandler.execute(
-        "DELETE FROM tokens expires < NOW() - INTERVALL '1 DAYS'", request.POST, commit=True)
+        "DELETE FROM tokens WHERE expires < NOW() - INTERVAL '1 DAYS'", commit=True)
     return JsonResponse(convert(TokenTable().list(), TOKEN_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def checks(request):
