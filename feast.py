@@ -17,7 +17,7 @@ class Feast:
             self.jdeck = '{}'
             self.data = {'participiants': {}, 'state': 'init', 'round': 0, 'rounds': 3, 'course': {}}
             self.deck = Deck()
-            FeastTable().insert(self)  # Initialize with default values
+            self.id = FeastTable().insert(self)  # Initialize with default values; the new row's id
             return
         self.id = record[0]
         self.created = record[1]
@@ -33,6 +33,9 @@ class Feast:
         if (self.data['state'] == 'init'):
             cid = str(cid)
             c = Character.get_by_id(cid)
+            if c is None:
+                print(f"Character {cid} does not exist.")
+                return
             significant = []
             for i in c.data['stats']:
                 try:
@@ -123,35 +126,36 @@ class Feast:
         else:
             print(f"participiants {cid} does not exist. {self.data['participiants'].keys()}")
         return None    
-    def card_enabled(cid, pround, significant = []):
-        if 'cards' in pround and cid in pround['cards']: 
-            card = Config.feast()[str(cid)]
-            # check if the card has a host tag 
-            if 'tags' in card and len(card['tags']) > 0:    
-                for tag in card['tags']:
-                    if 'host' == tag:
-                        return True
-            cards = pround['cards']
-            # check if any cards has host tag or mandatory for the character
-            for card in cards:
-                if 'mandatory' in card and card['mandatory'] in significant:    
-                    print(f"There is a mandatory card {card} in the round.")
-                    return False
-            if 'mandatory' in card and card['mandatory'] in significant:    
-                return True
-            for card in cards:
-                if 'mandatory' in card and card['mandatory']in significant:    
-                    print(f"There is a mandatory card {card} in the round.")
-                    return False
-            print(f"Card {card} is enabled for the current round.")
+    def card_enabled(cid, pround, significant = ()):
+        """Can the character select card `cid` among the cards drawn in this round (`pround`)?
+        A Host card is always enabled; a card that is mandatory for one of the character's significant
+        stats is enabled too, and it disables the other (non-host) cards of the round."""
+        cards = pround.get('cards', [])
+        if cid not in cards:
+            print(f"Card {cid} is not enabled for the current round.")
+            return False
+        feast = Config.feast()
+
+        def mandatory(card):
+            return feast.get(str(card), {}).get('mandatory') in significant
+
+        if 'host' in feast.get(str(cid), {}).get('tags', []):
             return True
-        print(f"Card {card} is not enabled for the current round.")
-        return False
+        if mandatory(cid):
+            return True
+        for card in cards:
+            if mandatory(card):
+                print(f"There is a mandatory card {card} in the round.")
+                return False
+        print(f"Card {cid} is enabled for the current round.")
+        return True
 
     def select_card(self, cid, card):
+        cid = str(cid)
         if cid in self.data['participiants']:
             participiant = self.data['participiants'][cid]
-            pround = participiant['rounds'].get(round, {})
+            round = str(self.data['round'])  # JSON object keys are strings
+            pround = participiant['rounds'].setdefault(round, {})
             if Feast.card_enabled(card, pround, participiant['significant']):
                 print(f"Selecting card {card} for participiants {cid}.")
                 pround['selected'] = card
@@ -177,10 +181,10 @@ class Feast:
 
     def setAction(self, cid, action):
         print(f"Setting action for participiants {cid}: {action}")
+        cid = str(cid)
         if cid in self.data['participiants']:
-            if self.data['round'] not in self.data['participiants'][cid]['round']:
-                self.data['participiants'][cid]['round'] = {}
-            self.data['participiants'][cid]['round'][self.data['round']]['action'] = action
+            rounds = self.data['participiants'][cid].setdefault('rounds', {})
+            rounds.setdefault(str(self.data['round']), {})['action'] = action  # JSON object keys are strings
             FeastTable().updateData(self)
         else:
             print(f"participiants {cid} does not exist.")
@@ -191,9 +195,8 @@ class Feast:
         guest = self.data['participiants'][str(pid)] 
         if 'rounds' not in guest:
             guest['rounds'] = {}
-        if self.data['round'] not in guest['rounds']:
-            guest['rounds'][self.data['round']] = {}
-        round = guest['rounds'][self.data['round']]
+        # JSON object keys are strings: an int key would not find the round after the data was saved and reloaded
+        round = guest['rounds'].setdefault(str(self.data['round']), {})
         if ('action' in round) :
             print(f"action set")
             return

@@ -25,7 +25,7 @@ class Check(BaseCommand):
         else:
             print("check.handle:noChar", flush=True)
             (name, spec, modifier) = extract(params, ["---", "---", 0])
-            for char in Character.pcs(name):
+            for char in Character.pcs(None if name == '---' else name):
                 await self.check(message.channel, char, spec, modifier, message)
 
     async def check(self, ctx, char, spec, modifier, message):

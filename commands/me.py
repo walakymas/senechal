@@ -42,4 +42,4 @@ Paraméter nélkül a base blokk jelenik meg, * esetén az összes.
             else:
                 await embed_char(message.channel, me, task, params, client, message)
         else:
-            print(Config.pcs().keys())
+            await message.channel.send(message.author.mention + " Téged nem ismerlek sajnos")

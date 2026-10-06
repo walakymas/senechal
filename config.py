@@ -77,18 +77,3 @@ class Config:
                 print(f"hook not loaded: {ex}")
             
             Config.inited = True
-
-    @staticmethod
-    def pcs(name=None):
-        Config.reload()
-        for c in Config.characters.values():
-            if ("memberId" in c) and ((not name) or (name.lower() in c['name'].lower())):
-                print(f"{name} {c['name']}")
-                yield c
-
-    @staticmethod
-    def npcs(name=None):
-        Config.reload()
-        for c in Config.characters.values():
-            if ("memberId" not in c) and ((not name) or (name.lower() in c['name'].lower())):
-                yield c

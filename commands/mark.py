@@ -41,20 +41,20 @@ class Mark(BaseCommand):
                 await message.channel.send(msg)
         else:
             if len(params) == 0 or 'list' == params[0].lower():
-                rows = MarksTable().list()
+                # marks table columns: id, created, modified, year, lord, spec, dbid
+                rows = MarksTable().list(year=year)
                 msg = ""
                 marks = []
-                last_lord = 0;
+                last_dbid = None
                 for row in rows:
-                    if int(row[2]) != last_lord:
-                        last_lord = int(row[2])
-                        lord = Character.get_by_memberid(last_lord)
-                        msg += f"\n{lord['name']} Év:{year} \n ID Modified   Spec\n";
+                    if row[6] != last_dbid:
+                        last_dbid = row[6]
+                        lord = Character.get_by_id(last_dbid)
+                        msg += f"\n{lord.name if lord else last_dbid} Év:{year} \n ID Modified   Spec\n";
                         marks = []
-                    if year == int(row[1]):
-                        if row[3] not in marks:
-                            marks.append(row[3])
-                            msg += f"{row[4]:3} {row[0][:10]} {row[3]:15}\n"
+                    if row[5] not in marks:
+                        marks.append(row[5])
+                        msg += f"{row[0]:3} {str(row[2])[:10]} {row[5]:15}\n"
                 await message.channel.send("```" + msg.strip() + "```")
             elif 'remove' == params[0].lower():
                 MarksTable().remove(params[1])

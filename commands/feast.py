@@ -14,4 +14,4 @@ class Feast(BaseCommand):
     async def handle(self, params, message, client):
         me = get_me(message)
         if me:
-            await message.channel.send(f"**{me.name}**\nhttps://raw.githubusercontent.com/walakymas/lakoma/main/images/{randint(1, 155)}.jpg")
+            await message.channel.send(f"**{me.name}**\nhttps://raw.githubusercontent.com/walakymas/lakoma/main/images/{randint(1, 154)}.jpg")

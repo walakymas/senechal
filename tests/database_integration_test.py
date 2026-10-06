@@ -162,6 +162,16 @@ class DatabaseIntegrationTest(unittest.TestCase):
         FeastTable().remove(950)
         self.assertIsNone(FeastTable().get(950))
 
+    def test_new_feast_gets_its_id(self):
+        from database.feasttable import FeastTable
+        from feast import Feast
+        f = Feast(None)
+        self.assertGreater(f.id, 0)
+        self.assertEqual(FeastTable().get(f.id)[0], f.id)
+        f.data['state'] = 'feast'
+        FeastTable().updateData(f)  # used to update cid=-1, i.e. nothing
+        self.assertIn('feast', FeastTable().get(f.id)[5])
+
     def test_cleanup_tokens_statement(self):
         from database.base_table_handler import BaseTableHandler as B
         B.execute("INSERT INTO tokens (token, cid, expires) VALUES ('old', 1, now() - INTERVAL '3 DAYS')", commit=True)

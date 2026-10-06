@@ -8,7 +8,7 @@ class Token(BaseCommand):
 
     def __init__(self):
         description = 'Token engedélyezése'
-        super().__init__(description, None, ['tel'],
+        super().__init__(description, None, None,
                          longdescription='''Token engedélyezés''')
 
     async def handle(self, params, message, client):

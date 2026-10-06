@@ -9,7 +9,7 @@ import time
 
 from config                         import Config
 from database.database              import Database
-from utils                          import is_archivable, pictures_dir
+from utils                          import is_archivable, pictures_dir, strip_mention
 from pathlib import Path
 
 # Set to remember if the bot is already running, since on_ready may be called
@@ -62,9 +62,9 @@ def build_client():
             return
         text = message.content
         if text.startswith(Config.prefix) and text != Config.prefix:
-            cmd_split = text[len(Config.prefix):].split()
-            if cmd_split[-1].startswith('<@!'):
-                cmd_split = cmd_split[0:-1]
+            cmd_split = strip_mention(text[len(Config.prefix):].split())
+            if not cmd_split:
+                return
             try:
                 await message_handler.handle_command(cmd_split[0].lower(), 
                                       cmd_split[1:], message, client)

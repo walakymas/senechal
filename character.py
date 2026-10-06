@@ -50,8 +50,7 @@ class Character:
             }
         if not 'winter' in self.data:
             self.data['winter'] = {
-                "stewardship_": 13,
-                "horses": [
+                "horses": [  # no stewardship here: winterData falls back to the character's own skill
                     "charger",
                     "rouncy",
                     "rouncy",
@@ -86,8 +85,8 @@ class Character:
             try:
                 if self.data['combat']['weapon'] != 'empty':
                    spec = self.data['combat']['weapon']
-            except:
-                pass            
+            except (KeyError, TypeError):
+                pass
             
         weapon = Config.weapon(spec)
         weapon['damage'] += self.get_damage()
@@ -175,8 +174,10 @@ class Character:
 
     @staticmethod
     def pcs(name=None, extra=None):
+        """The player characters; with a name only those whose name contains it (None / '*': all)."""
         for c in CharacterTable().get_pcs():
-            yield Character(c)
+            if (not name) or (name == '*') or (name.lower() in c[4].lower()):
+                yield Character(c)
 
     @staticmethod
     def npcs(name=None):

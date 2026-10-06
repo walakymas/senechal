@@ -5,6 +5,7 @@ from commands.base_command import BaseCommand
 from commands import *
 
 import re
+import traceback
 from utils import dice
 from config import Config
 import json
@@ -22,6 +23,8 @@ COMMAND_ALIASES = {}
 for c in COMMAND_HANDLERS.values():
     if (c.aliases):
         for a in c.aliases:
+            if a in COMMAND_ALIASES:  # the last registered command wins; make the clash visible
+                print(f"WARNING: alias '{a}' of {c.name} replaces {COMMAND_ALIASES[a].name}", flush=True)
             COMMAND_ALIASES[a] = c
 COMMAND_ALIASES.update(COMMAND_HANDLERS)
 
@@ -62,4 +65,10 @@ async def handle_command(command, args, message, bot_client, mid=0):
     elif cmd_obj.params and len(args) < len(cmd_obj.params):
         await message.channel.send(message.author.mention + " Insufficient parameters!")
     else:
-        await cmd_obj.handle(args, message, bot_client)
+        try:
+            await cmd_obj.handle(args, message, bot_client)
+        except (ValueError, IndexError):
+            # a missing parameter or a number that is not a number: tell the user instead of dying silently
+            traceback.print_exc()
+            await message.channel.send(f"{message.author.mention} Hibás vagy hiányzó paraméter, lásd: "
+                                       f"`{Config.prefix}{command} help`")

@@ -15,9 +15,10 @@ class FeastTable(BaseTableHandler):
         return BaseTableHandler.execute('DELETE FROM feast WHERE cid=%s', [id], commit=True)
 
     def insert(self, feast):
+        """Inserts the feast and returns the id (cid) of the new row."""
         return BaseTableHandler.execute('INSERT INTO feast (created, modified, title, description, data, deck) '
-                                        'VALUES(now(), now(),%s,%s,%s,%s);',
-            [feast.title, feast.description, json.dumps(feast.data, ensure_ascii=False), json.dumps({"deck":feast.deck.deck,"pos":feast.deck.pos}, ensure_ascii=False)], commit=True)
+                                        'VALUES(now(), now(),%s,%s,%s,%s) RETURNING cid;',
+            [feast.title, feast.description, json.dumps(feast.data, ensure_ascii=False), json.dumps({"deck":feast.deck.deck,"pos":feast.deck.pos}, ensure_ascii=False)], commit=True, fetch='one')[0]
 
     def updateData(self, feast):
         return BaseTableHandler.execute('UPDATE feast SET modified=now(), data = %s WHERE cid=%s',

@@ -9,6 +9,17 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-06 — Functional bug fixes (Task 018)
+
+- **Branch:** `collab/functional-bugs` (branched from `collab/data-layer-stability`)
+- **Type:** **behaviour-changing** (`!weapon` wounds, `!c <name> …` / `!pc <name>` filtering, `!lord` values, `!lakoma` card range, aliases `!l` → Feast only, `!tel` → Winter only)
+- **Summary:** `!weapon` keeps the attacker's and the opponent's damage separate (no more `UnboundLocalError`; wound = opponent's damage minus the character's protection; knocked-down / major-wound text is no longer lost). Feast: the new row's id is used, round keys are strings (an action could be repeated after a reload), `select_card` / `setAction` / `card_enabled` fixed, `!lakoma` draws 1..154. `Character.pcs(name)` filters by name; removed the harmless-by-accident `"stewardship_"` default. Mentions `<@id>` are stripped, `get_me` survives empty commands / `cid:abc` / role mentions / a lone `!`; a command that raises `ValueError` / `IndexError` answers with a hint. Stale `Config.characters` code repaired (`!db list lord|mark`, `!mark`, `!me`, `!winter <arg>`, `!lord`; removed `Config.pcs` / `Config.npcs`). discord.py 2 / emoji 2 drift fixed; `winter` uses `dice()`. The clashing aliases were removed (`l` from Lord, `tel` from Token; owner decision) and a clash is logged at start-up. The `check2` rule (skill above 20 always succeeds; total ≥ 20 is a critical, +4d6) is pinned by tests.
+- **Files touched:** `commands/weapon.py`, `feast.py`, `database/feasttable.py`, `commands/feast.py`, `character.py`, `utils.py`, `senechal.py`, `bot_bridge.py`, `message_handler.py`, `config.py`, `commands/check.py`, `login.py`, `winter.py`, `me.py`, `db.py`, `mark.py`, `lord.py`, `tests/functional_bugs_test.py` (new), `tests/database_integration_test.py`.
+- **Open (owner):** unused `Character.effective_dexterity` (`str` + armor + shield looks wrong), confirm the `!weapon` wound rule and the `card_enabled` rule.
+- **Risk & rollback:** 54 unit tests pass (12 more with a database); not run on a live Discord server. `git revert`.
+
+---
+
 ## 2026-10-06 — Data layer stability (Task 017)
 
 - **Branch:** `collab/data-layer-stability` (branched from `collab/bot-permissions`)

@@ -1,4 +1,5 @@
 import datetime
+import re
 from os import remove
 from os.path import join, splitext
 from random import randint
@@ -28,7 +29,7 @@ def get_rel_path(rel_path):
 def get_emoji(emoji_name, fail_silently=False):
     alias = emoji_name if emoji_name[0] == emoji_name[-1] == ":" \
         else f":{emoji_name}:"
-    the_emoji = emojize(alias, use_aliases=True)
+    the_emoji = emojize(alias, language='alias')
 
     if the_emoji == alias and not fail_silently:
         raise ValueError(f"Emoji {alias} not found!")
@@ -52,7 +53,7 @@ def get_channel(client, value, attribute="name"):
 # Uses get_channel, so you should be sure that the bot has access to only
 # one channel with such name
 async def send_in_channel(client, channel_name, *args):
-    await client.send_message(get_channel(client, channel_name), *args)
+    await get_channel(client, channel_name).send(*args)
 
 
 # Attempts to upload a file in a certain channel
@@ -72,7 +73,7 @@ async def try_upload_file(client, channel, file_path, content=None,
         remove(file_path)
 
     if not sent_msg:
-        await client.send_message(channel, "Oops, something happened. Please try again.")
+        await channel.send("Oops, something happened. Please try again.")
 
     return sent_msg
 
@@ -133,24 +134,31 @@ def overwrite(cname, orig):
     else:
         return orig
 
+MENTION = re.compile(r'<@!?(\d+)>')
+
+
+def strip_mention(words):
+    """Drops a trailing user mention (<@id> or <@!id>) from the command words."""
+    return words[:-1] if words and MENTION.fullmatch(words[-1]) else words
+
+
 def get_me(message, force=False):
     cmd_split = message.content[len(Config.prefix):].split()
     print('get_me', flush=True)
     me = None
-    if cmd_split[-1].startswith('<@!'):
-        print(f'get_me 1 "{cmd_split[-1][3:-1]}"', flush=True)
-        me = Character.get_by_memberid(cmd_split[-1][3:-1], force=force)
-    elif cmd_split[-1].startswith('<@'):
-        print(f'get_me 2 "{cmd_split[-1][3:-1]}"', flush=True)
-        me = Character.get_by_memberid(cmd_split[-1][2:-1], force=force)
-    elif cmd_split[-1].startswith('!'):
-        print(f'get_me 3: {cmd_split[-1][1:]}', flush=True)
-        me = Character.get_by_name(cmd_split[-1][1:], force=force)
-    elif cmd_split[-1].startswith('cid:'):
-        print(f'get_me 4: {cmd_split[-1][4:]}', flush=True)
-        me = Character.get_by_id(int(cmd_split[-1][4:]), force=force)
+    last = cmd_split[-1] if cmd_split else ''
+    mention = MENTION.fullmatch(last)
+    if mention:
+        print(f'get_me 1 "{mention.group(1)}"', flush=True)
+        me = Character.get_by_memberid(mention.group(1), force=force)
+    elif last.startswith('!') and len(last) > 1:
+        print(f'get_me 3: {last[1:]}', flush=True)
+        me = Character.get_by_name(last[1:], force=force)
+    elif last.startswith('cid:') and last[4:].isdigit():
+        print(f'get_me 4: {last[4:]}', flush=True)
+        me = Character.get_by_id(int(last[4:]), force=force)
     else:
-        print(f'get_me else: {cmd_split[-1]}', flush=True)
+        print(f'get_me else: {last}', flush=True)
 
     print(f'me:{me}', flush=True)
 
@@ -418,6 +426,9 @@ def check(base, modifier=0, emoji=True):
     return [color, text, r, success]
 
 def check2(base, modifier=0, emoji=True):
+    # Pendragon rule (confirmed by the owner): a skill raised above 20 by a modifier always succeeds;
+    # the part above 20 is added to the rolled value, and a total of 20 or more is a critical success
+    # (which adds 4d6 damage in attacks, see embed_attack / Weapon.embed).
     ro = dice(20)
     r = ro
     c = base + int(modifier)
