@@ -12,7 +12,7 @@ from json import JSONDecodeError
 from api.compat import HttpResponse, JsonResponse, FileResponse
 from api.compat import never_cache
 
-from character import Character
+from character import Character, ensure_economy
 from database.c2ctable import C2CTable
 from database.charactertable import CharacterTable
 from database.playertable import PlayerTable
@@ -223,7 +223,7 @@ def modify(request):
             CharacterTable().set_json(request.POST['id'], request.POST['json'])
         else:
             j = CharacterTable().get_by_id(request.POST['id'])[6]
-            data = json.loads(j)
+            data = ensure_economy(json.loads(j))
             for name, value in request.POST.items():
                 if "id" != name and "token" != name:
                     log.debug("modify field %s", name)

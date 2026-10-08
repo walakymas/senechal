@@ -10,6 +10,21 @@ from database.playertable import PlayerTable
 log = logging.getLogger(__name__)
 
 
+def ensure_economy(data):
+    """Creates the missing parts of the economy structure (money and manors) without touching the existing ones."""
+    economy = data.get('economy')
+    if not isinstance(economy, dict):
+        economy = data['economy'] = {}
+    money = economy.get('money')
+    if not isinstance(money, dict):
+        money = economy['money'] = {}
+    money.setdefault('font', 0)
+    money.setdefault('silver', 0)
+    if not isinstance(economy.get('manors'), list):
+        economy['manors'] = []
+    return data
+
+
 class Character:
     def __init__(self, record):
         self.id = record[0]
@@ -45,6 +60,7 @@ class Character:
             self.data['skills']['Weapons'] = {}
         if not 'main' in self.data:
             self.data['main'] = { }
+        ensure_economy(self.data)
         if not 'description' in self.data:
             self.data['description'] =  "???"
         if not 'army' in self.data:
