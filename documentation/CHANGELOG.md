@@ -9,6 +9,18 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-08 — Check results popup (Task 023)
+
+- **Branch:** `collab/own-checks` (+ `AngrySenechal2` working tree)
+- **Type:** behaviour-changing (small)
+- **Summary:** `/checks` returns the latest 10 checks (was 5), unfiltered. The character page opens a result-coloured popup (`CheckResultDialog`) for new rolls/checks of the logged-in user's characters and of the character on the page; other players' rolls stay in the pageable inline list.
+- **Files touched:** `api/views.py`; `AngrySenechal2`: `character-detail.component.ts`, `app.module.ts`.
+- **Icons:** the check result icons are game-icons.net SVGs (`AngrySenechal2/src/assets/icons/`, CC BY 3.0).
+- **Operational impact:** none beyond the larger list.
+- **Risk & rollback:** not run live; `git revert`.
+
+---
+
 ## 2026-10-06 — Angular upgrade 14 → 22 (Task 022)
 
 - **Branch:** `collab/angular-15` in `AngrySenechal2` (holds the whole series; from `collab/infra-and-deps`)
