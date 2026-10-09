@@ -62,7 +62,8 @@ def build_client():
 
     # The message handler for both new message and edits
     async def common_handle_message(message):
-        if message.author.bot:
+        # Bots are ignored, but not the webhook ("Captain Hook") the web page uses when nobody is logged in
+        if message.author.bot and message.webhook_id is None:
             return
         text = message.content
         if text.startswith(Config.prefix) and text != Config.prefix:

@@ -448,7 +448,7 @@ def cleanupTokens(request):
 
 def checks(request):
     result = []
-    res = CheckTable().list()
+    res = CheckTable().list(limit=10)
     return JsonResponse(convert(res,CHECK_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def addC2C(request):
