@@ -153,6 +153,26 @@ periods:
   - [Grail Quest, 554]
   - [Twilight, 558]
 
+# Családi jellemző (férfiági öröklődés), 1d20 dobás. A bónusz a végleges skillre kerül, 15/20 fölé is mehet.
+# category: melyik skillcsoportban van a skill (alap: Other); prefix: a skill neve előtag (pl. Play (harp)).
+familycharacteristics:
+  - {roll: [1, 2], name: Good with horses, skill: Horsemanship, bonus: 5, category: Combat}
+  - {roll: [3, 3], name: Excellent voice, skill: Singing, bonus: 10}
+  - {roll: [4, 7], name: Keen senses, skill: Awareness, bonus: 5}
+  - {roll: [8, 8], name: Naturecraft, skill: Hunting, bonus: 5}
+  - {roll: [9, 9], name: Light-footed, skill: Dancing, bonus: 10}
+  - {roll: [10, 10], name: Natural healer, skill: First Aid, bonus: 5}
+  - {roll: [11, 11], name: Naturally lovable, skill: Flirting, bonus: 10}
+  - {roll: [12, 12], name: Never forgets a face, skill: Recognize, bonus: 10}
+  - {roll: [13, 13], name: Remarkably deductive, skill: Intrigue, bonus: 5}
+  - {roll: [14, 14], name: Like an otter, skill: Swimming, bonus: 10}
+  - {roll: [15, 15], name: Natural speaker, skill: Orate, bonus: 10}
+  - {roll: [16, 16], name: Natural musician, skill: Play, bonus: 15, prefix: true}
+  - {roll: [17, 17], name: Good with words, skill: Compose, bonus: 15}
+  - {roll: [18, 18], name: Love for arms, skill: Heraldry, bonus: 10}
+  - {roll: [19, 19], name: Good with birds, skill: Falconry, bonus: 15}
+  - {roll: [20, 20], name: Clever, skill: Gaming, bonus: 10}
+
 newchar6th:
   male:
     knightly: ['Awareness', 'Courtesy', 'First Aid', 'Recognize', 'Hunting', 'Battle', 'Horsemanship', 'Brawling', 'Charge', 'Sword']
