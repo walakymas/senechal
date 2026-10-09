@@ -9,7 +9,7 @@ import os
 
 from aiohttp import web
 
-from api import auth, views
+from api import auth, feast_views, views
 from api.compat import Request
 
 # Origins allowed to call the API from the browser (they are also the only places the Discord login may
@@ -51,6 +51,12 @@ ROUTES = [
     ('delete_map', views.delete_map), ('addC2C', views.addC2C),
     ('connections', views.connections), ('roll', views.roll),
     ('command', views.command),
+    ('feasts', feast_views.feasts), ('feast_get', feast_views.feast_get), ('feast_new', feast_views.feast_new),
+    ('feast_next', feast_views.feast_next), ('feast_seat', feast_views.feast_seat),
+    ('feast_app_roll', feast_views.feast_app_roll), ('feast_activity', feast_views.feast_activity),
+    ('feast_requirement', feast_views.feast_requirement), ('feast_roll', feast_views.feast_roll),
+    ('feast_select_card', feast_views.feast_select_card), ('feast_discard_kept', feast_views.feast_discard_kept),
+    ('feast_leave', feast_views.feast_leave), ('feast_return', feast_views.feast_return),
 ]
 
 
