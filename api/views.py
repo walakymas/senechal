@@ -447,9 +447,18 @@ def cleanupTokens(request):
         "DELETE FROM tokens WHERE expires < NOW() - INTERVAL '1 DAYS'", commit=True)
     return JsonResponse(convert(TokenTable().list(), TOKEN_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
+CHECKS_MAX_LIMIT = 100
+
+
+@never_cache
 def checks(request):
-    result = []
-    res = CheckTable().list(limit=10)
+    """The latest rolls (default 10). `limit` (1..100) sets how many, `player` keeps only the rolls of that player's characters."""
+    try:
+        limit = min(max(int(request.GET.get('limit', 10)), 1), CHECKS_MAX_LIMIT)
+        player = int(request.GET['player']) if request.GET.get('player') else None
+    except ValueError:
+        return JsonResponse({'result': 'fail'}, status=400)
+    res = CheckTable().list(plyr=player, limit=limit)
     return JsonResponse(convert(res,CHECK_FIELDS), safe=False, json_dumps_params={'ensure_ascii': False})
 
 def addC2C(request):
