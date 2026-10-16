@@ -9,6 +9,17 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-16 — Storyteller roll log page (Task 027)
+
+- **Branch:** `collab/gm-roll-log` (+ `AngrySenechal2` working tree)
+- **Type:** behaviour-changing (new page, new optional API parameters)
+- **Summary:** `GET /checks` takes `limit` (max 100) and `player`; new `/rolls` page lists the last 100 rolls in the popup's card design, filterable by player. The popup card is now the shared `check-card` component.
+- **Files touched:** `api/views.py`, `tests/checks_view_test.py` (new), `documentation/tasks/027-gm-roll-log.md` (new); frontend: `rolls/`, `check-card/` (new), `character-detail.component.ts`, `character.service.ts`, `app.module.ts`, `app-routing.module.ts`, `app.component.html`.
+- **Operational impact:** none (no env vars / migrations); `/checks` without parameters is unchanged.
+- **Risk & rollback:** not seen in a browser; revert the commit and the frontend files.
+
+---
+
 ## 2026-10-10 — Feast card data in `feast.yml` (Task 025)
 
 - **Branch:** `collab/feast-rules`
