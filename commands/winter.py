@@ -1,8 +1,9 @@
 import logging
 from commands.base_command import BaseCommand
 from config import Config
-from database.c2ctable import C2CTable
+from permissions import has_rights, NO_RIGHTS
 from utils import *
+from winter_logic import run_winter
 
 log = logging.getLogger(__name__)
 
@@ -15,109 +16,24 @@ class Winter(BaseCommand):
                          longdescription='''
 Egy extra blokkot igényel a karaktereknél amiben a lovak listája található és ha van aki jobb stewardship ellenőrzést tud adni, akkor azt is.
 Ha nincs megadva a blokk, akkor saját stewardshipet használ és 1 charger, 2 rouncy és 2 stumper amit ellenőriz.
-Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasítással pipát kapott tulajdonságok, azokat listázza dob d20-l és közli az eredményt
+Ha meg voltak adva ebben az évben ***!mark {skill|trait|passion}*** utasítással pipát kapott tulajdonságok, akkor az Unchecked állapotúakra dob d20-at: az érték vagy kevesebb = Failed, nagyobb (20 feletti értéknél 20) = Increase. Az eredmény a pipa állapotában marad, az már elvégzett próbákat nem dobja újra (az Increase-ek növelése: ***!mark update***).
+A teljes eredmény új eseményként bekerül a karakter eseményei közé.
+**!winter force** (csak admin) minden próbát újradob, az Updated pipák kivételével.
 ''')
 
     async def handle(self, params, message, client):
-        me = get_me(message)
+        words = message.content[len(Config.prefix):].split()
+        force = any(w.lower() == 'force' for w in words[1:])
+        if force and not has_rights(message.author.id):
+            await message.channel.send(message.author.mention + NO_RIGHTS)
+            return
+        me = get_me(message, words=[w for w in words if w.lower() != 'force'])
         if me:
-            await self.winter(me, message)
+            await self.winter(me, message, force)
         elif len(params) > 0:
             for pc in Character.pcs():
-                await self.winter(pc, message)
+                await self.winter(pc, message, force)
 
-    async def winter(self, char, message):
-        winter = winterData(char)
-        year = MarksTable().year()
-        embed = EmbedFields()
-        major = dice(6)
-        msg = f"Gazdaság: {('Terrible','Bad','Normal','Normal','Good','Excellent')[major-1]} ({major})\n"
-        (c, t, dobas, siker) = check(int(winter['stewardship']), 0, False)
-        if major in (1,2):
-            msg += f"Stewardship({winter['stewardship']}): {dobas} {t}  {('Kemény munkával kivédtétek a bajt','Szegény lovag vagy')[siker>=3]} \n"
-        elif major == 5:
-            msg += f"Extra bevétel: {dice(20)} \n"
-        elif major == 6:
-            msg += f"Stewardship({winter['stewardship']}): {dobas} {t}  {('Gazdag lovag vagy','Nem sikerült kihasználni a remek időt')[siker>=3]} \n"
-        embed.add_field(name=f"{year} tele", value=f"```{msg}```", inline=False)
-        msg = ""
-        for h in winter['horses']:
-            msg += f"  {h}: {('Egészséges','Megdöglött vagy tönkrement')[dice(20)<3]}\n"
-        embed.add_field(name="Lovak",value=f"```{msg}```", inline=False)
-        charId = int(char.id)
-        msg = ""
-        rows = MarksTable().list(dbid=charId, year=year)
-        msg += f"Spec              Dobás   Hatás\n";
-        marks = []
-        cnt = 0
-        for row in rows:
-            for t, name, value, *name2 in get_checkable(char.get_data(), row[5]):
-                if name not in marks:
-                    if cnt == 10:
-                        embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
-                        msg =""
-                        cnt = 0
-                    cnt += 1
-                    marks.append(name)
-                    (color, text, ro, success) = check(value, 0)
-                    msg += f"{name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
-        embed.add_field(name="Pipák", value=f"```{msg}```", inline=False)
-        xp = 0
-        for n, v in char.data['traits'].items():
-            if v >= 16:
-                xp += v
-            elif v <= 4:
-                xp += 20 - v
-        for n, v in char.data['passions'].items():
-            if int(v) >= 16:
-                xp += int(v)
-        if xp > 0:
-            embed.add_field(name="Extra Glory", value=f"`{xp}`", inline=False)
-        # connected characters: the 'npcs' block of the character plus the c2c connections (either direction)
-        npcs = dict(char.data.get('npcs', {}))
-        known = {int(f['dbid']) for f in npcs.values() if 'dbid' in f}
-        for row in C2CTable().list(charId):
-            other = int(row[4]) if int(row[3]) == charId else int(row[3])
-            if other != charId and other not in known:
-                known.add(other)
-                connection = row[5] or ''
-                npcs[f"c2c:{other}"] = {'dbid': other, 'connection': connection, 'role': connection.lower()}
-        if npcs:
-            for nf,  f in npcs.items():
-                s = ""
-                if 'dbid' in f:
-                    npc = Character.get_by_id(f['dbid'])
-                    if npc is None:
-                        continue
-                    if 'Deceased' in npc.data.get('main', {}):
-                        s = f"NPC is dead ({npc.data['main']['Deceased']})\n"
-                    else:
-                        rows = MarksTable().list(dbid=f['dbid'], year=year)
-                        marks = []
-                        if 'role' in f and (f['role'] == 'wife' or f['role'] == 'lover'):
-                            birth = 0
-                            con = npc.data['stats']['con']
-                            if 'Birth' in npc.data['main']:
-                                birth = npc.data['main']['Birth']
-                            elif 'birth' in npc.data['main']:
-                                birth = npc.data['main']['birth']
-                            s += f"Con: {con}, Birth: {birth} \n"
-
-                        s += f"Modified   Spec              Dobás   Hatás\n";
-                        for row in rows:
-                            #print(f"{row}")
-                            for t, name, value, *name2 in get_checkable(npc.get_data(), row[5]):
-                                if name not in marks:
-                                    marks.append(name)
-                                    (color, text, ro, success) = check(value, 0)
-                                    s += f"{str(row[2])[:10]} {name:15} {ro:2} vs {value:2}  {('---', 'Increase')[ro > value]}\n"
-                    if s != "":
-                        embed.add_field(name=f"{npc.data['name']} ({f['connection']})", value=f"```{s}```", inline=False)
-                else:
-                    if 'skills' in f:
-                        for n, v in f['skills'].items():
-                            if v < 15 or (v <= 20 and dice(6) == 6) or (v > 20 and dice(20) == 20):
-                                s += f"{n} `{v}` -> `{v+1}`\n"
-                    if s != "":
-                        embed.add_field(name=f"{nf} ({f['connection']})", value=s, inline=False)
-        await send_embed_fields(message.channel, char, embed.fields)
+    async def winter(self, char, message, force=False):
+        result = run_winter(char, force)
+        await send_embed_fields(message.channel, char, result.embed_fields())

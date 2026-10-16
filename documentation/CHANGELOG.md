@@ -9,6 +9,19 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-16 — Marks status, winter and mark update (Task 028)
+
+- **Branch:** `collab/marks-winter-status` (+ `AngrySenechal2` working tree)
+- **Type:** behaviour-changing (DB migration, stored marks, `!winter`, new API calls, new menu items)
+- **Summary:** a mark now has a winter status (`marks.status`: Unchecked on creation, Failed, Increase, Updated). `!winter` rolls a d20 only for the Unchecked marks (at most the value = Failed, above it, or a 20 against a value over 20 = Increase), the checked ones are reported from their status; `!winter force` (admin only) rolls everything but the Updated marks again. The whole winter report is stored as a new event of the character in the current year. `!mark update` (and the web *Update*) raises the value of the current year's Increase marks by one (skill, trait - the opposite pole lowers the stored value -, passion) and makes them Updated. The winter logic moved from `commands/winter.py` to `winter_logic.py`, shared by the bot and the API.
+- **API:** `GET /marks?id` (marks by year with status, open like `json`), `POST /marks_update` (`id`, `year`, `token`) and `POST /winter` (`id`, `force`, `token`): owner or admin only (`feast_views.session` / `can_act_for`), `force` admin only.
+- **Frontend:** *Marks* (popup, one accordion panel per year, *Update* per year) and *Winter* (confirm, *Force* checkbox for admins, shows the report) in the menu next to the character name.
+- **Files touched:** `database/database.py` (v19), `database/markstable.py`, `winter_logic.py` (new), `commands/winter.py`, `commands/mark.py`, `utils.py` (`get_me(words=)`), `api/views.py`, `api/app.py`, `tests/winter_marks_test.py` (new), `tests/database_integration_test.py`, `documentation/tasks/028-marks-winter-status.md` (new); frontend: `marks.ts` / `marks.spec.ts` (new), `character-detail/character-marks-dialog.spec.ts` (new), `character-detail.component.{ts,html}`, `character.service.ts`, `app.module.ts`.
+- **Operational impact:** the schema migrates to v19 on start (`ALTER TABLE marks ADD status ... DEFAULT 'Unchecked'`): every existing mark becomes Unchecked, so the current year's marks are rolled by the next `!winter`. Repeated `!winter` runs add one event each and re-roll the economy and horses (only the marks are remembered). `!winter` no longer shows the Modified date in the main character's marks block.
+- **Risk & rollback:** not run on a live server or in a browser. Revert the commit and the frontend files; the extra `status` column is harmless to old code (`DROP COLUMN status` and `dbversion` back to 18 to undo it).
+
+---
+
 ## 2026-10-16 — Storyteller roll log page (Task 027)
 
 - **Branch:** `collab/gm-roll-log` (+ `AngrySenechal2` working tree)

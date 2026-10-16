@@ -2,6 +2,14 @@ from database.base_table_handler import BaseTableHandler
 
 
 class MarksTable(BaseTableHandler):
+    # Result of the winter check of a mark (marks.status). A new mark is UNCHECKED; the winter rolls the UNCHECKED ones
+    # (FAILED / INCREASE), the update raises the value of the INCREASE ones and makes them UPDATED.
+    UNCHECKED = 'Unchecked'
+    FAILED = 'Failed'
+    INCREASE = 'Increase'
+    UPDATED = 'Updated'
+    STATUSES = (UNCHECKED, FAILED, INCREASE, UPDATED)
+    # marks table columns: id 0, created 1, modified 2, year 3, lord 4 (obsolete), spec 5, dbid 6, status 7
 
     def __init__(self):
         super().__init__('marks')
@@ -9,6 +17,15 @@ class MarksTable(BaseTableHandler):
     def set(self, dbid, year, value):
         BaseTableHandler.execute('INSERT INTO marks (modified, dbid, year, spec) VALUES(now(),%(dbid)s,%(year)s,%(spec)s)'
                              ' ON CONFLICT (dbid, year, spec) DO UPDATE SET spec=%(spec)s', {'dbid':dbid, 'year':year, 'spec':value})
+
+    def set_status(self, key, status):
+        self.set_status_many([key], status)
+
+    def set_status_many(self, keys, status):
+        if status not in MarksTable.STATUSES:
+            raise ValueError(f"Unknown mark status: {status}")
+        BaseTableHandler.execute("UPDATE marks SET status=%s, modified=now() WHERE id = ANY(%s)",
+                                 [status, [int(k) for k in keys]])
 
     def remove(self, key):
         BaseTableHandler.execute("DELETE FROM marks WHERE id=%s", [int(key)])
