@@ -53,6 +53,7 @@ def base(request):
     if Config.authorization:
         result['loginNeeded'] = 'true'
     result['hook'] = Config.hook
+    result['prefix'] = Config.prefix
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def pcresponse(pc):
