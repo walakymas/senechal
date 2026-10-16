@@ -40,7 +40,7 @@ async def handle_command(command, args, message, bot_client, mid=0):
     # with some other bot)
 
     if command not in COMMAND_ALIASES:
-        result = dicePattern.match(message.content[1:])
+        result = dicePattern.match(message.content[len(Config.prefix):])
         if result:
             (db, size, modifier) = result.groups()
             char = get_me(message)
