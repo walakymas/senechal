@@ -282,7 +282,7 @@
           choose:
             - generous
             - merciful
-        -   - just
+            - just
       - decline:
         text: "Decline his request"
         mark:
