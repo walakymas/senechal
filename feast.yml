@@ -195,6 +195,15 @@
     FUMBLE: Something you say upsets her. -2 Geniality.
 "10":
   name: A Lady of the Night
+  check:
+    passion: chaste
+    win:
+      geniality: 1
+    oppose: lustful
+    lose:
+      money: -3d20
+      feast: leave
+      winter: Childbirth
   tags:
     - "leave"
   text: "A courtesan offers her company."
@@ -206,6 +215,20 @@
     LUSTFUL WINS: Pay 3d20 denarii and depart the feast. Roll on Childbirth this Winter Phase.
 "11":
   name: A Lady's Honor
+  check:
+      opposed:
+        choose:
+          - courtesy
+          - singing
+          - play
+        versus:
+          unknown: 2d6+8
+      win:
+        geniality: 2
+      lose:
+        geniality: -1
+      tie:
+        geniality: 1
   text: "A lady needs a knight to challenge another knight to a contest of honor."
   full: |
     A lady needs a knight to challenge another knight to a contest of honor.
@@ -219,6 +242,17 @@
     TIE: The ladies laugh and leave, chatting. +1 Geniality.
 "12":
   name: A Lady's Gift
+  check:
+    choose:
+      - love
+      - amor
+    success:
+      geniality: 2
+    critical:
+      text: "A nearby merchant offers you a gift for half price"
+    fumble:
+      geniality: -3
+      text: "A knight challenges you to a duel"
   tags:
     - "duel"
   text: "Several knights speak about gifts to their ladies."
@@ -233,6 +267,29 @@
 "13":
   name: A Loan?
   text: "Another knight asks if you can lend him money."
+  randomText:
+    roll: 1d3
+    values:
+      1: "Pay a debt"
+      2: "Buy a lady a present"
+      3: "Ransom a captive"
+  choose:
+    roll: 1d6
+    choose:
+      - give:
+        text: "Give him the money"
+        mark:
+          choose:
+            - generous
+            - merciful
+        -   - just
+      - decline:
+        text: "Decline his request"
+        mark:
+          choose:
+            - selfish
+            - cruel
+            - arbitrary
   full: |
     Another knight asks if you can lend him money to (roll 1d6): 1-2 Pay a debt; 3-4 Buy a lady a present; 5-6 Ransom a captive.
 
@@ -242,6 +299,14 @@
 "14":
   name: A love Poem
   text: "A knight is struggling to compose a love poem. You help him."
+  check:
+    skill: compose
+    success:
+      geniality: 1
+    critical:
+      geniality: 5
+    fumble:
+      geniality: -2
   full: |
     A knight is struggling to compose a love poem. You help him.
 
@@ -250,6 +315,12 @@
     FUMBLE: The poem is terrible and embarrasses the knight; he blames you. -2 Geniality.
 "15":
   name: A Man for All Seasons
+  # TODO(feast-check): Counter mechanic is not modelled in the engine (keep.counter / depart bonus are only declarative).
+  check:
+    keep:
+      counter: knowledge
+      add_on: [critical success, skill check, trait check]
+      depart: {geniality_per_counter: 2}
   tags:
     - "keep"
   text: "You impress the other guests with your consummate knowledge."
@@ -261,6 +332,17 @@
     When you depart the feast, gain +2 Geniality for each Knowledge counter on A Man for All Seasons.
 "16":
   name: A New Teacher
+  # TODO(feast-check): Which Skill is rolled/gained is chosen by the player/GM ('appropriate Skill') - needs a skill picker.
+  # TODO(feast-check): Failure: leaving is optional (player decision), gain the Skill only if they leave.
+  check:
+    skill: appropriate
+    success:
+      check: appropriate
+    critical:
+      geniality: 3
+    failure:
+      feast: leave_optional
+      check: appropriate
   tags:
     - "leave"
   text: "You meet a knight renowned in a particular field. He is willing to give you pointers."
@@ -274,6 +356,14 @@
     FAILURE: You need to learn more. You may depart the feast for impromptu training. If you do, gain the Skill.
 "17":
   name: A Roaring Fire
+  # TODO(feast-check): Rolled skill/stat is not stated on the card (Dexterity? Awareness?) - fill in.
+  check:
+    success:
+      text: "You knock the ember away"
+    failure:
+      choose:
+        - {geniality: -2}
+        - {feast: miss}
   tags:
     - "miss"
   text: "As you rest near the hearth, a hot ember pops from the fire and lands on your clothes."
@@ -285,6 +375,20 @@
     FAILURE: The ember burns a large hole in your clothes. Choose: lose 2 Geniality, or miss one round to change your clothes.
 "18":
   name: A Serving Girl Flirts
+  # TODO(feast-check): Critical: it is unclear whether the success effects (+1 Geniality, Flirting) also apply.
+  check:
+    skill: flirting
+    success:
+      geniality: 1
+      mark: flirting
+    critical:
+      passion: lustful
+      oppose: chaste
+      win:
+        winter: Childbirth
+        feast: leave
+    fumble:
+      text: "You receive a slap in the face"
   tags:
     - "leave"
     - "winter"
@@ -299,6 +403,20 @@
     FUMBLE: You receive a slap in the face.
 "19":
   name: A Serving Girl Flirts
+  # TODO(feast-check): Critical: it is unclear whether the success effects (+1 Geniality, Flirting) also apply.
+  check:
+    skill: flirting
+    success:
+      geniality: 1
+      mark: flirting
+    critical:
+      passion: lustful
+      oppose: chaste
+      win:
+        winter: Childbirth
+        feast: leave
+    fumble:
+      text: "You receive a slap in the face"
   tags:
     - "leave"
     - "winter"
@@ -313,6 +431,20 @@
     FUMBLE: You receive a slap in the face.
 "20":
   name: A Serving Girl Flirts
+  # TODO(feast-check): Critical: it is unclear whether the success effects (+1 Geniality, Flirting) also apply.
+  check:
+    skill: flirting
+    success:
+      geniality: 1
+      mark: flirting
+    critical:
+      passion: lustful
+      oppose: chaste
+      win:
+        winter: Childbirth
+        feast: leave
+    fumble:
+      text: "You receive a slap in the face"
   tags:
     - "leave"
     - "winter"
@@ -327,6 +459,20 @@
     FUMBLE: You receive a slap in the face.
 "21":
   name: A Serving Girl Flirts
+  # TODO(feast-check): Critical: it is unclear whether the success effects (+1 Geniality, Flirting) also apply.
+  check:
+    skill: flirting
+    success:
+      geniality: 1
+      mark: flirting
+    critical:
+      passion: lustful
+      oppose: chaste
+      win:
+        winter: Childbirth
+        feast: leave
+    fumble:
+      text: "You receive a slap in the face"
   tags:
     - "leave"
     - "winter"
@@ -341,6 +487,20 @@
     FUMBLE: You receive a slap in the face.
 "22":
   name: A Serving Girl Flirts
+  # TODO(feast-check): Critical: it is unclear whether the success effects (+1 Geniality, Flirting) also apply.
+  check:
+    skill: flirting
+    success:
+      geniality: 1
+      mark: flirting
+    critical:
+      passion: lustful
+      oppose: chaste
+      win:
+        winter: Childbirth
+        feast: leave
+    fumble:
+      text: "You receive a slap in the face"
   tags:
     - "leave"
     - "winter"
@@ -355,6 +515,19 @@
     FUMBLE: You receive a slap in the face.
 "23":
   name: A Test of Strength
+  # TODO(feast-check): Reroll counting and passing the card to another player are not supported by the engine.
+  check:
+    opposed:
+      stat: str
+      versus:
+        unknown: 1d6+12
+      on_tie: reroll
+    win:
+      glory: 2
+      glory_per_reroll: 1
+    lose:
+      text: "You may give this card to another player (+1 Geniality); they must play it next turn instead of drawing"
+      pass_card: {geniality: 1, target_must_play: true}
   text: "A knight boasts about his strength and challenges you to an arm-wrestling match."
   full: |
     A knight boasts about his strength and challenges you to an arm-wrestling match.
@@ -366,6 +539,19 @@
     HE WINS: He moves on to challenge others. You may give this card to another player. If you do, gain 1 Geniality. That player must play this card next turn instead of drawing any cards.
 "24":
   name: A Test of Strength
+  # TODO(feast-check): Reroll counting and passing the card to another player are not supported by the engine.
+  check:
+    opposed:
+      stat: str
+      versus:
+        unknown: 1d6+12
+      on_tie: reroll
+    win:
+      glory: 2
+      glory_per_reroll: 1
+    lose:
+      text: "You may give this card to another player (+1 Geniality); they must play it next turn instead of drawing"
+      pass_card: {geniality: 1, target_must_play: true}
   text: "A knight boasts about his strength and challenges you to an arm-wrestling match."
   full: |
     A knight boasts about his strength and challenges you to an arm-wrestling match.
@@ -377,6 +563,17 @@
     HE WINS: He moves on to challenge others. You may give this card to another player. If you do, gain 1 Geniality. That player must play this card next turn instead of drawing any cards.
 "25":
   name: A Slip of Wine
+  check:
+    skill: orate
+    decline:
+      geniality: -2
+      mark: modest
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -5
   text: "You share a goblet of wine with a lady. You may make a toast to her."
   full: |
     You share a goblet of wine with a lady. You may make a toast to her.
@@ -389,6 +586,16 @@
     FUMBLE: You compared her to what?!? -5 Geniality.
 "26":
   name: About Things Real
+  # TODO(feast-check): Opposing trait 'Worldly' - confirm that the contest is Spiritual vs Worldly.
+  check:
+    passion: spiritual
+    win:
+      check:
+        skill: faerie lore
+        success:
+          geniality: 1
+    oppose:
+      geniality: -1
   text: "A lady asks if you believe in faeries and spirits."
   full: |
     A lady asks if you believe in faeries and spirits.
@@ -398,6 +605,17 @@
     WORLDLY WINS: You explain that there are no faeries and that magic is not real. She walks away and calls you a curmudgeon. -1 Geniality.
 "27":
   name: All You Can Eat
+  # TODO(feast-check): Size-increase rule (Winter Phase) is only text. Tie handling is not described.
+  check:
+    opposed:
+      passion: indulgent
+      versus:
+        unknown: 1d6+13
+    win:
+      glory: 5
+      text: "If you pass a multiple of 1000 Glory in the next Winter Phase you may increase your size by 1"
+    lose:
+      feast: leave
   tags:
     - "leave"
     - "winter"
@@ -412,6 +630,16 @@
     IF THE KNIGHT FAILS AND YOU WIN: Gain 5 Glory. If you surpass a multiple of 1,000 Glory in the next Winter Phase, you may increase your size by 1.
 "28":
   name: Alms
+  # TODO(feast-check): The roll is not named (likely a Generous/Religion roll) - fill in.
+  # TODO(feast-check): Pagan exception only modelled as text/flag.
+  check:
+    success:
+      donate: {min: 3, unit: pound}
+      glory_per_unit: {unit: 3, glory: 5}
+      check_if_donated_at_least: {amount: 34, check: generous}
+    pagan:
+      optional: true
+      check_if_donated_at_least: {amount: 34, check: worldly}
   text: "A monk is asking guests to donate to the church."
   full: |
     A monk is asking guests to donate to the church.
@@ -421,6 +649,17 @@
     Pagan knights may choose not to roll, but those who willingly give at least Ł34 gain the Worldly trait.
 "29":
   name: An Ideal Wife
+  # TODO(feast-check): Random Marriage table (+5) and passing the card are not implemented.
+  check:
+    table: random marriage
+    modifier: 5
+    unmarried:
+      decline:
+        loyalty: {lord: -1}
+    married:
+      recommend_other_player:
+        check: generous
+        pass_card: {target_must_play: true}
   tags:
     - "host"
   text: "The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife."
@@ -434,8 +673,20 @@
     MARRIED: You may recommend a fellow player-knight. If you do, give this card to that player and gain the Generous trait. That player must play this card next turn instead of drawing any cards.
 "30":
   name: An Ideal Wife
+  # TODO(feast-check): Random Marriage table (+5) and passing the card are not implemented.
+  check:
+    table: random marriage
+    modifier: 5
+    unmarried:
+      decline:
+        loyalty: {lord: -1}
+    married:
+      recommend_other_player:
+        check: generous
+        pass_card: {target_must_play: true}
   tags:
     - "host"
+  text: "The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife."
   full: |
     The host (or your lord, if present) introduces you to an eligible lady he thinks would make an ideal wife.
 
@@ -446,6 +697,15 @@
     MARRIED: You may recommend a fellow player-knight. If you do, give this card to that player and gain the Generous trait. That player must play this card next turn instead of drawing any cards.
 "31":
   name: Be Valorous
+  # TODO(feast-check): Opposed trait 'Reckless' is the contrasting trait on the card - verify the exact contest (Valorous vs Reckless).
+  check:
+    passion: valorous
+    win:
+      geniality: 1
+    oppose: reckless
+    lose:
+      geniality: -2
+  text: "Several knights speak about bravery versus foolish recklessness."
   full: |
     Several knights speak about bravery versus foolish recklessness.
 
@@ -454,8 +714,19 @@
     RECKLESS WINS: They hope your recklessness will not kill you. -2 Geniality.
 "32":
   name: Biggest Mistake
+  # TODO(feast-check): Rolled skill not stated on the card (Orate? Intrigue?).
+  check:
+    success:
+      glory: 5
+      check: modest
+    failure:
+      check:
+        passion: proud
+        success:
+          challenge: duel_optional
   tags:
     - "duel"
+  text: "Several knights talk merrily about their greatest gaffes. They ask you to share your biggest mistake."
   full: |
     Several knights talk merrily about their greatest gaffes. They ask you to share your biggest mistake.
 
@@ -464,6 +735,15 @@
     FAILURE: They mock you. Roll Proud: on a success, you may challenge one of them to a duel.
 "33":
   name: Boasting Knights
+  # TODO(feast-check): Number of knights is not specified (GM/player decides).
+  check:
+    opposed:
+      skill: orate
+      versus:
+        unknown: 2d6+3
+      per_rival: {geniality: 1}
+      best_all: {geniality: 1}
+  text: "Several knights are arguing about their favorite weapons and skills."
   full: |
     Several knights are arguing about their favorite weapons and skills.
 
@@ -472,9 +752,16 @@
     Gain +1 Geniality for each knight you best, plus an additional +1 Geniality if you best them all.
 "34":
   name: Cristian Virtue
+  # TODO(feast-check): Per-success Geniality / bonus / discard conditions are declarative only (engine has no hook).
+  check:
+    keep:
+      bonus: {skills: [read, folk lore, religion], value: 5}
+      on_success: {skills: [read, folk lore, religion], geniality: 1}
+      discard_on_success: [indulgent, lustful, worldly]
   tags:
     - "keep"
     - "religious"
+  text: "A monk wishes to show his worth. He hopes you will hire him after the feast as part of your retinue."
   full: |
     A monk wishes to show his worth. He hopes you will hire him after the feast as part of your retinue.
 
@@ -483,9 +770,16 @@
     If you roll a success on Indulgent, Lustful, or Worldly, the monk leaves your company and you must discard this card.
 "35":
   name: Pagan Promise
+  # TODO(feast-check): Same as card 34 (pagan version).
+  check:
+    keep:
+      bonus: {skills: [read, folk lore, religion], value: 5}
+      on_success: {skills: [read, folk lore, religion], geniality: 1}
+      discard_on_success: [chaste, lazy, selfish]
   tags:
     - "keep"
     - "pagan"
+  text: "A pagan priest wishes to show his worth. He hopes you will hire him afterwards as part of your retinue."
   full: |
     A pagan priest wishes to show his worth. He hopes you will hire him afterwards as part of your retinue.
 
@@ -494,6 +788,19 @@
     If you roll a success on Chaste, Lazy, or Selfish, the priest leaves your company and you must discard this card.
 "36":
   name: Center Stage
+  # TODO(feast-check): The list of usable skills (story/music/song) is a guess - confirm.
+  check:
+    choose:
+      - orate
+      - singing
+      - play
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "The host calls upon you to entertain with story, music, or a song."
   full: |
     The host calls upon you to entertain with story, music, or a song.
 
@@ -502,8 +809,17 @@
     FUMBLE: Why did you pick that song? -2 Geniality.
 "37":
   name: Chance Encounter
+  # TODO(feast-check): The roll is not named; 'appropriate Trait, Passion or Skill' needs a picker.
+  keep:
+    geniality: 1
+  check:
+    skill: appropriate
+    success:
+      check: appropriate
+    discard_if: interact with another lady
   tags:
     - "keep"
+  text: "A lady asks for your help."
   full: |
     A lady asks for your help.
 
@@ -514,6 +830,15 @@
     Discard this card if you interact with another lady.
 "38":
   name: Chivalrous Life
+  # TODO(feast-check): Rolled skill not stated (Orate? Chivalry?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "The conversation turns to matters of chivalry."
   full: |
     The conversation turns to matters of chivalry.
 
@@ -522,17 +847,33 @@
     FUMBLE: An embarrassing faux pas. -2 Geniality.
 "39":
   name: Christian Blessing
+  check:
+    winter:
+      income: 3
+      text: "Exceptional harvest"
   tags:
     - "religious"
     - "winter"
+  text: "You receive a blessing from a holy man present at the feast."
   full: |
     You receive a blessing from a holy man present at the feast.
 
     Gain an additional Ł3 from an exceptional harvest next Winter Phase.
 "40":
   name: Christian Sin
+  check:
+    passion: spiritual
+    win:
+      bonus: {skill: temperate, value: 5, scope: feast}
+      optional_pledge:
+        pound: 3
+        geniality: 2
+    oppose: worldly
+    lose:
+      text: "No bonus"
   tags:
     - "religious"
+  text: "A renowned holy person speaks of the sins surrounding feasting."
   full: |
     A renowned holy person speaks of the sins surrounding feasting.
 
@@ -541,6 +882,15 @@
     WORLDLY WINS: “I do what I want!” (no bonus)
 "41":
   name: Awkward Conversation
+  # TODO(feast-check): Roll/skill not named; needs a skill picker.
+  check:
+    skill: appropriate
+    success:
+      check: appropriate
+    critical:
+      bonus: {skill: appropriate, value: 3, scope: feast}
+      geniality: 2
+  text: "Another guest engages you on a topic you know little about."
   full: |
     Another guest engages you on a topic you know little about.
 
@@ -548,6 +898,15 @@
     CRITICAL SUCCESS: You surprise the knight with your eagerness to learn. You gain a friend for the rest of the feast: +3 to this Skill for the remainder of the feast and +2 Geniality.
 "42":
   name: Damaged Goods
+  # TODO(feast-check): Rolled skill not stated (Dexterity? Awareness?).
+  # TODO(feast-check): 'Discard and draw again if no jewelry' needs a precondition hook.
+  check:
+    requires: jewelry
+    success:
+      text: "The piece is damaged (half value until repaired; repair cost 1/10 value)"
+    failure:
+      text: "Jewelry lost; roll Awareness each following round to find it (no card drawn that round)"
+  text: "A piece of jewelry snags on a hanging or a passing cloak and is in danger of getting lost."
   full: |
     A piece of jewelry snags on a hanging or a passing cloak and is in danger of getting lost.
 
@@ -558,6 +917,14 @@
     Discard and draw again if you have no jewelry.
 "43":
   name: Dangerous Game
+  # TODO(feast-check): Rolled skill/stat not stated (Dagger? Dexterity?).
+  check:
+    success:
+      geniality: 1
+      check: dagger
+    failure:
+      damage: 1d3
+  text: "Several young knights play a rather dangerous game with knives. They ask you to join in."
   full: |
     Several young knights play a rather dangerous game with knives. They ask you to join in.
 
@@ -565,8 +932,26 @@
     FAILURE: You wound your hand. Take 1d3 damage.
 "44":
   name: Difficult Question
+  # TODO(feast-check): 'Lose all Geniality gained from this card' on fumble is not supported.
+  keep:
+    draw: no
+  check:
+    each_round:
+      choose:
+        - skill: flirting
+          success:
+            geniality: 1
+        - skill: romance
+          success:
+            geniality: 2
+      fumble:
+        discard: true
+        lose_card_geniality: true
+    discard_if: interact with another woman
+    finish: petition lady's lord
   tags:
     - "keep"
+  text: "Keep this card until you interact with another woman. You cannot draw cards while you keep this one. Each round, make one Flirting or Romance roll."
   full: |
     Keep this card until you interact with another woman. You cannot draw cards while you keep this one. Each round, make one Flirting or Romance roll.
 
@@ -578,8 +963,23 @@
     At the end of the feast, if you still have this card, you may petition the lady's lord for permission.
 "45":
   name: Angry Dogs
+  # TODO(feast-check): Rolled skill not stated (Hunting? Animal Handling?).
+  check:
+    success:
+      text: "No effect"
+    critical:
+      check: hunting
+    failure:
+      geniality: -2
+      check:
+        passion: temperate
+        success:
+          check: temperate
+    fumble:
+      feast: leave
   tags:
     - "leave"
+  text: "The host's dogs bark whenever you come near."
   full: |
     The host's dogs bark whenever you come near.
 
@@ -589,8 +989,20 @@
     FUMBLE: The dogs chase you out of the hall! You depart the feast.
 "46":
   name: Raucous Contest
+  # TODO(feast-check): Number of rival knights is not specified.
+  check:
+    opposed:
+      passion: indulgent
+      versus:
+        unknown: 3d6+2
+      per_rival: {glory: 2}
+    win:
+      glory: 5
+    after:
+      feast: leave
   tags:
     - "leave"
+  text: "Several knights begin a drinking contest."
   full: |
     Several knights begin a drinking contest.
 
@@ -601,6 +1013,14 @@
     All contestants (including the player-knight) are then requested by the steward to depart the feast.
 "47":
   name: Drunken Lout
+  check:
+    passion: forgiving
+    win:
+      geniality: 1
+    oppose: vengeful
+    lose:
+      geniality: -1
+  text: "A drunk knight, dancing clumsily, bumps into you."
   full: |
     A drunk knight, dancing clumsily, bumps into you.
 
@@ -608,6 +1028,14 @@
     VENGEFUL WINS: You bump the lout back and he is knocked to the floor. -1 Geniality.
 "48":
   name: Drunken Lout
+  check:
+    passion: forgiving
+    win:
+      geniality: 1
+    oppose: vengeful
+    lose:
+      geniality: -1
+  text: "A drunk knight, dancing clumsily, bumps into you."
   full: |
     A drunk knight, dancing clumsily, bumps into you.
 
@@ -615,8 +1043,21 @@
     VENGEFUL WINS: You bump the lout back and he is knocked to the floor. -1 Geniality.
 "49":
   name: Emergency
+  # TODO(feast-check): Rolled skill not stated (First Aid? Dexterity?).
+  check:
+    success:
+      glory: 5
+      geniality: 2
+    critical:
+      text: "Small favor from the grateful guest"
+    failure:
+      geniality: -1
+    fumble:
+      geniality: -5
+      feast: leave
   tags:
     - "leave"
+  text: "A guest sitting next to you begins choking on a piece of food."
   full: |
     A guest sitting next to you begins choking on a piece of food.
 
@@ -626,6 +1067,14 @@
     FUMBLE: A series of clumsy efforts might have actually killed the victim, had not another guest intervened. -5 Geniality, and you depart the feast in shame.
 "50":
   name: Excellent Wine
+  check:
+    passion: temperate
+    win:
+      check: temperate
+    oppose: indulgent
+    lose:
+      intoxication: 1
+  text: "A very good wine is served at your table."
   full: |
     A very good wine is served at your table.
 
@@ -633,6 +1082,15 @@
     INDULGENT WINS: Your Intoxication level goes up by one.
 "51":
   name: Faerie Tales
+  # TODO(feast-check): Skill assumed to be Faerie Lore (not named on the card).
+  check:
+    skill: faerie lore
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+      check: flirting
+  text: "Several ladies ask you to tell them something about faeries."
   full: |
     Several ladies ask you to tell them something about faeries.
 
@@ -640,6 +1098,15 @@
     CRITICAL SUCCESS: The ladies laud you as an authority. +2 Geniality. Gain Flirting.
 "52":
   name: Faerie Tales
+  # TODO(feast-check): Skill assumed to be Faerie Lore (not named on the card).
+  check:
+    skill: faerie lore
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+      check: flirting
+  text: "Several ladies ask you to tell them something about faeries."
   full: |
     Several ladies ask you to tell them something about faeries.
 
@@ -647,8 +1114,22 @@
     CRITICAL SUCCESS: The ladies laud you as an authority. +2 Geniality. Gain Flirting.
 "53":
   name: Fashion Disaster
+  # TODO(feast-check): Skill assumed to be Fashion (not named).
+  # TODO(feast-check): Per-round penalty until clothes change is not supported.
+  check:
+    skill: fashion
+    success:
+      geniality: 1
+      optional_change_clothes:
+        check: merciful
+        feast: miss
+    failure:
+      choose:
+        - feast: miss
+        - geniality_per_round: -2
   tags:
     - "miss"
+  text: "Another knight has arrived wearing the same clothing as you."
   full: |
     Another knight has arrived wearing the same clothing as you.
 
@@ -656,22 +1137,42 @@
     FAILURE: His status is higher. You must miss one round to change clothing, or suffer -2 Geniality per round until you do.
 "54":
   name: Generous Host
+  check:
+    seating: 1
+    text: "Move up one seating area for the rest of the feast"
   tags:
     - "host"
+  text: "The host requests your help for one of his other guests."
   full: |
     The host requests your help for one of his other guests.
 
     Move up one seating area and remain there for the rest of the feast.
 "55":
   name: Generous Knight
+  # TODO(feast-check): Precondition (maintenance grade) is not checked by the engine.
+  check:
+    requires:
+      maintenance: [poor, ordinary]
+    accept:
+      maintenance: rich
+      duration: 1 year
+    decline:
+      check: proud
+  text: "A rich and generous knight asks you about your circumstances at home."
   full: |
     A rich and generous knight asks you about your circumstances at home.
 
     If your grade of maintenance is Poor or Ordinary, the knight offers to provide goods and services for you. If you accept, you may live as a Rich knight for the next year. If you decline the offer, gain the Proud trait.
 "56":
   name: Gentle Woman
+  keep:
+    geniality: 2
+    draw: no
+  check:
+    discard_if: forced to change clothing
   tags:
     - "keep"
+  text: "A lady takes a shine to you and helps spruce up some of your clothing."
   full: |
     A lady takes a shine to you and helps spruce up some of your clothing.
 
@@ -682,6 +1183,14 @@
     Discard this card if you are forced to change your clothing.
 "57":
   name: Glory Hound
+  # TODO(feast-check): Player-to-player card theft and discard rules are not implemented.
+  check:
+    discard_other_cards_drawn: true
+    steal_card: another player
+    cost:
+      geniality: -1
+      check: reckless
+  text: "Why do your friends get all the good opportunities? Not this time."
   full: |
     Why do your friends get all the good opportunities? Not this time.
 
@@ -690,8 +1199,19 @@
     You may look at each other player's cards before any cards are played this round. Choose one card from among theirs. You may play that card as if you had drawn it yourself. If you do, lose 1 Geniality and gain the Reckless trait.
 "58":
   name: God(s) Shine On You
+  keep:
+    draw: no
+  check:
+    keep:
+      bonus: {skills: [courtesy, dancing, flirting, orate], value: 5}
+      on_success: {skills: [courtesy, dancing, flirting, orate], geniality: 1}
+      on_use:
+        passion: spiritual
+        failure:
+          discard: true
   tags:
     - "keep"
+  text: "The power(s) above shine upon you, and everyone sees you in a different light."
   full: |
     The power(s) above shine upon you, and everyone sees you in a different light.
 
@@ -702,8 +1222,18 @@
     You cannot draw cards while you keep this one.
 "59":
   name: Gossip
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Awareness?).
+  check:
+    success:
+      keep: {draw: no}
+      bonus: {skill: any, value: 10, uses: 1}
+      then: discard
+    fumble:
+      discard: true
+      geniality: -2
   tags:
     - "keep"
+  text: "You overhear some interesting conversation."
   full: |
     You overhear some interesting conversation.
 
@@ -711,8 +1241,18 @@
     FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "60":
   name: Gossip
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Awareness?).
+  check:
+    success:
+      keep: {draw: no}
+      bonus: {skill: any, value: 10, uses: 1}
+      then: discard
+    fumble:
+      discard: true
+      geniality: -2
   tags:
     - "keep"
+  text: "You overhear some interesting conversation."
   full: |
     You overhear some interesting conversation.
 
@@ -720,8 +1260,18 @@
     FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "61":
   name: Gossip
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Awareness?).
+  check:
+    success:
+      keep: {draw: no}
+      bonus: {skill: any, value: 10, uses: 1}
+      then: discard
+    fumble:
+      discard: true
+      geniality: -2
   tags:
     - "keep"
+  text: "You overhear some interesting conversation."
   full: |
     You overhear some interesting conversation.
 
@@ -729,6 +1279,20 @@
     FUMBLE: You have misheard something and repeated it as truth. Discard this card immediately and lose 2 Geniality.
 "62":
   name: Great Deeds
+  # TODO(feast-check): Unclear whether the FUMBLE applies only to Proud's Orate roll or also to the Modest side (modelled under Proud).
+  check:
+    passion: modest
+    win:
+      glory: 5
+    oppose: proud
+    lose:
+      check:
+        skill: orate
+        success:
+          glory: 10
+        fumble:
+          geniality: -4
+  text: "Several knights ask you to tell of your great deeds."
   full: |
     Several knights ask you to tell of your great deeds.
 
@@ -738,6 +1302,20 @@
     FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "63":
   name: Great Deeds
+  # TODO(feast-check): Unclear whether the FUMBLE applies only to Proud's Orate roll or also to the Modest side (modelled under Proud).
+  check:
+    passion: modest
+    win:
+      glory: 5
+    oppose: proud
+    lose:
+      check:
+        skill: orate
+        success:
+          glory: 10
+        fumble:
+          geniality: -4
+  text: "Several knights ask you to tell of your great deeds."
   full: |
     Several knights ask you to tell of your great deeds.
 
@@ -747,6 +1325,20 @@
     FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "64":
   name: Great Deeds
+  # TODO(feast-check): Unclear whether the FUMBLE applies only to Proud's Orate roll or also to the Modest side (modelled under Proud).
+  check:
+    passion: modest
+    win:
+      glory: 5
+    oppose: proud
+    lose:
+      check:
+        skill: orate
+        success:
+          glory: 10
+        fumble:
+          geniality: -4
+  text: "Several knights ask you to tell of your great deeds."
   full: |
     Several knights ask you to tell of your great deeds.
 
@@ -756,6 +1348,19 @@
     FUMBLE: You tell it all wrong; the knights laugh heartily. -4 Geniality.
 "65":
   name: Gwyddbwyll
+  # TODO(feast-check): 'Gain Gaming trait' - Gaming is a skill; interpreted as a check mark on Gaming.
+  check:
+    opposed:
+      skill: gaming
+      versus:
+        unknown: 3d6
+    success:
+      check: gaming
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -1
+  text: "Another knight offers you a game of Gwyddbwyll."
   full: |
     Another knight offers you a game of Gwyddbwyll.
 
@@ -765,8 +1370,21 @@
     FUMBLE: You play poorly and people whisper about your competence. -1 Geniality.
 "66":
   name: Help Needed
+  keep:
+    geniality: 2
+    draw: no
+  check:
+    roll: 1d6
+    relation:
+      1-2: daughter
+      3-4: wife
+      5-6: sister
+    discard_willingly:
+      geniality: -2
+    free_discard_on: host card
   tags:
     - "keep"
+  text: "A knight asks your assistance. He urgently needs to leave and asks you to entertain a lady relative."
   full: |
     A knight asks your assistance. He urgently needs to leave and asks you to entertain a lady relative.
 
@@ -777,8 +1395,17 @@
     You may discard this card without penalty if you draw a Host card, as you have reason to leave the lady. You cannot draw cards while you keep this one.
 "67":
   name: Holy Blessing
+  # TODO(feast-check): Automatic success on any later roll is not implemented.
+  keep:
+    draw: no
+  check:
+    keep:
+      auto_success: {uses: 1}
+    at_end:
+      glory: 15
   tags:
     - "keep"
+  text: "It seems you are blessed by higher powers."
   full: |
     It seems you are blessed by higher powers.
 
@@ -789,8 +1416,17 @@
     If you still have this card at the end of the feast, gain 15 Glory.
 "68":
   name: Holy Blessing
+  # TODO(feast-check): Automatic success on any later roll is not implemented.
+  keep:
+    draw: no
+  check:
+    keep:
+      auto_success: {uses: 1}
+    at_end:
+      glory: 15
   tags:
     - "keep"
+  text: "It seems you are blessed by higher powers."
   full: |
     It seems you are blessed by higher powers.
 
@@ -801,6 +1437,15 @@
     If you still have this card at the end of the feast, gain 15 Glory.
 "69":
   name: How's the Wine
+  # TODO(feast-check): Rolled skill not stated.
+  check:
+    success:
+      check: courtesy
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "You are asked to comment on the wine."
   full: |
     You are asked to comment on the wine.
 
@@ -809,8 +1454,17 @@
     FUMBLE: Other guests find your comments boorish. -2 Geniality.
 "70":
   name: Inflamed Passions
+  check:
+    passion: prudent
+    win:
+      geniality: 1
+    oppose: reckless
+    lose:
+      geniality: -1
+      feast: duel
   tags:
     - "duel"
+  text: "Talk at your table becomes quite heated."
   full: |
     Talk at your table becomes quite heated.
 
@@ -818,8 +1472,20 @@
     RECKLESS WINS: You voice your opinion and are challenged to a duel. -1 Geniality.
 "71":
   name: Insult to a Lady
+  # TODO(feast-check): Rolled skill not stated (Orate? Courtesy?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    failure:
+      geniality: -1
+      feast: duel
+    fumble:
+      geniality: -3
   tags:
     - "duel"
+  text: "You witness a knight insulting a lady and rise up in her defense."
   full: |
     You witness a knight insulting a lady and rise up in her defense.
 
@@ -829,8 +1495,17 @@
     FUMBLE: The knight laughs in your face. -3 Geniality.
 "72":
   name: Insult to a Serving Girl
+  check:
+    passion: just
+    win:
+      bonus: {skill: indulgent, value: 5, scope: feast}
+      geniality: 2
+    oppose: arbitrary
+    lose:
+      check: indulgent
   tags:
     - "duel"
+  text: "A knight slaps a serving girl. You see others turn away in embarrassment."
   full: |
     A knight slaps a serving girl. You see others turn away in embarrassment.
 
@@ -838,6 +1513,15 @@
     ARBITRARY WINS: You ignore the situation and turn away. Gain Indulgent trait.
 "73":
   name: Introductions
+  # TODO(feast-check): Rolled skill not stated (Courtesy? Intrigue?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "A famous knight from outside the area asks if you would introduce him to some guests."
   full: |
     A famous knight from outside the area asks if you would introduce him to some guests.
 
@@ -846,9 +1530,16 @@
     FUMBLE: You forget names you know well. -2 Geniality.
 "74":
   name: Juicy Tales
+  check:
+    feast: miss
+    keep:
+      use_later:
+        - avoid_geniality_penalty
+        - bonus: {skill: intrigue, value: 5}
   tags:
     - "keep"
     - "miss"
+  text: "A guest has some juicy tales to tell about the host or another significant guest."
   full: |
     A guest has some juicy tales to tell about the host or another significant guest.
 
@@ -857,8 +1548,19 @@
     In a subsequent round you may discard this card to avoid the Geniality penalty imposed by another card or to gain +5 to any Intrigue roll.
 "75":
   name: Keep Dancing
+  check:
+    skill: dancing
+    success:
+      check: flirting
+    critical:
+      geniality: 1
+    failure:
+      choose:
+        - keep_and_replay: true
+        - geniality: -2
   tags:
     - "keep"
+  text: "You are invited to dance."
   full: |
     You are invited to dance.
 
@@ -867,8 +1569,17 @@
     FAILURE: You may keep this card until the next round and play it again instead of drawing a card. If you do not, -2 Geniality.
 "76":
   name: King of the Beam
+  # TODO(feast-check): The 'must draw / cannot play other keepers' restriction is not enforced.
+  check:
+    glory: 10
+    geniality: 3
+    keep:
+      must_draw: true
+      discard_other_keepers: true
+      no_other_keepers: true
   tags:
     - "keep"
+  text: "You are selected to be the lead character for this feast's disguising (King of the Bean, Cupid's cherub, the Great White Stag, etc.)."
   full: |
     You are selected to be the lead character for this feast's disguising (King of the Bean, Cupid's cherub, the Great White Stag, etc.).
 
@@ -879,8 +1590,18 @@
     While you have King of the Bean, you cannot play another keeper card.
 "77":
   name: Ladies Quarrel
+  check:
+    passion: just
+    win:
+      geniality: 2
+    oppose: arbitrary
+    lose:
+      roll: 1d6
+      on: 6
+      challenge: contest_or_duel
   tags:
     - "duel"
+  text: "Two ladies are quarreling and the situation is becoming awkward."
   full: |
     Two ladies are quarreling and the situation is becoming awkward.
 
@@ -888,8 +1609,21 @@
     ARBITRARY WINS: You side with one lady. Roll 1d6; on a 6 an angry husband or male friend of the other lady challenges you to a contest or duel (GM's choice).
 "78":
   name: Lady in Distress
+  # TODO(feast-check): Rolled skill not stated (Courtesy? Orate?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    failure:
+      challenge: duel_optional
+      if_challenged:
+        check: proud
+    fumble:
+      challenge: duel
   tags:
     - "duel"
+  text: "You notice a lady trying to avoid an amorous knight."
   full: |
     You notice a lady trying to avoid an amorous knight.
 
@@ -899,6 +1633,16 @@
     FUMBLE: The knight challenges you to a duel for your trouble.
 "79":
   name: Lead the Dance
+  check:
+    skill: dancing
+    success:
+      geniality: 1
+      check: dancing
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "A lady is picked to lead the next dance; you are chosen to join her."
   full: |
     A lady is picked to lead the next dance; you are chosen to join her.
 
@@ -907,8 +1651,17 @@
     FUMBLE: You step on someone's toes. -2 Geniality.
 "80":
   name: May We Dance?
+  check:
+    skill: dancing
+    success:
+      geniality: 1
+    critical:
+      keep:
+        geniality: 1
+        until: interact with another woman
   tags:
     - "keep"
+  text: "A lady praises your dancing."
   full: |
     A lady praises your dancing.
 
@@ -916,8 +1669,17 @@
     CRITICAL SUCCESS: She is impressed and stays with you. Keep this card until you interact with another woman. While you keep it, gain +1 Geniality per round.
 "81":
   name: Lost Child
+  check:
+    passion: merciful
+    win:
+      feast: miss
+      geniality: 2
+    oppose: cruel
+    lose:
+      check: cruel
   tags:
     - "miss"
+  text: "A child tugs at your clothes and implores you for help in finding his or her parents."
   full: |
     A child tugs at your clothes and implores you for help in finding his or her parents.
 
@@ -925,8 +1687,18 @@
     CRUEL WINS: You send the child to the steward. Gain Cruel trait.
 "82":
   name: Lost Love
+  # TODO(feast-check): Tag 'duel' does not match the card text (no duel) - check tags.
+  check:
+    passion: merciful
+    win:
+      geniality: 1
+      penalty: {skills: [courtesy, dancing, flirting, orate], value: -5, scope: next round}
+    oppose: cruel
+    lose:
+      geniality: -2
   tags:
     - "duel"
+  text: "A weeping knight bemoans his lost love."
   full: |
     A weeping knight bemoans his lost love.
 
@@ -934,8 +1706,21 @@
     CRUEL WINS: You mock his loss and he leaves the feast. Others look on in pity. -2 Geniality.
 "83":
   name: Malicious Slander
+  # TODO(feast-check): Tag 'leave' does not match the card text - check tags.
+  check:
+    passion: modest
+    win:
+      geniality: 2
+      check: modest
+    oppose: proud
+    lose:
+      geniality: -2
+      choose:
+        - challenge: duel
+        - honor: -1
   tags:
     - "leave"
+  text: "A knight unfairly criticizes you within earshot."
   full: |
     A knight unfairly criticizes you within earshot.
 
@@ -943,8 +1728,16 @@
     PROUD WINS: You scuffle with the knight and the steward has to pull you apart. -2 Geniality. You may challenge the knight to a duel. If you don't, lose 1 Honor.
 "84":
   name: Tipsy
+  # TODO(feast-check): Rolled trait not stated; Temperate assumed.
+  check:
+    passion: temperate
+    success:
+      bonus: {skill: temperate, value: 5, scope: next round}
+    fumble:
+      feast: leave
   tags:
     - "leave"
+  text: "You keep forgetting your manners. Is it the drink?"
   full: |
     You keep forgetting your manners. Is it the drink?
 
@@ -952,8 +1745,19 @@
     FUMBLE: You've nearly embarrassed yourself and it's time to retire. Depart the feast.
 "85":
   name: Manners!
+  # TODO(feast-check): Rolled skill not stated (Courtesy?).
+  check:
+    success:
+      text: "No effect"
+    critical:
+      geniality: 1
+    failure:
+      text: "People around you disapprove"
+    fumble:
+      feast: miss
   tags:
     - "miss"
+  text: "You unexpectedly pass wind while the host or an important guest is speaking."
   full: |
     You unexpectedly pass wind while the host or an important guest is speaking.
 
@@ -963,6 +1767,14 @@
     FUMBLE: That wasn't just wind. You leave to change clothes. Miss the next round.
 "86":
   name: Mead
+  check:
+    passion: temperate
+    win:
+      geniality: 1
+    oppose: indulgent
+    lose:
+      intoxication: 1
+  text: "A large keg of fine mead is brought in and opened."
   full: |
     A large keg of fine mead is brought in and opened.
 
@@ -970,9 +1782,22 @@
     INDULGENT WINS: Your intoxication increases one level.
 "87":
   name: Regale the Host
+  # TODO(feast-check): Skill assumed to be Orate (story).
+  check:
+    skill: orate
+    success:
+      geniality: 1
+    critical:
+      geniality: 3
+      keep:
+        must_play_again: true
+        bonus: {skill: orate, value: 5}
+    fumble:
+      host_cards: banned
   tags:
     - "keep"
     - "host"
+  text: "You are asked to entertain the high table with a story."
   full: |
     You are asked to entertain the high table with a story.
 
@@ -982,8 +1807,19 @@
     FUMBLE: The host shows displeasure at your poor story. You may not play any Host cards for the remainder of the feast.
 "88":
   name: Meet the Host
+  # TODO(feast-check): Rolled skill not stated ('your expertise').
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    failure:
+      geniality: -1
+    fumble:
+      host_cards: banned
   tags:
     - "host"
+  text: "The host has heard of your puissance and wishes to quiz you on your expertise."
   full: |
     The host has heard of your puissance and wishes to quiz you on your expertise.
 
@@ -993,6 +1829,16 @@
     FUMBLE: You make a fool of yourself. You may not play any Host cards for the remainder of the feast.
 "89":
   name: Mercy, Milord
+  # TODO(feast-check): Opposing passion is 'Hate (foe)' - confirm.
+  check:
+    passion: merciful
+    win:
+      geniality: 1
+      check: merciful
+    oppose: hate
+    lose:
+      geniality: -2
+  text: "Several ladies ask you how merciful you would be if confronted with your hated foe."
   full: |
     Several ladies ask you how merciful you would be if confronted with your hated foe.
 
@@ -1000,6 +1846,18 @@
     HATE WINS: Your violent ways offend the ladies. -2 Geniality.
 "90":
   name: Minstrels Sing
+  # TODO(feast-check): Usable skills (Singing/Play) are a guess.
+  check:
+    choose:
+      - singing
+      - play
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "The minstrels play a rousing song, and you feel like joining in the merriment."
   full: |
     The minstrels play a rousing song, and you feel like joining in the merriment.
 
@@ -1008,6 +1866,17 @@
     FUMBLE: Out of tune, out of time. -2 Geniality.
 "91":
   name: Mistaken Identity
+  check:
+    passion: modest
+    win:
+      check:
+        skill: courtesy
+        success:
+          geniality: 1
+    oppose: deceitful
+    lose:
+      check: deceitful
+  text: "A knight mistakes you for another. He praises you for deeds you did not perform."
   full: |
     A knight mistakes you for another. He praises you for deeds you did not perform.
 
@@ -1016,48 +1885,100 @@
     DECEITFUL WINS: You accept his praise. Gain Deceitful trait.
 "92":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "93":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "94":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "95":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "96":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "97":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "98":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "99":
   name: More Drink
+  # TODO(feast-check): Effects come from Table 2.2 of The Book of Feasts - not transcribed.
+  mandatory: indulgent
+  check:
+    table: "Book of Feasts, Table 2.2"
+  text: "Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll."
   full: |
     Refer to Table 2.2 in The Book of Feasts for the effects of the Indulgent roll.
     Mandatory (Indulgent 16+)
 "100":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1066,8 +1987,20 @@
     Mandatory (Indulgent 16+)
 "101":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1076,8 +2009,20 @@
     Mandatory (Indulgent 16+)
 "102":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1086,8 +2031,20 @@
     Mandatory (Indulgent 16+)
 "103":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1096,8 +2053,20 @@
     Mandatory (Indulgent 16+)
 "104":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1106,8 +2075,20 @@
     Mandatory (Indulgent 16+)
 "105":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1116,8 +2097,20 @@
     Mandatory (Indulgent 16+)
 "106":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1126,8 +2119,20 @@
     Mandatory (Indulgent 16+)
 "107":
   name: More Food
+  mandatory: indulgent
+  check:
+    passion: temperate
+    win:
+      text: "No effect"
+    oppose: indulgent
+    lose:
+      check:
+        stat: constitution
+        failure:
+          feast: miss
   tags:
     - "miss"
+  text: "Another platter of food is brought out."
   full: |
     Another platter of food is brought out.
 
@@ -1136,8 +2141,15 @@
     Mandatory (Indulgent 16+)
 "108":
   name: New Friends
+  check:
+    keep:
+      bonus: {skills: [courtesy, dancing, flirting, orate], value: 5}
+      discard_on: [host card, mandatory card]
+      at_end:
+        gift: 1 pound
   tags:
     - "keep"
+  text: "A knight asks to be introduced to your friends. He is alone and seeks good company."
   full: |
     A knight asks to be introduced to your friends. He is alone and seeks good company.
 
@@ -1148,6 +2160,16 @@
     If you have this card at the end of the feast, the knight is grateful and gives you a gift worth £1.
 "109":
   name: Old Friends
+  # TODO(feast-check): Rolled skill not stated.
+  # TODO(feast-check): 'Love (Family) and Hospitality +2 Geniality' wording is unclear.
+  check:
+    success:
+      accept:
+        geniality: 2
+        cost: {pound_per_year: 3, years: 1d6}
+      decline:
+        check: prudent
+  text: "An older knight who was a friend of your father tells you some good stories."
   full: |
     An older knight who was a friend of your father tells you some good stories.
 
@@ -1158,9 +2180,18 @@
     If you decline, gain the Prudent trait.
 "110":
   name: Oops!
+  # TODO(feast-check): Rolled skill not stated (Dexterity?).
+  check:
+    success:
+      geniality: 1
+    failure:
+      keep:
+        geniality: -3
+        discard_by: miss one round
   tags:
     - "miss"
     - "keep"
+  text: "A serving girl drops a platter of food all over you."
   full: |
     A serving girl drops a platter of food all over you.
 
@@ -1168,8 +2199,16 @@
     FAILURE: Keep this card. While you do, -3 Geniality per round. If you miss one round to clean up, you may discard this card.
 "111":
   name: Overindulgence
+  # TODO(feast-check): Rolled skill not stated (Temperate? Constitution?).
+  check:
+    failure:
+      feast: miss
+    fumble:
+      feast: miss
+      geniality: -4
   tags:
     - "miss"
+  text: "You've had too much to drink. Your stomach is uneasy and your head is spinning."
   full: |
     You've had too much to drink. Your stomach is uneasy and your head is spinning.
 
@@ -1177,9 +2216,14 @@
     FUMBLE: You embarrass yourself and need to change your clothes. Miss the next round and lose 4 Geniality.
 "112":
   name: Pagana Gift
+  check:
+    winter:
+      unmarried: {horse_survival: 3}
+      married: {child_survival: 3}
   tags:
     - "pagan"
     - "winter"
+  text: "A local witch (or pagan) approaches you and grants you a gift."
   full: |
     A local witch (or pagan) approaches you and grants you a gift.
 
@@ -1187,8 +2231,16 @@
     If you are married, gain a +3 on all child survival rolls this Winter Phase.
 "113":
   name: Pagan Pleasures
+  check:
+    passion: spiritual
+    win:
+      bonus: {skill: indulgent, value: 1d6, scope: next round}
+    oppose: worldly
+    lose:
+      check: worldly
   tags:
     - "pagan"
+  text: "A bard sings of the pleasures of feasting."
   full: |
     A bard sings of the pleasures of feasting.
 
@@ -1196,6 +2248,15 @@
     WORLDLY WINS: “I do what I want!” Gain Worldly trait.
 "114":
   name: Passing Praise
+  # TODO(feast-check): Rolled skill not stated.
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    fumble:
+      geniality: -2
+  text: "The hostess of the feast passes by and comments on your looks."
   full: |
     The hostess of the feast passes by and comments on your looks.
 
@@ -1204,8 +2265,19 @@
     FUMBLE: Her words are cruel. You might remind her of someone she despises. -2 Geniality.
 "115":
   name: Passion
+  # TODO(feast-check): Rolled passion/skill and which Passion is gained are not specified.
+  check:
+    success:
+      check: passion
+    failure:
+      reduce_passion: 1
+      alternative:
+        if_knight: {roll: 1d6, on: 1-3}
+        challenge: duel
+        check: proud
   tags:
     - "duel"
+  text: "During a conversation, a fellow guest says you lack passion."
   full: |
     During a conversation, a fellow guest says you lack passion.
 
@@ -1213,8 +2285,19 @@
     FAILURE: Perhaps they're right. Reduce the Passion by 1 point. If you are speaking to a knight (roll 1d6: 1-3), you may instead challenge him to a duel. Gain Proud trait.
 "116":
   name: People Skills
+  # TODO(feast-check): Rolled skill/trait not stated.
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+      text: "Bottle of the house's best wine"
+    fumble:
+      winter:
+        income: -1
   tags:
     - "winter"
+  text: "Your reputation for nobility is noted."
   full: |
     Your reputation for nobility is noted.
 
@@ -1223,14 +2306,27 @@
     FUMBLE: Word spreads among the commoners of your ill-considered ways. Lose £1 of income this Winter Phase as they conceal render from you.
 "117":
   name: Personal Valet
+  check:
+    hire:
+      cost: {pound_per_year: 1}
+      fashion: 2d6+4
+  text: "A knight says he hired a personal valet, but sadly he cannot afford the boy any longer."
   full: |
     A knight says he hired a personal valet, but sadly he cannot afford the boy any longer.
 
     You may hire the boy as a valet if you wish for £1 per year. If you do, the valet has a Fashion Skill of 2d6 + 4. As long as he remains in your employ, you may substitute his Fashion Skill for your own.
 "118":
   name: Popular
+  # TODO(feast-check): Tag is 'duel' but the card is a keeper - the 'keep' tag is missing; tag not changed.
+  keep:
+    geniality: 2
+  check:
+    discard_on:
+      - {passion: proud, result: success}
+      - {passion: modest, result: failure}
   tags:
     - "duel"
+  text: "You are popular tonight. Everyone seems drawn to you."
   full: |
     You are popular tonight. Everyone seems drawn to you.
 
@@ -1239,6 +2335,14 @@
     If you roll a success on Proud or a failure on Modest, you must discard this card. The adulation begins to go to your head.
 "119":
   name: Quarreling Knights
+  check:
+    passion: just
+    win:
+      geniality: 1
+    oppose: arbitrary
+    lose:
+      text: "The offended knight will not forget the slight"
+  text: "Two knights are arguing and it is getting out of hand."
   full: |
     Two knights are arguing and it is getting out of hand.
 
@@ -1246,9 +2350,19 @@
     ARBITRARY WINS: You side with one knight. The offended knight promises he won't forget the slight.
 "120":
   name: Queasy
+  check:
+    choose:
+      - feast: miss
+      - check:
+          stat: constitution
+          failure:
+            feast: leave
+          fumble:
+            feast: leave
   tags:
     - "miss"
     - "leave"
+  text: "You may miss one round to go get some fresh air. If you do not, you must roll Constitution."
   full: |
     You may miss one round to go get some fresh air. If you do not, you must roll Constitution.
 
@@ -1256,9 +2370,19 @@
     FUMBLE: You throw up in the hall and are escorted out by the stewards, departing the feast.
 "121":
   name: Queasy
+  check:
+    choose:
+      - feast: miss
+      - check:
+          stat: constitution
+          failure:
+            feast: leave
+          fumble:
+            feast: leave
   tags:
     - "miss"
     - "leave"
+  text: "You may miss one round to go get some fresh air. If you do not, you must roll Constitution."
   full: |
     You may miss one round to go get some fresh air. If you do not, you must roll Constitution.
 
@@ -1266,8 +2390,17 @@
     FUMBLE: You throw up in the hall and are escorted out by the stewards, departing the feast.
 "122":
   name: Romance
+  check:
+    skill: romance
+    success:
+      geniality: 2
+    critical:
+      geniality: 2
+      keep:
+        bonus_vs_lady_test: 5
   tags:
     - "keep"
+  text: "Some guests converse about love. They want to know how you would win the heart of a lady."
   full: |
     Some guests converse about love. They want to know how you would win the heart of a lady.
 
@@ -1275,6 +2408,18 @@
     CRITICAL SUCCESS: +2 Geniality and keep this card. If you draw a test card involving a lady, you may discard this card for a +5 bonus on the related test.
 "123":
   name: Safekeeping
+  # TODO(feast-check): Passion pair (Trusting vs Suspicious) is as written; confirm names exist in the character data.
+  check:
+    passion: trusting
+    win:
+      check: honest
+    oppose: suspicious
+    lose:
+      check:
+        skill: courtesy
+        failure:
+          geniality: -1
+  text: "A knight asks you to keep a piece of jewelry safe for him."
   full: |
     A knight asks you to keep a piece of jewelry safe for him.
 
@@ -1283,8 +2428,18 @@
     FAILURE: Your insinuation is insulting! -1 Geniality.
 "124":
   name: Sage Advice
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Orate?).
+  check:
+    success:
+      geniality: 2
+    critical:
+      glory: 10
+      text: "The host's favor"
+    fumble:
+      geniality: -4
   tags:
     - "host"
+  text: "The host seeks your counsel about some problems with another knight or lord."
   full: |
     The host seeks your counsel about some problems with another knight or lord.
 
@@ -1293,8 +2448,19 @@
     FUMBLE: Nonsense. Are we talking about the same man? -4 Geniality.
 "125":
   name: Secret Dish
+  # TODO(feast-check): Card text says 'TEMPERATE SUCCESS' / 'INDULGENT SUCCESS' (not 'WINS') - confirm the roll type.
+  check:
+    passion: temperate
+    success:
+      others_same_area:
+        geniality: 1
+        loyalty: {order: 1}
+    oppose: indulgent
+    lose:
+      feast: miss
   tags:
     - "miss"
+  text: "A platter of your favorite food is served nearby."
   full: |
     A platter of your favorite food is served nearby.
 
@@ -1302,6 +2468,21 @@
     INDULGENT SUCCESS: You stuff your face. Miss the next round.
 "126":
   name: Show of Strength
+  check:
+    opposed:
+      stat: str
+      versus:
+        unknown: 3d6+3
+      on_tie: reroll
+    win:
+      glory: 10
+    critical:
+      glory: 20
+      geniality: 1
+      bonus: {skill: any, value: 5, uses: 1}
+    versus_critical:
+      damage: 1d3
+  text: "Another knight challenges you to a contest of strength."
   full: |
     Another knight challenges you to a contest of strength.
 
@@ -1312,6 +2493,16 @@
     HE GETS A CRITICAL SUCCESS: You take 1d3 damage.
 "127":
   name: Singing Sensation
+  check:
+    skill: singing
+    success:
+      check: singing
+    critical:
+      geniality: 1
+      check: singing
+    fumble:
+      geniality: -2
+  text: "A group of ladies asks you to sing a love song."
   full: |
     A group of ladies asks you to sing a love song.
 
@@ -1320,6 +2511,16 @@
     FUMBLE: You sing so badly the dogs howl. -2 Geniality.
 "128":
   name: A Faux Pas
+  check:
+    passion: merciful
+    win:
+      geniality: 2
+      check: merciful
+    oppose: cruel
+    lose:
+      geniality: 1
+      check: cruel
+  text: "You notice a guest about to take a seat above their station."
   full: |
     You notice a guest about to take a seat above their station.
 
@@ -1327,6 +2528,16 @@
     CRUEL WINS: You laugh with others at the other guest's expense. +1 Geniality. Gain Cruel trait.
 "129":
   name: Something Shiny
+  check:
+    passion: honest
+    win:
+      geniality: 2
+    oppose: deceitful
+    lose:
+      gift: 1 pound
+      if_returned:
+        check: honest
+  text: "You find an expensive piece of jewelry."
   full: |
     You find an expensive piece of jewelry.
 
@@ -1334,6 +2545,18 @@
     DECEITFUL WINS: You may keep the trinket (worth £1). If you return it anyway, gain Honest trait.
 "130":
   name: Stewardship
+  # TODO(feast-check): 'STEWARDSHIP WINS / ORATE WINS' = comparison of the player's own two skills - confirm.
+  check:
+    compare:
+      - skill: stewardship
+        win:
+          check: stewardship
+      - skill: orate
+        win:
+          check_if:
+            rich: proud
+            otherwise: deceitful
+  text: "Some knights are talking about the management of their estates."
   full: |
     Some knights are talking about the management of their estates.
 
@@ -1341,6 +2564,17 @@
     ORATE WINS: You boast about your estate and how it makes you a rich man. Gain Proud trait (if you are indeed Rich), or Deceitful trait (if Ordinary or worse).
 "131":
   name: Story Request
+  # TODO(feast-check): Rolled skill not stated (Orate?).
+  check:
+    success:
+      geniality: 2
+    critical:
+      geniality: 3
+    failure:
+      geniality: -2
+    fumble:
+      geniality: -5
+  text: "A lady requests you tell a story of your daring skills."
   full: |
     A lady requests you tell a story of your daring skills.
 
@@ -1350,10 +2584,26 @@
     FUMBLE: You make a fool of yourself. She laughs and tells her friends. -5 Geniality.
 "132":
   name: Strange Crone
+  check:
+    choose:
+      - weapon skill
+      - folk lore
+      - orate
+    success:
+      check: chosen skill
+  text: "An old woman speaks aloud with an odd observation about your features. Choose a weapon Skill, or else choose Folk Lore or Orate. Roll on the chosen Skill. On a success, gain the Skill."
   full: |
     An old woman speaks aloud with an odd observation about your features. Choose a weapon Skill, or else choose Folk Lore or Orate. Roll on the chosen Skill. On a success, gain the Skill.
 "133":
   name: The Best Weapon
+  # TODO(feast-check): Rolled skill not stated; which weapon skill is gained is open.
+  check:
+    success:
+      geniality: 1
+      check: weapon
+    critical:
+      geniality: 2
+  text: "Several knights are arguing about their favorite weapons."
   full: |
     Several knights are arguing about their favorite weapons.
 
@@ -1361,8 +2611,15 @@
     CRITICAL SUCCESS: The knights are impressed and want to learn more, sparring with you tomorrow. +2 Geniality.
 "134":
   name: Host Calls for a Dance
+  # TODO(feast-check): Card name says 'Dance' but the text is about a hunt/falconry (duplicate of 135) - likely a data error.
+  check:
+    accept:
+      bonus: {choose: [falconry, hunting], value: 1}
+    decline:
+      geniality: -3
   tags:
     - "host"
+  text: "The host asks you and your friends to join him in a hunt or at falconry the day after the feast."
   full: |
     The host asks you and your friends to join him in a hunt or at falconry the day after the feast.
 
@@ -1370,8 +2627,14 @@
     A character may decline this offer, but suffers -3 Geniality.
 "135":
   name: Host Calls for a Hunt
+  check:
+    accept:
+      bonus: {choose: [falconry, hunting], value: 1}
+    decline:
+      geniality: -3
   tags:
     - "host"
+  text: "The host asks you and your friends to join him in a hunt or at falconry the day after the feast."
   full: |
     The host asks you and your friends to join him in a hunt or at falconry the day after the feast.
 
@@ -1379,8 +2642,23 @@
     A character may decline this offer, but suffers -3 Geniality.
 "136":
   name: Host Calls for a Song
+  # TODO(feast-check): Rolled skill not stated (Singing?). 'Partial success' is not defined elsewhere.
+  check:
+    choose:
+      - singing
+      - play
+    partial:
+      geniality: 1
+    success:
+      geniality: 2
+    critical:
+      geniality: 3
+      check: singing
+    fumble:
+      geniality: -4
   tags:
     - "host"
+  text: "The host rises and calls for everyone to join him in a song."
   full: |
     The host rises and calls for everyone to join him in a song.
 
@@ -1390,8 +2668,20 @@
     FUMBLE: You mumble along, off-key. -4 Geniality.
 "137":
   name: Host Calls for a Toast
+  # TODO(feast-check): Rolled skill not stated (Courtesy? Orate?). 'Partial success' is not defined elsewhere.
+  check:
+    partial:
+      geniality: 1
+    success:
+      geniality: 2
+    critical:
+      geniality: 3
+      check: courtesy
+    fumble:
+      geniality: -4
   tags:
     - "host"
+  text: "The host calls for a toast."
   full: |
     The host calls for a toast.
 
@@ -1401,8 +2691,20 @@
     FUMBLE: Other guests glower at your impropriety. -4 Geniality.
 "138":
   name: Host Calls for a Toast
+  # TODO(feast-check): Rolled skill not stated (Courtesy? Orate?). 'Partial success' is not defined elsewhere.
+  check:
+    partial:
+      geniality: 1
+    success:
+      geniality: 2
+    critical:
+      geniality: 3
+      check: courtesy
+    fumble:
+      geniality: -4
   tags:
     - "host"
+  text: "The host calls for a toast."
   full: |
     The host calls for a toast.
 
@@ -1412,8 +2714,20 @@
     FUMBLE: Other guests glower at your impropriety. -4 Geniality.
 "139":
   name: Host Calls for a Toast
+  # TODO(feast-check): Rolled skill not stated (Courtesy? Orate?). 'Partial success' is not defined elsewhere.
+  check:
+    partial:
+      geniality: 1
+    success:
+      geniality: 2
+    critical:
+      geniality: 3
+      check: courtesy
+    fumble:
+      geniality: -4
   tags:
     - "host"
+  text: "The host calls for a toast."
   full: |
     The host calls for a toast.
 
@@ -1424,6 +2738,16 @@
 "140":
   name: Host Passes By
   geniality: 1
+  # TODO(feast-check): Rolled skill not stated (Orate? Courtesy?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    failure:
+      geniality: -1
+    fumble:
+      geniality: -2
   tags:
     - "host"
   text: "The host comes by and speaks with you about a topic dear to your heart."
@@ -1437,6 +2761,16 @@
 "141":
   name: Host Passes By
   geniality: 1
+  # TODO(feast-check): Rolled skill not stated (Orate? Courtesy?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 2
+    failure:
+      geniality: -1
+    fumble:
+      geniality: -2
   tags:
     - "host"
   text: "The host passes by your table, offering a gracious nod and warm smile. His favor is brief but noticeable — an opportunity for a courteous exchange or a subtle request for attention."
@@ -1449,8 +2783,19 @@
     FUMBLE: He vehemently disagrees with you. -2 Geniality.
 "142":
   name: Host Speaks at Length
+  check:
+    passion: energetic
+    win:
+      check:
+        skill: intrigue
+        success:
+          bonus: {skill: intrigue, value: 5, scope: feast}
+    oppose: lazy
+    lose:
+      check: lazy
   tags:
     - "host"
+  text: "The host rises and drones on about the current political environment."
   full: |
     The host rises and drones on about the current political environment.
 
@@ -1459,8 +2804,18 @@
     LAZY WINS: Who cares about politics, anyway? Gain Lazy trait.
 "143":
   name: Host Needs Advice
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Courtesy?).
+  check:
+    success:
+      geniality: 1
+    critical:
+      geniality: 1
+      check: intrigue
+    fumble:
+      geniality: -5
   tags:
     - "host"
+  text: "The hostess desires to speak with you about some problems involving another lady."
   full: |
     The hostess desires to speak with you about some problems involving another lady.
 
@@ -1469,6 +2824,18 @@
     FUMBLE: You manage to insult her. She glowers and stalks away. -5 Geniality.
 "144":
   name: The Merchant of Venom
+  check:
+    passion: modest
+    win:
+      geniality: 1
+      critical:
+        geniality: 2
+    oppose: proud
+    lose:
+      geniality: -1
+      critical:
+        geniality: -3
+  text: "The court jester has singled you out for lampooning."
   full: |
     The court jester has singled you out for lampooning.
 
@@ -1478,6 +2845,14 @@
     CRITICAL (PROUD): You cuff the jester, knocking him to the floor as the hall descends into awkward silence. -3 Geniality.
 "145":
   name: Those Bandits
+  # TODO(feast-check): Rolled skill not stated (Hunting? Tactics?).
+  check:
+    success:
+      check: hunting
+    critical:
+      geniality: 1
+      check: hunting
+  text: "A local knight mentions having trouble with bandits."
   full: |
     A local knight mentions having trouble with bandits.
 
@@ -1485,8 +2860,18 @@
     CRITICAL SUCCESS: You give him some sound advice and he asks you to assist him with the matter in the days following the feast. +1 Geniality and Hunting trait.
 "146":
   name: Time to Share
+  # TODO(feast-check): Giving away a drawn card is not supported by the engine.
+  check:
+    keep:
+      give_cards: true
+      per_card_given:
+        geniality: 1
+      at_end:
+        if_none_given:
+          check: selfish
   tags:
     - "keep"
+  text: "Suddenly your affairs seem inconsequential, and you want your friends to enjoy themselves."
   full: |
     Suddenly your affairs seem inconsequential, and you want your friends to enjoy themselves.
 
@@ -1497,9 +2882,19 @@
     If you do not distribute any cards by the end of the feast, gain the Selfish trait.
 "147":
   name: Tired
+  check:
+    keep:
+      each_round:
+        passion: energetic
+        win:
+          text: "Stay for another round"
+        oppose: lazy
+        lose:
+          feast: leave
   tags:
     - "keep"
     - "leave"
+  text: "You feel exhausted and think about retiring."
   full: |
     You feel exhausted and think about retiring.
 
@@ -1508,8 +2903,20 @@
     LAZY WINS: There will be other opportunities. You say your farewells and depart the feast.
 "148":
   name: Wallflower
+  # TODO(feast-check): Rolled skill not stated (Flirting? Courtesy?).
+  check:
+    skill: flirting
+    success:
+      check: flirting
+    critical:
+      keep:
+        geniality: 1
+        until: [host card, forced departure]
+    fumble:
+      geniality: -3
   tags:
     - "keep"
+  text: "You notice a shy young lady sitting alone."
   full: |
     You notice a shy young lady sitting alone.
 
@@ -1518,8 +2925,19 @@
     FUMBLE: You unwittingly insult your would-be companion. -3 Geniality.
 "149":
   name: Wayward Wife
+  check:
+    passion: honest
+    win:
+      geniality: 2
+    oppose: deceitful
+    lose:
+      optional:
+        feast: miss
+        check: lustful
+        winter: Childbirth
   tags:
     - "winter"
+  text: "Another knight is looking for his wife—who just walked away after propositioning you."
   full: |
     Another knight is looking for his wife—who just walked away after propositioning you.
 
@@ -1527,6 +2945,17 @@
     DECEITFUL WINS: You tell the knight nothing. You may choose to miss the next round of the feast. If you do, gain Lustful trait; roll for childbirth next Winter Phase.
 "150":
   name: Well-Dressed
+  # TODO(feast-check): Skill assumed to be Fashion (not named).
+  check:
+    skill: fashion
+    success:
+      check: fashion
+    critical:
+      check:
+        choose: [fashion, flirting]
+    fumble:
+      geniality: -2
+  text: "A lady passes and comments on your clothing."
   full: |
     A lady passes and comments on your clothing.
 
@@ -1535,6 +2964,16 @@
     FUMBLE: Her unkind comments make others laugh. -2 Geniality.
 "151":
   name: Who Are You?
+  # TODO(feast-check): Rolled skill not stated (Intrigue? Awareness?).
+  check:
+    success:
+      check:
+        skill: intrigue
+        success:
+          glory: 10
+    fumble:
+      geniality: -2
+  text: "An unknown lady asks you to entertain her during the feast."
   full: |
     An unknown lady asks you to entertain her during the feast.
 
@@ -1543,6 +2982,18 @@
     FUMBLE: She is annoyed you blew her cover. -2 Geniality.
 "152":
   name: Who Was That?
+  check:
+    opposed:
+      skill: recognize
+      versus:
+        unknown: 1d6+5
+    win:
+      check: recognize
+    critical:
+      geniality: 1
+    lose:
+      geniality: -2
+  text: "Another knight vies to identify another knight first."
   full: |
     Another knight vies to identify another knight first.
 
@@ -1553,8 +3004,20 @@
     HE WINS: You get it completely wrong. -2 Geniality.
 "153":
   name: Wifely Woes
+  # TODO(feast-check): Precondition (married only) is not enforced by the engine.
+  check:
+    requires: married
+    passion: merciful
+    win:
+      feast: leave
+      check: love wife
+    oppose: selfish
+    lose:
+      geniality: -1
+    unmarried: discard_and_redraw
   tags:
     - "leave"
+  text: "Your wife feels tired and says it is time to depart."
   full: |
     Your wife feels tired and says it is time to depart.
 
@@ -1564,6 +3027,13 @@
     Married only; unmarried knights must discard and draw again.
 "154":
   name: Young Braggarts
+  # TODO(feast-check): Rolled skill not stated (Orate?).
+  check:
+    success:
+      geniality: 1
+    failure:
+      geniality: -1
+  text: "Several young knights are becoming progressively wilder trying to one-up each other."
   full: |
     Several young knights are becoming progressively wilder trying to one-up each other.
 

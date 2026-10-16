@@ -483,23 +483,29 @@ def connectionsByCid(cid):
     return JsonResponse(list, safe=False, json_dumps_params={'ensure_ascii': False})
 
 def feastConfig(request):
-    result = Config.feast()
+    result = dict(Config.feast())  # a copy: the shared config must not get the loginNeeded key
     if Config.authorization:
         result['loginNeeded'] = 'true';
     return JsonResponse(result, safe=False, json_dumps_params={'ensure_ascii': False}) 
  
 @never_cache
 def feast(request):
+    """The latest feast; with an `action` the legacy form calls (new ones: api/feast_views.py). The actions need a
+    session: the host's right, except `roundAction` that a player may call for the character he owns."""
+    from api import feast_views
     feast = FeastTable().get()
-    if feast:
-        f = Feast(feast)
-    else:
-        f = Feast(None)
-        feast = FeastTable().get()
-        f = Feast(feast)
+    if not feast:
+        return JsonResponse({'error': 'No feast yet'}, status=404)  # a feast is created by feast_new
+    f = Feast(feast)
     if( hasattr(request, 'POST') and 'action' in request.POST):
         log.debug("feast action %s", request.POST['action'])
         action = request.POST['action']
+        record = feast_views.session(request)
+        allowed = record is not None and (feast_views.is_admin(record) or (
+            action == 'roundAction' and str(request.POST.get('pid', '')).isdigit()
+            and feast_views.can_act_for(record, int(request.POST['pid']))))
+        if not allowed:
+            return JsonResponse({'error': 'Not allowed'}, status=403)
         if action == 'test':
             f.data['state'] = 'init'
             f.set_rounds(4)

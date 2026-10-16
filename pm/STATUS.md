@@ -3,7 +3,7 @@
 > **Snapshot of the current state.** Overwrite this to keep it accurate — it always
 > describes "now," not history. For history see `documentation/CHANGELOG.md`.
 
-**Last updated:** 2026-10-08 (Task 023 added)
+**Last updated:** 2026-10-09 (Task 024 added)
 **Active branch:** `main` (Tasks 009–011 merged via PR #7/#8)
 **Pushed?** `collab/code-review-and-docs`, `collab/readme`, and `collab/security-hardening`
 are pushed to origin. `collab/bugfixes` is committed locally (not pushed yet). PRs are
@@ -38,6 +38,7 @@ for PRs, the bug-fix branch is committed locally.
 | 019 | Frontend and Express hardening | in-review (production build and server tests in containers; not run in a browser) | behaviour-changing | frontend-hardening | no |
 | 020 | Infra, dependencies, repo hygiene | in-review (verified in containers; not deployed) | behaviour-preserving | infra-and-deps | no |
 | 021 | Performance and logging | in-review (91 tests pass in the 3.12 image with PostgreSQL; not run on a live server) | behaviour-preserving | performance | no |
+| 024 | Feast rules engine and API (Book of Feasts), phases 0, 1, 3, 4 | in-progress (128 backend + 66 frontend tests pass; frontend branch `collab/feast-ui` in AngrySenechal2; not run on a live server) | behaviour-changing | feast-rules | no |
 | 023 | Check results popup (own + current character) | in-review (dev build only; not run live) | behaviour-changing | own-checks | no |
 | 022 | Angular 14 → 22 (frontend repo, branch `collab/angular-15`) | in-review (builds, 18 unit tests, browser smoke test at every major; not seen by a human) | behaviour-preserving (look changes: MDC) | angular-15 | no |
 

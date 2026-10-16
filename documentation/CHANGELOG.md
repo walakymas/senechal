@@ -9,15 +9,29 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
-## 2026-10-08 — Check results popup (Task 023)
+## 2026-10-10 — Feast card data in `feast.yml` (Task 025)
 
-- **Branch:** `collab/own-checks` (+ `AngrySenechal2` working tree)
-- **Type:** behaviour-changing (small)
-- **Summary:** `/checks` returns the latest 10 checks (was 5), unfiltered. The character page opens a result-coloured popup (`CheckResultDialog`) for new rolls/checks of the logged-in user's characters and of the character on the page; other players' rolls stay in the pageable inline list.
-- **Files touched:** `api/views.py`; `AngrySenechal2`: `character-detail.component.ts`, `app.module.ts`.
-- **Icons:** the check result icons are game-icons.net SVGs (`AngrySenechal2/src/assets/icons/`, CC BY 3.0).
-- **Operational impact:** none beyond the larger list.
-- **Risk & rollback:** not run live; `git revert`.
+- **Branch:** `collab/feast-rules`
+- **Type:** behaviour-changing (a few keys are read by the engine)
+- **Summary:** `check:` blocks for cards 10 and 12–154 from their `full` text, `keep:` / `mandatory:` where stated, a short `text:` where missing, and `# TODO(feast-check)` reminders on 94 doubtful cards. Existing fields unchanged.
+- **Files touched:** `feast.yml`; `documentation/feast-cards.md`, `documentation/tasks/025-feast-card-data.md` (new).
+- **Operational impact:** `keep` on cards 37, 44, 56, 58, 66, 67, 68, 118 and `mandatory: indulgent` on 92–107 now affect a feast; `check:` is declarative only.
+- **Left open:** the 94 reminders (mostly: the rolled skill is not named), an engine that evaluates `check:`.
+- **Risk & rollback:** not run in a live feast; `git checkout -- feast.yml`.
+
+---
+
+## 2026-10-09 — Feast rules engine, API and frontend, phases 0, 1, 3, 4 (Task 024)
+
+- **Branch:** `collab/feast-rules` (from `main`)
+- **Type:** behaviour-changing (a running feast)
+- **Summary:** the rules of the Book of Feasts as a pure module (`feast_rules.py`, table in `documentation/feast-rules.md`) and `Feast` built on it: seating by APP result, Geniality per round, activity results, one card per round with base Geniality, Keeper cards, leaving, end-of-feast Glory. Cards are drawn from **1000 Glory inclusive**; Above the Salt, the poor and guests who left cannot draw (server side); `significant` comes from traits (both sides of a pair) and passions. The deck is built from the numeric keys of `feast.yml`. `feastConfig` no longer writes `loginNeeded` into the shared config.
+- **API (phase 3):** new `api/feast_views.py`: `feasts`, `feast_get`, `feast_new`, `feast_next`, `feast_seat`, `feast_app_roll`, `feast_activity`, `feast_requirement`, `feast_roll`, `feast_select_card`, `feast_discard_kept`, `feast_leave`, `feast_return` (table in `documentation/feast-rules.md`). Session token needed; a player acts for his own character, the host for everybody; dice are rolled on the server (`utils.check2`); validation errors are 400/403/404/409 JSON. Legacy `POST /feast` actions need a session (host; `roundAction` also the owner); `GET /feast` no longer creates a feast (404). A Host card now disables the other cards of the round (server side).
+- **Files touched:** `feast_rules.py`, `api/feast_views.py`, `tests/feast_rules_test.py`, `tests/feast_api_test.py`, `documentation/feast-rules.md` (new); `feast.py`, `api/views.py`, `api/app.py`; task file.
+- **Operational impact:** the backend and the `collab/feast-ui` frontend must be deployed together (the old feast page cannot run the feast any more); old records get default fields on load.
+- **Frontend (phase 4, `AngrySenechal2` branch `collab/feast-ui`):** the feast page split into setup / round / scoreboard / log components on the new endpoints; legacy feast calls removed from `character.service.ts`; optional `feastImages` in `environment*.ts`. `ng build` and `ng test` (66) pass; not run in a browser. Deploy together with the backend.
+- **Left open:** Discord, card effects in `feast.yml`, optional rules.
+- **Risk & rollback:** the legacy frontend flow (seating, next round) is host-only now; `git revert`.
 
 ---
 
