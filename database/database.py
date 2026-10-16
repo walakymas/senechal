@@ -261,6 +261,11 @@ class Database:
                 cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_p2c_player_character ON p2c (player, character)")
                 v = 18
 
+            # winter check result of a mark: Unchecked (new) / Failed / Increase / Updated (see MarksTable)
+            if v == 18:
+                cur.execute("ALTER TABLE marks ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'Unchecked'")
+                v = 19
+
             cur.execute("UPDATE properties  SET value = %s, modified=now() WHERE key = 'dbversion'", (v,))
             conn.commit()                      
 

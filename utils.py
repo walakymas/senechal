@@ -145,8 +145,10 @@ def strip_mention(words):
     return words[:-1] if words and MENTION.fullmatch(words[-1]) else words
 
 
-def get_me(message, force=False):
-    cmd_split = message.content[len(Config.prefix):].split()
+def get_me(message, force=False, words=None):
+    """The character of the command: the last word names it (mention, !name, cid:id), else the author's own.
+    `words`: the command words to use instead of the message content (e.g. without a trailing option)."""
+    cmd_split = words if words is not None else message.content[len(Config.prefix):].split()
     log.debug('get_me')
     me = None
     last = cmd_split[-1] if cmd_split else ''

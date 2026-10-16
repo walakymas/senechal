@@ -198,6 +198,70 @@ def event(request):
     return pcresponse(Character.get_by_id(id, True))
 
 
+def _marks_by_year(dbid):
+    """The marks of a character, the latest year first: [{'year': 481, 'marks': [{'id', 'spec', 'status'}, ...]}, ...]."""
+    years = {}
+    for r in MarksTable().list(dbid=dbid):
+        years.setdefault(r[3], []).append({'id': r[0], 'spec': r[5], 'status': r[7]})
+    return [{'year': y, 'marks': years[y]} for y in sorted(years, reverse=True)]
+
+
+@never_cache
+def marks(request):
+    """The marks of a character by year with their winter status (read only, like `json`)."""
+    dbid = int(request.GET['id'])
+    return JsonResponse({'year': int(MarksTable.year()), 'years': _marks_by_year(dbid)}, safe=False,
+                        json_dumps_params={'ensure_ascii': False})
+
+
+def _owner_session(request, dbid):
+    """(session record, None) when the caller is an admin or the owner of the character, else (None, error response)."""
+    from api import feast_views
+    record = feast_views.session(request)
+    if record is None:
+        return None, JsonResponse({'error': 'Login needed'}, status=403)
+    if not feast_views.can_act_for(record, dbid):
+        return None, JsonResponse({'error': 'This is not your character'}, status=403)
+    return record, None
+
+
+@never_cache
+def marks_update(request):
+    """Raises the Increase marks of a character in a year (default: the current one) and makes them Updated."""
+    from winter_logic import update_marks
+    dbid = int(request.POST['id'])
+    record, error = _owner_session(request, dbid)
+    if error:
+        return error
+    if Character.get_by_id(dbid) is None:
+        return JsonResponse({'error': 'No such character'}, status=404)
+    year = int(request.POST.get('year') or MarksTable.year())
+    changes = update_marks(dbid, year)
+    return JsonResponse({'year': year, 'changes': [{'name': n, 'old': o, 'new': v} for n, o, v in changes],
+                         'years': _marks_by_year(dbid)}, safe=False, json_dumps_params={'ensure_ascii': False})
+
+
+@never_cache
+def winter(request):
+    """The winter of a character (the same as `!winter`); the report also becomes an event of the character.
+    `force` (admin only) rolls the already checked marks again."""
+    from api import feast_views
+    from winter_logic import run_winter
+    dbid = int(request.POST['id'])
+    record, error = _owner_session(request, dbid)
+    if error:
+        return error
+    force = request.POST.get('force') in ('1', 'true', 'True')
+    if force and not feast_views.is_admin(record):
+        return JsonResponse({'error': 'Only an admin can force the winter'}, status=403)
+    char = Character.get_by_id(dbid, True)
+    if char is None:
+        return JsonResponse({'error': 'No such character'}, status=404)
+    result = run_winter(char, force)
+    return JsonResponse({'year': result.year, 'text': result.text(), 'years': _marks_by_year(dbid)}, safe=False,
+                        json_dumps_params={'ensure_ascii': False})
+
+
 def newchar(request):
     CharacterTable().add(request.POST['json'])
     data = json.loads(request.POST['json'])

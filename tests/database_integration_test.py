@@ -44,14 +44,14 @@ class DatabaseIntegrationTest(unittest.TestCase):
     # --- schema -------------------------------------------------------------
 
     def test_fresh_install_reaches_the_latest_version(self):
-        self.assertEqual(self.scalar("SELECT value FROM properties WHERE key='dbversion'"), '18')
+        self.assertEqual(self.scalar("SELECT value FROM properties WHERE key='dbversion'"), '19')
         for table in ('events', 'lord', 'marks', 'characters', 'tokens', 'player', 'checks', 'p2c', 'c2c', 'feast', 'maps'):
             self.assertTrue(self.scalar("SELECT to_regclass(%s) IS NOT NULL", [table]), table)
 
     def test_initiate_is_idempotent(self):
         with self.Database.lock:
             self.Database.initiate()
-        self.assertEqual(self.scalar("SELECT value FROM properties WHERE key='dbversion'"), '18')
+        self.assertEqual(self.scalar("SELECT value FROM properties WHERE key='dbversion'"), '19')
 
     def test_upgrade_from_17_collapses_duplicates(self):
         from database.base_table_handler import BaseTableHandler as B
@@ -121,6 +121,21 @@ class DatabaseIntegrationTest(unittest.TestCase):
         from database.markstable import MarksTable
         MarksTable().set(1, 481, 'Sword')
         self.assertEqual(len(MarksTable().get(1, 481)), 1)
+
+    def test_mark_status(self):
+        from database.markstable import MarksTable
+        t = MarksTable()
+        t.set(2, 481, 'Sword')
+        t.set(2, 481, 'Honest')
+        rows = t.list(dbid=2, year=481)
+        self.assertEqual([r[7] for r in rows], [MarksTable.UNCHECKED] * 2)
+        t.set_status_many([r[0] for r in rows], MarksTable.INCREASE)
+        t.set(2, 481, 'Sword')  # marking again keeps the status
+        self.assertEqual([r[7] for r in t.list(dbid=2, year=481)], [MarksTable.INCREASE] * 2)
+        t.set_status(rows[0][0], MarksTable.UPDATED)
+        self.assertEqual(sorted(r[7] for r in t.list(dbid=2, year=481)), [MarksTable.INCREASE, MarksTable.UPDATED])
+        with self.assertRaises(ValueError):
+            t.set_status(rows[0][0], 'Bogus')
 
     def test_c2c_and_p2c_upsert(self):
         from database.c2ctable import C2CTable
