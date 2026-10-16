@@ -9,6 +9,18 @@ difference) or **behaviour-changing** (requires owner/collaborator approval).
 
 ---
 
+## 2026-10-10 — Feast card data in `feast.yml` (Task 025)
+
+- **Branch:** `collab/feast-rules`
+- **Type:** behaviour-changing (a few keys are read by the engine)
+- **Summary:** `check:` blocks for cards 10 and 12–154 from their `full` text, `keep:` / `mandatory:` where stated, a short `text:` where missing, and `# TODO(feast-check)` reminders on 94 doubtful cards. Existing fields unchanged.
+- **Files touched:** `feast.yml`; `documentation/feast-cards.md`, `documentation/tasks/025-feast-card-data.md` (new).
+- **Operational impact:** `keep` on cards 37, 44, 56, 58, 66, 67, 68, 118 and `mandatory: indulgent` on 92–107 now affect a feast; `check:` is declarative only.
+- **Left open:** the 94 reminders (mostly: the rolled skill is not named), an engine that evaluates `check:`.
+- **Risk & rollback:** not run in a live feast; `git checkout -- feast.yml`.
+
+---
+
 ## 2026-10-09 — Feast rules engine, API and frontend, phases 0, 1, 3, 4 (Task 024)
 
 - **Branch:** `collab/feast-rules` (from `main`)
