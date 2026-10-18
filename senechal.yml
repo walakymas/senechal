@@ -583,6 +583,11 @@ intro: |
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, ha trait és sikertelen, akkor dob az ellentétére is
 
 changes: |
+  **2026-10-18**
+  Rolls oldal: új Grid nézet (ez az alapértelmezés), ahol az összes dobás játékosonként külön sorban látszik.
+  A weben az All menü egy felugró ablak lett: Lords / Ladies / Other szűrővel és görgethető listával (telefonon is használható).
+  A weben a főmenüben (a Feast után) új Changelog menüpont: felugró ablakban mutatja ugyanezt a változásnaplót. Ha a naplóban változás történt, az oldal megnyitásakor magától megjelenik.
+
   **2026-10-16**
   Rolls oldal a weben: a mesélő látja az utolsó (max. 100) dobást, játékosra szűrhetően, ugyanabban a kártya-designban mint a saját dobások popupja.
   Marks és winter: a markoknak státuszuk lett (Unchecked, Failed, Increase, Updated). A *!winter* csak a még el nem döntött markokra dob, a többit a státuszból mutatja; *!winter force* (csak adminnak) az Updated kivételével mindent újradob. A téli jelentés az aktuális évhez eseményként elmentődik. A *!mark update* eggyel növeli az Increase státuszú markok értékét. A weben a karakter menüjében megjelent a Marks és a Winter.

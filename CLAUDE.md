@@ -51,6 +51,20 @@ To do any non-trivial work:
    `documentation/CHANGELOG.md` (append-only *history*) **and** refresh `pm/STATUS.md`
    (a *snapshot of now*). Only then set Status to `done`.
 
+### Every change goes into the `changes` section of `senechal.yml`
+
+Every change (new feature, behaviour change, bug fix visible to users - backend **or**
+frontend) must also get an entry in the `changes: |` block at the end of `senechal.yml`.
+The bot's `!changes` command shows it to the players, so it is the **user-facing** changelog
+(not a replacement for `documentation/CHANGELOG.md`).
+
+- Newest on top, under a bold date line `**YYYY-MM-DD**` (same date: add to that block).
+- Write in Hungarian, short and for players, not developers; command names in `*asterisks*`
+  (e.g. `*!winter force*`).
+- Entries are separated by an empty line (`commands/changes.py` splits the text on a blank line),
+  so keep one date block free of empty lines.
+- Do this in the same task/branch as the change, and mention it in the PR.
+
 See `documentation/README.md` and `documentation/tasks/README.md` for details, and
 `documentation/01-code-review.md` for known issues and their `path:line` locations.
 Project status, roadmap, and the decision log live in `pm/`.
