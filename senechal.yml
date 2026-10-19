@@ -583,6 +583,9 @@ intro: |
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, ha trait és sikertelen, akkor dob az ellentétére is
 
 changes: |
+  **2026-10-19**
+  A weben új Coat of Arms oldal (a főmenüben, a Feast után): véletlen címer a core rulebook Appendix B-je alapján (pajzs-kialakítás, tinktúrák, töltések), a pajzs rajzával, a blazonnal és a dobások naplójával. Az opcionális szabályok bekapcsolhatók, a blazon másolható, a pajzs SVG-ként letölthető.
+
   **2026-10-18**
   Rolls oldal: új Grid nézet (ez az alapértelmezés), ahol az összes dobás játékosonként külön sorban látszik.
   A weben az All menü egy felugró ablak lett: Lords / Ladies / Other szűrővel és görgethető listával (telefonon is használható).
