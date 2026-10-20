@@ -584,6 +584,7 @@ intro: |
 
 changes: |
   **2026-10-20**
+  A címer állatai és jelképei (oroszlán, sárkány, sas, kard, vár, korona, rózsa, szerszámok, fegyverek stb.) emoji helyett hiteles heraldikai rajzok lettek.
   Coat of Arms oldal: a dobás mellett most már kézzel is összeállíthatod a címert (Choose mód): mező (egyszínű, osztott, mintázott), ordinary, jelképek számmal, tinktúrával, pózzal. A címer PNG-ként is letölthető.
   A címerhez AI-kép prompt másolható: stilizált címerkép, fotórealisztikus pajzs egy lovag kezében, és harci jelenet a legutóbb megnézett karakterrel (ha van képe). A jelenet a promptban könnyen átírható.
   A bejelentkezett játékos a címert elmentheti a legutóbb megnézett karakterébe (Save to ...), és onnan vissza is töltheti a szerkesztőbe (Load from ...).
