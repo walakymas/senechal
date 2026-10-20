@@ -583,6 +583,11 @@ intro: |
   !team {spec} {modifier} minden játékos karakterre dob a képességre és megjeleníti egy egyszerű táblázatban, ha trait és sikertelen, akkor dob az ellentétére is
 
 changes: |
+  **2026-10-20**
+  Coat of Arms oldal: a dobás mellett most már kézzel is összeállíthatod a címert (Choose mód): mező (egyszínű, osztott, mintázott), ordinary, jelképek számmal, tinktúrával, pózzal. A címer PNG-ként is letölthető.
+  A címerhez AI-kép prompt másolható: stilizált címerkép, fotórealisztikus pajzs egy lovag kezében, és harci jelenet a legutóbb megnézett karakterrel (ha van képe). A jelenet a promptban könnyen átírható.
+  A bejelentkezett játékos a címert elmentheti a legutóbb megnézett karakterébe (Save to ...), és onnan vissza is töltheti a szerkesztőbe (Load from ...).
+
   **2026-10-19**
   A weben új Coat of Arms oldal (a főmenüben, a Feast után): véletlen címer a core rulebook Appendix B-je alapján (pajzs-kialakítás, tinktúrák, töltések), a pajzs rajzával, a blazonnal és a dobások naplójával. Az opcionális szabályok bekapcsolhatók, a blazon másolható, a pajzs SVG-ként letölthető.
 
